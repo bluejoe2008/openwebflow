@@ -3,6 +3,7 @@ package org.openwebflow.mvc;
 import javax.annotation.Resource;
 
 import org.activiti.engine.ProcessEngine;
+import org.openwebflow.mvc.helper.ProcessEngineHelperImpl;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -41,17 +42,25 @@ public class WebFlowListViewController
 		return "/listHistoricProcesses";
 	}
 
+	@RequestMapping("listHistoricActivities.action")
+	public String listHistoricActivities(String processId, ModelMap model)
+	{
+		model.put("activities",
+			_processEngine.getHistoryService().createHistoricActivityInstanceQuery().executionId(processId).finished()
+					.orderByHistoricActivityInstanceStartTime().asc().list());
+		return "/listHistoricActivities";
+	}
+
 	@RequestMapping("listProcessVariables.action")
 	public String listProcessVariables(String processId, boolean historic, ModelMap model)
 	{
 		if (historic)
 		{
-			model.put("vars", _processEngine.getHistoryService().createHistoricProcessInstanceQuery()
-					.processInstanceId(processId).singleResult().getProcessVariables());
+			model.put("vars", new ProcessEngineHelperImpl(_processEngine).getHistoricProcessVariables(processId));
 		}
 		else
 		{
-			model.put("vars", _processEngine.getRuntimeService().getVariables(processId));
+			model.put("vars", new ProcessEngineHelperImpl(_processEngine).getActiveProcessVariables(processId));
 		}
 
 		return "/listVariables";

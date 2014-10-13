@@ -10,17 +10,17 @@ import javax.servlet.http.HttpServletResponse;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import org.openwebflow.mvc.ext.EventContext;
-import org.openwebflow.mvc.ext.EventHandler;
-import org.openwebflow.mvc.ext.EventHandlerFactory;
-import org.openwebflow.mvc.ext.EventType;
-import org.openwebflow.mvc.ext.NullEventHandler;
-import org.openwebflow.mvc.ext.ProcessEventContextImpl;
-import org.openwebflow.mvc.ext.TaskEventContextImpl;
-import org.openwebflow.mvc.support.ProcessDefinitionHelper;
-import org.openwebflow.mvc.support.TaskHelper;
-import org.openwebflow.mvc.support.WebFlowHelperHolder;
-import org.openwebflow.mvc.support.WebFlowParam;
+import org.openwebflow.mvc.event.EventContext;
+import org.openwebflow.mvc.event.EventHandler;
+import org.openwebflow.mvc.event.EventHandlerFactory;
+import org.openwebflow.mvc.event.EventType;
+import org.openwebflow.mvc.event.NullEventHandler;
+import org.openwebflow.mvc.event.ProcessEventContextImpl;
+import org.openwebflow.mvc.event.TaskEventContextImpl;
+import org.openwebflow.mvc.helper.ProcessDefinitionHelper;
+import org.openwebflow.mvc.helper.TaskHelper;
+import org.openwebflow.mvc.helper.WebFlowHelperHolder;
+import org.openwebflow.mvc.helper.WebFlowParam;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -135,7 +135,7 @@ public class WebFlowDispatcherController
 	private void fireEvent(HttpServletRequest request, HttpServletResponse response, ModelAndView mav, String formKey,
 			EventType eventType, EventContext event) throws Exception
 	{
-		getActionHandler(eventType, formKey).handle(request, response, mav, event);
+		getActionHandler(eventType, formKey).onEvent(request, response, mav, event);
 	}
 
 	/**
