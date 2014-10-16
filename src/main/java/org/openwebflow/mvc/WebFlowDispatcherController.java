@@ -7,20 +7,21 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import org.openwebflow.mvc.event.EventContext;
-import org.openwebflow.mvc.event.EventHandler;
-import org.openwebflow.mvc.event.EventHandlerFactory;
 import org.openwebflow.mvc.event.EventType;
-import org.openwebflow.mvc.event.NullEventHandler;
-import org.openwebflow.mvc.event.ProcessEventContextImpl;
-import org.openwebflow.mvc.event.TaskEventContextImpl;
-import org.openwebflow.mvc.helper.ProcessDefinitionHelper;
-import org.openwebflow.mvc.helper.TaskHelper;
-import org.openwebflow.mvc.helper.WebFlowHelperHolder;
-import org.openwebflow.mvc.helper.WebFlowParam;
+import org.openwebflow.mvc.event.ctx.EventContext;
+import org.openwebflow.mvc.event.ctx.ProcessEventContextImpl;
+import org.openwebflow.mvc.event.ctx.TaskEventContextImpl;
+import org.openwebflow.mvc.event.handler.EventHandler;
+import org.openwebflow.mvc.event.handler.EventHandlerFactory;
+import org.openwebflow.mvc.event.handler.NullEventHandler;
+import org.openwebflow.mvc.tool.WebFlowParam;
+import org.openwebflow.tool.ContextToolHolder;
+import org.openwebflow.tool.ProcessDefinitionTool;
+import org.openwebflow.tool.ProcessEngineTool;
+import org.openwebflow.tool.TaskTool;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,106 +31,107 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/workflow/")
 public class WebFlowDispatcherController
 {
-	@Resource(name = "webFlowConfiguration")
-	private WebFlowConfiguration _conf;
-
 	@Resource(name = "customProcessActionHandlerFactory")
 	private EventHandlerFactory _customProcessActionHandlerFactory;
 
-	@Resource(name = "processEngine")
-	private ProcessEngine _processEngine;
+	@Autowired
+	private ProcessEngineTool _processEngineEx;
 
 	@RequestMapping("claimTask.action")
 	public String claimTask(@WebFlowParam
-	WebFlowHelperHolder holder)
+	ContextToolHolder holder)
 	{
-		TaskHelper helper = holder.getTaskHelper();
-		helper.claim();
-		return _conf.getDefaultClaimTaskActionView();
+		TaskTool tool = holder.getTaskTool();
+		tool.claim();
+		return _processEngineEx.getWebFlowConfiguration().getDefaultClaimTaskActionView();
 	}
 
 	@RequestMapping("completeTaskForm.action")
 	public String completeTaskForm(@WebFlowParam
-	WebFlowHelperHolder holder, ModelAndView mav, ModelMap model, HttpServletRequest request,
-			HttpServletResponse response) throws Exception
+	ContextToolHolder holder, ModelAndView mav, ModelMap model, HttpServletRequest request, HttpServletResponse response)
+			throws Exception
 	{
-		TaskHelper helper = holder.getTaskHelper();
-		Task task = helper.getTask();
+		TaskTool tool = holder.getTaskTool();
+		Task task = tool.getTask();
 		String formKey = task.getFormKey();
 
 		//创建event
 		TaskEventContextImpl ctx = new TaskEventContextImpl();
-		ctx.setProcessEngine(_processEngine);
-		ctx.setTaskId(helper.getTaskId());
-		ctx.setTask(helper.getTask());
-		ctx.setProcessInstance(helper.getProcessInstance());
+		ctx.setProcessEngineEx(_processEngineEx);
+		ctx.setTaskId(tool.getTaskId());
+		ctx.setTask(tool.getTask());
+		ctx.setProcessInstance(tool.getProcessInstance());
 
 		fireEvent(request, response, mav, formKey, EventType.OnCompleteTaskForm, ctx);
 
 		if (formKey == null)
 		{
-			formKey = _conf.getDefaultCompleteTaskFormView();
+			formKey = _processEngineEx.getWebFlowConfiguration().getDefaultCompleteTaskFormView();
 		}
 
 		model.put("task", task);
-		model.put("process", helper.getProcessInstance());
+		model.put("process", tool.getProcessInstance());
 		return formKey;
 	}
 
 	@RequestMapping("doCompleteTask.action")
 	public String doCompleteTask(String taskId, @WebFlowParam
-	WebFlowHelperHolder holder, ModelAndView mav, ModelMap model, HttpServletRequest request,
-			HttpServletResponse response) throws Exception
+	ContextToolHolder holder, ModelAndView mav, ModelMap model, HttpServletRequest request, HttpServletResponse response)
+			throws Exception
 	{
-		TaskHelper helper = holder.getTaskHelper();
-		Task task = helper.getTask();
+		TaskTool tool = holder.getTaskTool();
+		Task task = tool.getTask();
 		String formKey = task.getFormKey();
-		ProcessInstance processInstance = helper.getProcessInstance();
+		ProcessInstance processInstance = tool.getProcessInstance();
 
 		//创建event
 		TaskEventContextImpl ctx = new TaskEventContextImpl();
-		ctx.setProcessEngine(_processEngine);
-		ctx.setTaskId(helper.getTaskId());
-		ctx.setTask(helper.getTask());
+		ctx.setProcessEngineEx(_processEngineEx);
+		ctx.setTaskId(tool.getTaskId());
+		ctx.setTask(tool.getTask());
 		ctx.setProcessInstance(processInstance);
-		ctx.getProcessVariableMap().putAll(_conf.getFormVariablesFilter().filterRequestParameters(request));
+		ctx.getProcessVariableMap().putAll(
+			_processEngineEx.getWebFlowConfiguration().getFormVariablesFilter().filterRequestParameters(request));
 
 		fireEvent(request, response, mav, formKey, EventType.BeforeDoCompleteTask, ctx);
-		helper.completeTask(ctx.getProcessVariableMap());
+		tool.completeTask(ctx.getProcessVariableMap());
 		fireEvent(request, response, mav, formKey, EventType.AfterDoCompleteTask, ctx);
 
 		model.put("task", task);
 		model.put("process", processInstance);
 
-		return mav.hasView() ? mav.getViewName() : _conf.getDefaultCompleteTaskActionView();
+		return mav.hasView() ? mav.getViewName() : _processEngineEx.getWebFlowConfiguration()
+				.getDefaultCompleteTaskActionView();
 	}
 
 	@RequestMapping("doStartProcess.action")
 	public String doStartProcess(@WebFlowParam
-	WebFlowHelperHolder holder, ModelAndView mav, ModelMap model, HttpServletRequest request,
-			HttpServletResponse response) throws Exception
+	ContextToolHolder holder, ModelAndView mav, ModelMap model, HttpServletRequest request, HttpServletResponse response)
+			throws Exception
 	{
-		ProcessDefinitionHelper helper = holder.getProcessDefinitionHelper();
-		String startFormKey = helper.getStartFormKey();
+		ProcessDefinitionTool tool = holder.getProcessDefinitionTool();
+		String startFormKey = tool.getStartFormKey();
 
 		//创建event
 		ProcessEventContextImpl ctx = new ProcessEventContextImpl();
-		ctx.setProcessEngine(_processEngine);
-		ctx.setProcessDefinitionId(helper.getProcessDefinitionId());
-		ctx.setProcessDefinition(helper.getProcessDefinition());
-		ctx.getProcessVariableMap().putAll(_conf.getFormVariablesFilter().filterRequestParameters(request));
+		ctx.setProcessEngineEx(_processEngineEx);
+		ctx.setProcessDefinitionId(tool.getProcessDefinitionId());
+		ctx.setProcessDefinition(tool.getProcessDefinition());
+		ctx.getProcessVariableMap().putAll(
+			_processEngineEx.getWebFlowConfiguration().getFormVariablesFilter().filterRequestParameters(request));
 
 		fireEvent(request, response, mav, startFormKey, EventType.BeforeDoStartProcess, ctx);
 
 		String businessKey = ctx.getBussinessKey();
-		ProcessInstance processInstance = helper.startProcess(businessKey, ctx.getProcessVariableMap());
-		model.put("processDef", helper.getProcessDefinition());
+		ProcessInstance processInstance = tool.startProcess(businessKey, ctx.getProcessVariableMap());
+		model.put("processDef", tool.getProcessDefinition());
 		model.put("processInstance", processInstance);
 
 		ctx.setProcessInstance(processInstance);
 
 		fireEvent(request, response, mav, startFormKey, EventType.AfterDoStartProcess, ctx);
-		return mav.hasView() ? mav.getViewName() : _conf.getDefaultStartProcessActionView();
+		return mav.hasView() ? mav.getViewName() : _processEngineEx.getWebFlowConfiguration()
+				.getDefaultStartProcessActionView();
 	}
 
 	private void fireEvent(HttpServletRequest request, HttpServletResponse response, ModelAndView mav, String formKey,
@@ -168,22 +170,23 @@ public class WebFlowDispatcherController
 	 */
 	@RequestMapping("startProcessForm.action")
 	public String startProcessForm(@WebFlowParam
-	WebFlowHelperHolder holder, ModelAndView mav, ModelMap model, HttpServletRequest request,
-			HttpServletResponse response) throws Exception
+	ContextToolHolder holder, ModelAndView mav, ModelMap model, HttpServletRequest request, HttpServletResponse response)
+			throws Exception
 	{
-		ProcessDefinitionHelper helper = holder.getProcessDefinitionHelper();
-		model.put("processDef", helper.getProcessDefinition());
-		String startFormKey = helper.getStartFormKey();
+		ProcessDefinitionTool tool = holder.getProcessDefinitionTool();
+		model.put("processDef", tool.getProcessDefinition());
+		String startFormKey = tool.getStartFormKey();
 
 		//创建event
 		ProcessEventContextImpl ctx = new ProcessEventContextImpl();
-		ctx.setProcessEngine(_processEngine);
-		ctx.setProcessDefinitionId(helper.getProcessDefinitionId());
-		ctx.setProcessDefinition(helper.getProcessDefinition());
+		ctx.setProcessEngineEx(_processEngineEx);
+		ctx.setProcessDefinitionId(tool.getProcessDefinitionId());
+		ctx.setProcessDefinition(tool.getProcessDefinition());
 
 		fireEvent(request, response, mav, startFormKey, EventType.OnStartProcessForm, ctx);
 
-		String viewName = (startFormKey == null ? _conf.getDefaultStartProcessFormView() : startFormKey);
+		String viewName = (startFormKey == null ? _processEngineEx.getWebFlowConfiguration()
+				.getDefaultStartProcessFormView() : startFormKey);
 		return viewName;
 	}
 }
