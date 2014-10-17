@@ -8,3 +8,74 @@ OpenWebFlow是基于Activiti扩展的工作流引擎，确切的说，它的核�
 * 剥离了活动（activity）权限管理，即用户对活动的访问控制信息单独管理（而不是在流程定义中预先写死），这样有利于动态调整权限；
 
 感谢咖啡兔<http://www.kafeitu.me/>，里面有很多的关于Activiti应用方案的讨论。
+
+How to start
+===========
+
+OpenWebFlow可以使用到任何java程序中，当然你需要准备一个Spring IoC的配置文件，一般这个配置文件命名为activiti-cfg-xml，如下是一段配置的例子：
+
+	<bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration">
+		<property name="dataSource" ref="dataSource" />
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="databaseSchemaUpdate" value="true" />
+		<property name="jobExecutorActivate" value="false" />
+		
+		<!-- 邮件服务器 -->
+		<property name="mailServerHost" value="smtp.cnic.cn" />
+		<property name="mailServerPort" value="25" />
+		<property name="mailServerDefaultFrom" value="bluejoe@cnic.cn" />
+		<property name="mailServerUsername" value="sdb-support@cnic.cn" />
+		<property name="mailServerPassword" value="sdb-support@cnic.cn" />
+
+		<property name="customFormTypes">
+			<list>
+				<bean class="org.openwebflow.UserFormType" />
+			</list>
+		</property>
+		
+		<!-- 自动部署 -->
+		<property name="deploymentResources" value="./WEB-INF/models/*.bpmn" />
+		<property name="deploymentMode" value="single-resource" />
+	</bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+
+	<bean class="org.activiti.spring.ProcessEngineFactoryBean">
+		<property name="processEngineConfiguration" ref="processEngineConfiguration" />
+	</bean>
+
+	<!-- 主要用到的对象 -->
+	<bean id="processEngineTool" class="org.openwebflow.tool.impl.ProcessEngineToolImpl">
+		<property name="webFlowConfiguration">
+			<bean id="webFlowConfiguration" class="org.openwebflow.mvc.WebFlowConfiguration">
+				<property name="defaultStartProcessFormView" value="/startProcessForm" />
+				<property name="defaultStartProcessActionView" value="/doStartProcess" />
+				<property name="defaultCompleteTaskFormView" value="/completeTaskForm" />
+				<property name="defaultCompleteTaskActionView" value="/doCompleteTask" />
+				<property name="defaultClaimTaskActionView" value="redirect:/workflow/listTaskQueue.action" />
+				<property name="formVariablesFilter">
+					<bean class="org.openwebflow.mvc.PrefixFormVariablesFilter">
+						<property name="prefix" value="var_" />
+					</bean>
+				</property>
+			</bean>
+		</property>
+		<!-- 自定义权限管理 -->
+		<property name="loadPermissionsOnStartup" value="true" />
+		<property name="activityPermissionService">
+			<bean class="org.openwebflow.permission.impl.ActivityPermissionServiceImpl">
+				<property name="permissionDao">
+					<bean class="org.openwebflow.permission.impl.ActivityPermissionDaoImpl"/>
+				</property>
+			</bean>
+		</property>
+	</bean>
+	
+	<!-- 加载service和entity -->
+	<context:component-scan base-package="org.openwebflow.permission" />
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	
+	注意前面的processEngineConfiguration配置，其实是activiti的配置要求。
