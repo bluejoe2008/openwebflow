@@ -80,3 +80,62 @@ OpenWebFlow可以使用到任何java程序中，当然你需要准备一个Sprin
 	
 	
 注意前面的processEngineConfiguration配置，其实是activiti的配置要求。processEngineTool则是OpenWebFlow的唯一配置，它也是连接到activiti工作流引擎的一把钥匙。
+
+ProcessEngineTool
+===========
+
+ProcessEngineTool是通往Activiti工作流引擎的最佳通道，它提供的方法很多：
+
+	interface ProcessEngineTool extends ProcessEngineQueryTool
+	{
+		ActivityTool createActivityTool(String processDefId, String activityId);
+	
+		ProcessDefinitionTool createProcessDefinitionTool(String processDefId);
+	
+		ProcessInstanceTool createProcessInstanceTool(String processInstanceId);
+	
+		TaskTool createTaskTool(String taskId);
+	
+		ActivityPermissionService getActivityPermissionService();
+	
+		ProcessEngine getProcessEngine();
+	
+		WebFlowConfiguration getWebFlowConfiguration();
+		
+		long getActiveProcessesCount();
+	
+		Map<String, Object> getActiveProcessVariables(String processId);
+	
+		long getAssignedTasksCount(String userId);
+	
+		long getHistoricProcessesCount();
+	
+		Map<String, Object> getHistoricProcessVariables(String processId);
+	
+		List<ProcessDefinition> getProcessDefs();
+	
+		long getProcessDefsCount();
+	
+		long getTaskQueueCount(String userId);
+	
+		List<HistoricProcessInstance> listActiveProcessInstances();
+	
+		List<Task> listAssignedTasks(String userId);
+	
+		List<HistoricActivityInstance> listHistoricActivities(String processId);
+	
+		List<HistoricProcessInstance> listHistoricProcesseInstances();
+	
+		List<Task> listTaskQueue(String userId);
+	}
+	
+很显然，它是个门面，后面也许还会增加更多的方法。
+
+在Spring应用中，任何待扫描的类中增加一句：
+
+	@Autowired
+	private ProcessEngineTool _processEngineTool;
+
+就可以实现对ProcessEngineTool对象的引用。
+
+当然在EventContext和ContextToolHolder里面，都可以很便捷的获取到ProcessEngineTool对象。
