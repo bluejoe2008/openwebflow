@@ -78,4 +78,5 @@ OpenWebFlow可以使用到任何java程序中，当然你需要准备一个Sprin
 	<context:component-scan base-package="org.openwebflow.permission" />
 	<tx:annotation-driven transaction-manager="transactionManager" />
 	
-	注意前面的processEngineConfiguration配置，其实是activiti的配置要求。
+	
+注意前面的processEngineConfiguration配置，其实是activiti的配置要求。processEngineTool则是OpenWebFlow的唯一配置，它也是连接到activiti工作流引擎的一把钥匙。
