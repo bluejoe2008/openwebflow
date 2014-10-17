@@ -139,3 +139,58 @@ ProcessEngineTool是通往Activiti工作流引擎的最佳通道，它提供的�
 就可以实现对ProcessEngineTool对象的引用。
 
 当然在EventContext和ContextToolHolder里面，都可以很便捷的获取到ProcessEngineTool对象。
+
+Custom Controller
+===========
+
+开发用户可以像往常一样定义Controller，但可能需要在代码中启动一个流程、或者完成一个任务，这时候需要用到ContextToolHolder：
+
+	public interface ContextToolHolder
+	{
+		ActivityTool getActivityTool();
+	
+		ProcessDefinitionTool getProcessDefinitionTool();
+	
+		ProcessEngineTool getProcessEngineTool();
+	
+		ProcessInstanceTool getProcessInstanceTool();
+	
+		TaskTool getTaskTool();
+	}
+	
+ContextToolHolder就是一堆tool的factory，想用它也很简单，在自己的Controller方法中加上一个@WebFlowParam标注就可以使用ContextToolHolder对象了：
+
+	@RequestMapping("/doCompleteAdjustTask.action")
+	public String doCompleteAdjustTask(@WebFlowParam
+	ContextToolHolder holder, @RequestParam
+	Map<String, Object> formValues, ModelMap model, HttpServletRequest request, HttpServletResponse response)
+			throws Exception
+	{
+		...
+	}
+	
+WebFlowParam具有一些字段，可以指定request参数中对应的参数名：
+
+	public @interface WebFlowParam
+	{
+		String keyActivityId() default "activityId";
+	
+		String keyProcessDefinitionId() default "processDefId";
+	
+		String keyProcessInstanceId() default "processId";
+	
+		String keyTaskId() default "taskId";
+	}
+	
+记住，你可以不用ContextToolHolder对象，因为前面已经说过了，你直接用ProcessEngineTool对象也是可以的，如：
+
+	@Autowired
+	private ProcessEngineTool _processEngineTool;
+
+	@RequestMapping("/doCompleteAdjustTask.action")
+	public String doCompleteAdjustTask(ModelMap model, HttpServletRequest request, HttpServletResponse response)
+			throws Exception
+	{
+		...
+		_processEngineTool.createTaskTool("myTaskId");
+	}
