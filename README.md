@@ -194,3 +194,56 @@ WebFlowParam具有一些字段，可以指定request参数中对应的参数名�
 		...
 		_processEngineTool.createTaskTool("myTaskId");
 	}
+
+Events
+===========
+
+实际上，关于工作流的很多页面流程是固定的，譬如：指定流程定义ID-->展示流程启动表单-->提交表单，启动该流程。
+
+org.openwebflow.mvc.WebFlowDispatcherController把这些固定的工作都做了，但是问题来了：如何在启动流程的时候做一些业务的操作，譬如保存表单什么的？解决方案是使用事件机制。
+
+OpenWebFlow的事件机制是针对Web上下文的，每个事件除了EventId、EventType，还有EventContext，EventContext负责保存环境信息，譬如一个DoStartProcessEventContext内容如下：
+
+	public interface DoStartProcessEventContext extends EventContext
+	{
+		String getBussinessKey();
+	
+		ProcessDefinition getProcessDefinition();
+	
+		String getProcessDefinitionId();
+	
+		ProcessInstance getProcessInstance();
+	
+		public abstract Map<String, Object> getProcessVariableMap();
+	
+		void setBussinessKey(String bussinessKey);
+	}
+	
+看到了吗？Activiti关心的bussiness key由这个DoStartProcessEventContext负责维护。类似的EventContext还有一些，各有千秋。
+
+一个典型的EventHandler写成这样：
+
+	@EventHandlerClass
+	@Component
+	public class MyEventHandler
+	{
+	
+		@EventHandlerMethod(eventType = EventType.BeforeDoStartProcess, formKey = "/startVacationRequest")
+		public void beforeDoStartVacationRequest(EventContextHolder holder, String processDefId, ModelMap model,
+				HttpServletRequest request, HttpServletResponse response) throws Exception
+		{
+			DoStartProcessEventContext event = holder.getDoStartProcessEventContext();
+			event.setBussinessKey("" + System.currentTimeMillis());
+		}
+	}
+	
+@EventHandlerClass标注当前的类是一个包含Handler方法的类，@EventHandlerMethod标注处理事件的具体方法。可以看到，@EventHandlerMethod有两个参数，前面指定事件的类型，后者是与事件相关的formKey，这个在定义流程的时候会接触到。
+
+目前的事件类型还不是很多，但这并不意味着以后不会再增加新的事件：
+
+	public enum EventType
+	{
+		AfterDoCompleteTask, AfterDoStartProcess, BeforeDoCompleteTask, BeforeDoStartProcess, OnCompleteTaskForm, OnStartProcessForm
+	}
+
+最后注意的是，这种模式是可选项，你可以不用这些固定的流程，可以不用事件机制，别管它，直接写自己的Controller就是了！
