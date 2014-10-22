@@ -29,7 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/workflow/")
-public class BuiltInWebFlowController
+public class DefaultWebFlowController
 {
 	@Resource(name = "customProcessActionHandlerFactory")
 	private EventHandlerFactory _customProcessActionHandlerFactory;

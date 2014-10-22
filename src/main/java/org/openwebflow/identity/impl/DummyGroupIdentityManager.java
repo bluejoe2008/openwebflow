@@ -23,25 +23,12 @@ public class DummyGroupIdentityManager implements GroupIdentityManager, Session
 	}
 
 	@Override
+	public void close()
+	{
+	}
+
+	@Override
 	public Group createNewGroup(String groupId)
-	{
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void insertGroup(Group group)
-	{
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void updateGroup(Group updatedGroup)
-	{
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void deleteGroup(String groupId)
 	{
 		throw new UnsupportedOperationException();
 	}
@@ -53,13 +40,31 @@ public class DummyGroupIdentityManager implements GroupIdentityManager, Session
 	}
 
 	@Override
+	public void deleteGroup(String groupId)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public List<Group> findGroupByQueryCriteria(GroupQueryImpl query, Page page)
 	{
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
+	public long findGroupCountByNativeQuery(Map<String, Object> parameterMap)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public long findGroupCountByQueryCriteria(GroupQueryImpl query)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<Group> findGroupsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults)
 	{
 		throw new UnsupportedOperationException();
 	}
@@ -74,13 +79,12 @@ public class DummyGroupIdentityManager implements GroupIdentityManager, Session
 	}
 
 	@Override
-	public List<Group> findGroupsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults)
+	public void flush()
 	{
-		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public long findGroupCountByNativeQuery(Map<String, Object> parameterMap)
+	public void insertGroup(Group group)
 	{
 		throw new UnsupportedOperationException();
 	}
@@ -92,13 +96,9 @@ public class DummyGroupIdentityManager implements GroupIdentityManager, Session
 	}
 
 	@Override
-	public void flush()
+	public void updateGroup(Group updatedGroup)
 	{
-	}
-
-	@Override
-	public void close()
-	{
+		throw new UnsupportedOperationException();
 	}
 
 }

@@ -7,6 +7,11 @@ public class DummyMembershipIdentityManager implements MembershipIdentityManager
 {
 
 	@Override
+	public void close()
+	{
+	}
+
+	@Override
 	public void createMembership(String userId, String groupId)
 	{
 		throw new UnsupportedOperationException();
@@ -20,11 +25,6 @@ public class DummyMembershipIdentityManager implements MembershipIdentityManager
 
 	@Override
 	public void flush()
-	{
-	}
-
-	@Override
-	public void close()
 	{
 	}
 

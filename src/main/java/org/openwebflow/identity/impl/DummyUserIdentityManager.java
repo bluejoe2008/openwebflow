@@ -25,43 +25,30 @@ public class DummyUserIdentityManager implements UserIdentityManager, Session
 	}
 
 	@Override
+	public Boolean checkPassword(String userId, String password)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void close()
+	{
+	}
+
+	@Override
 	public User createNewUser(String userId)
 	{
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void insertUser(User user)
-	{
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void updateUser(User updatedUser)
-	{
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public User findUserById(String userId)
+	public UserQuery createNewUserQuery()
 	{
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void deleteUser(String userId)
-	{
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public List<User> findUserByQueryCriteria(UserQueryImpl query, Page page)
-	{
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public long findUserCountByQueryCriteria(UserQueryImpl query)
 	{
 		throw new UnsupportedOperationException();
 	}
@@ -76,7 +63,31 @@ public class DummyUserIdentityManager implements UserIdentityManager, Session
 	}
 
 	@Override
-	public UserQuery createNewUserQuery()
+	public List<User> findPotentialStarterUsers(String proceDefId)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public User findUserById(String userId)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<User> findUserByQueryCriteria(UserQueryImpl query, Page page)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public long findUserCountByNativeQuery(Map<String, Object> parameterMap)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public long findUserCountByQueryCriteria(UserQueryImpl query)
 	{
 		throw new UnsupportedOperationException();
 	}
@@ -94,25 +105,24 @@ public class DummyUserIdentityManager implements UserIdentityManager, Session
 	}
 
 	@Override
-	public Boolean checkPassword(String userId, String password)
-	{
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public List<User> findPotentialStarterUsers(String proceDefId)
-	{
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public List<User> findUsersByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults)
 	{
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public long findUserCountByNativeQuery(Map<String, Object> parameterMap)
+	public void flush()
+	{
+	}
+
+	@Override
+	public Picture getUserPicture(String userId)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void insertUser(User user)
 	{
 		throw new UnsupportedOperationException();
 	}
@@ -124,24 +134,14 @@ public class DummyUserIdentityManager implements UserIdentityManager, Session
 	}
 
 	@Override
-	public Picture getUserPicture(String userId)
-	{
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public void setUserPicture(String userId, Picture picture)
 	{
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	public void flush()
+	public void updateUser(User updatedUser)
 	{
-	}
-
-	@Override
-	public void close()
-	{
+		throw new UnsupportedOperationException();
 	}
 }

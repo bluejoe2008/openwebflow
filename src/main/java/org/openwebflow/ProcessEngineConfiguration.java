@@ -20,16 +20,6 @@ public class ProcessEngineConfiguration extends SpringProcessEngineConfiguration
 {
 	CustomMembershipManager _customMembershipManager;
 
-	public CustomMembershipManager getCustomMembershipManager()
-	{
-		return _customMembershipManager;
-	}
-
-	public void setCustomMembershipManager(CustomMembershipManager customMembershipManager)
-	{
-		_customMembershipManager = customMembershipManager;
-	}
-
 	@Override
 	public void afterPropertiesSet() throws Exception
 	{
@@ -51,5 +41,15 @@ public class ProcessEngineConfiguration extends SpringProcessEngineConfiguration
 			
 			super.setCustomSessionFactories(sessionFactories);
 		}
+	}
+
+	public CustomMembershipManager getCustomMembershipManager()
+	{
+		return _customMembershipManager;
+	}
+
+	public void setCustomMembershipManager(CustomMembershipManager customMembershipManager)
+	{
+		_customMembershipManager = customMembershipManager;
 	}
 }

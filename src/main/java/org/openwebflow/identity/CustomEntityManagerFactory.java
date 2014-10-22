@@ -5,6 +5,8 @@ import org.activiti.engine.impl.interceptor.SessionFactory;
 
 public class CustomEntityManagerFactory implements SessionFactory
 {
+	Session _entityManager;
+
 	Class<?> _sessionType;
 
 	public CustomEntityManagerFactory(Class<?> sessionType, Session entityManager)
@@ -13,8 +15,6 @@ public class CustomEntityManagerFactory implements SessionFactory
 		_sessionType = sessionType;
 		_entityManager = entityManager;
 	}
-
-	Session _entityManager;
 
 	@Override
 	public Class<?> getSessionType()
