@@ -11,8 +11,5 @@ OpenWebFlow是基于Activiti扩展的工作流引擎，它针对Web环境下的�
 感谢咖啡兔<http://www.kafeitu.me/>，里面有很多的关于Activiti应用方案的讨论。
 
 
-[如何开始？|https://github.com/bluejoe2008/openwebflow/wiki/How-to-start]
-ProcessEngineTool工具类的使用
-客户代码中的Controller怎么写？
-事件机制
+[用户使用帮助](https://github.com/bluejoe2008/openwebflow/wiki)
 
