@@ -6,7 +6,7 @@ public interface EventContext
 {
 	<T> T getAttribute(String key);
 
-	ProcessEngineTool getProcessEngineEx();
+	ProcessEngineTool getProcessEngineTool();
 
 	void setAttribute(String key, Object value);
 }

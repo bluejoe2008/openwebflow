@@ -2,8 +2,15 @@ package org.openwebflow;
 
 import org.activiti.engine.form.AbstractFormType;
 
-public class UserFormType extends AbstractFormType
+public class DummyFormType extends AbstractFormType
 {
+	String _name;
+
+	public DummyFormType(String name)
+	{
+		super();
+		_name = name;
+	}
 
 	@Override
 	public Object convertFormValueToModelValue(String propertyValue)
@@ -20,7 +27,7 @@ public class UserFormType extends AbstractFormType
 	@Override
 	public String getName()
 	{
-		return "user";
+		return _name;
 	}
 
 }

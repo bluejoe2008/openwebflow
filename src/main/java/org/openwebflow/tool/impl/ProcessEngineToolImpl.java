@@ -79,6 +79,13 @@ public class ProcessEngineToolImpl implements InitializingBean, ProcessEngineToo
 	}
 
 	@Override
+	public long getActiveProcessesCount(String userId)
+	{
+		return _processEngine.getHistoryService().createHistoricProcessInstanceQuery().unfinished().startedBy(userId)
+				.count();
+	}
+
+	@Override
 	public Map<String, Object> getActiveProcessVariables(String processId)
 	{
 		return _processEngine.getRuntimeService().getVariables(processId);
@@ -100,6 +107,13 @@ public class ProcessEngineToolImpl implements InitializingBean, ProcessEngineToo
 	public long getHistoricProcessesCount()
 	{
 		return _processEngine.getHistoryService().createHistoricProcessInstanceQuery().finished().count();
+	}
+
+	@Override
+	public long getHistoricProcessesCount(String userId)
+	{
+		return _processEngine.getHistoryService().createHistoricProcessInstanceQuery().finished().startedBy(userId)
+				.count();
 	}
 
 	@Override
@@ -158,6 +172,13 @@ public class ProcessEngineToolImpl implements InitializingBean, ProcessEngineToo
 	}
 
 	@Override
+	public List<HistoricProcessInstance> listActiveProcessInstances(String userId)
+	{
+		return getProcessEngine().getHistoryService().createHistoricProcessInstanceQuery().startedBy(userId)
+				.unfinished().orderByProcessInstanceStartTime().desc().list();
+	}
+
+	@Override
 	public List<Task> listAssignedTasks(String userId)
 	{
 		return getProcessEngine().getTaskService().createTaskQuery().taskAssignee(userId).orderByTaskCreateTime()
@@ -175,6 +196,13 @@ public class ProcessEngineToolImpl implements InitializingBean, ProcessEngineToo
 	public List<HistoricProcessInstance> listHistoricProcesseInstances()
 	{
 		return getProcessEngine().getHistoryService().createHistoricProcessInstanceQuery().finished()
+				.orderByProcessInstanceEndTime().desc().list();
+	}
+
+	@Override
+	public List<HistoricProcessInstance> listHistoricProcesseInstances(String userId)
+	{
+		return getProcessEngine().getHistoryService().createHistoricProcessInstanceQuery().startedBy(userId).finished()
 				.orderByProcessInstanceEndTime().desc().list();
 	}
 

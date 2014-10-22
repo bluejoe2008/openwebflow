@@ -12,11 +12,15 @@ public interface ProcessEngineQueryTool
 {
 	public abstract long getActiveProcessesCount();
 
+	public abstract long getActiveProcessesCount(String userId);
+
 	Map<String, Object> getActiveProcessVariables(String processId);
 
 	public abstract long getAssignedTasksCount(String userId);
 
 	public abstract long getHistoricProcessesCount();
+
+	public abstract long getHistoricProcessesCount(String userId);
 
 	Map<String, Object> getHistoricProcessVariables(String processId);
 
@@ -28,11 +32,15 @@ public interface ProcessEngineQueryTool
 
 	public abstract List<HistoricProcessInstance> listActiveProcessInstances();
 
+	public abstract List<HistoricProcessInstance> listActiveProcessInstances(String userId);
+
 	public abstract List<Task> listAssignedTasks(String userId);
 
 	public abstract List<HistoricActivityInstance> listHistoricActivities(String processId);
 
 	public abstract List<HistoricProcessInstance> listHistoricProcesseInstances();
+
+	public abstract List<HistoricProcessInstance> listHistoricProcesseInstances(String userId);
 
 	public abstract List<Task> listTaskQueue(String userId);
 }

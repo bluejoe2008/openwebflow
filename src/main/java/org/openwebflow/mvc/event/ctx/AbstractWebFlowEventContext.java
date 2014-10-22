@@ -16,7 +16,7 @@ public class AbstractWebFlowEventContext
 		return (T) _attributes.get(key);
 	}
 
-	public ProcessEngineTool getProcessEngineEx()
+	public ProcessEngineTool getProcessEngineTool()
 	{
 		return _processEngineEx;
 	}
