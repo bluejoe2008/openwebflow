@@ -1,8 +1,6 @@
 package org.openwebflow.tool;
 
 import org.activiti.engine.ProcessEngine;
-import org.openwebflow.mvc.WebFlowConfiguration;
-import org.openwebflow.permission.ActivityPermissionService;
 
 public interface ProcessEngineTool extends ProcessEngineQueryTool
 {
@@ -14,9 +12,5 @@ public interface ProcessEngineTool extends ProcessEngineQueryTool
 
 	TaskTool createTaskTool(String taskId);
 
-	ActivityPermissionService getActivityPermissionService();
-
 	ProcessEngine getProcessEngine();
-
-	WebFlowConfiguration getWebFlowConfiguration();
 }

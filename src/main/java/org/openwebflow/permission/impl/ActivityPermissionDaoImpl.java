@@ -3,8 +3,6 @@ package org.openwebflow.permission.impl;
 import java.sql.Date;
 import java.util.List;
 
-import javax.annotation.Resource;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.openwebflow.permission.ActivityPermission;
@@ -12,8 +10,7 @@ import org.openwebflow.permission.ActivityPermissionDao;
 
 public class ActivityPermissionDaoImpl implements ActivityPermissionDao
 {
-	@Resource(name = "sessionFactory")
-	private SessionFactory sessionFactory;
+	private SessionFactory _sessionFactory;
 
 	@Override
 	public void delete(ActivityPermission ap)
@@ -27,7 +24,12 @@ public class ActivityPermissionDaoImpl implements ActivityPermissionDao
 	public Session getSession()
 	{
 		// 事务必须是开启的(Required)，否则获取不到
-		return sessionFactory.getCurrentSession();
+		return _sessionFactory.getCurrentSession();
+	}
+
+	public SessionFactory getSessionFactory()
+	{
+		return _sessionFactory;
 	}
 
 	@Override
@@ -41,5 +43,10 @@ public class ActivityPermissionDaoImpl implements ActivityPermissionDao
 	public List<ActivityPermission> list()
 	{
 		return getSession().createQuery(String.format("from %s", ActivityPermission.class.getName())).list();
+	}
+
+	public void setSessionFactory(SessionFactory sessionFactory)
+	{
+		_sessionFactory = sessionFactory;
 	}
 }

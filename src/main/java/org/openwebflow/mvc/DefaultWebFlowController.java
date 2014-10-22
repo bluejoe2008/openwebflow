@@ -2,19 +2,18 @@ package org.openwebflow.mvc;
 
 import java.io.IOException;
 
-import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.openwebflow.ProcessEngineConfigurationEx;
 import org.openwebflow.mvc.event.EventType;
 import org.openwebflow.mvc.event.ctx.EventContext;
 import org.openwebflow.mvc.event.ctx.ProcessEventContextImpl;
 import org.openwebflow.mvc.event.ctx.TaskEventContextImpl;
 import org.openwebflow.mvc.event.handler.EventHandler;
-import org.openwebflow.mvc.event.handler.EventHandlerFactory;
 import org.openwebflow.mvc.event.handler.NullEventHandler;
 import org.openwebflow.mvc.tool.WebFlowParam;
 import org.openwebflow.tool.ContextToolHolder;
@@ -29,13 +28,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/workflow/")
-public class DefaultWebFlowController
+public class DefaultWebFlowController extends DefaultWebFlowControllerConfiguration
 {
-	@Resource(name = "customProcessActionHandlerFactory")
-	private EventHandlerFactory _customProcessActionHandlerFactory;
+	@Autowired
+	private ProcessEngineConfigurationEx _processEngineConfiguration;
 
 	@Autowired
-	private ProcessEngineTool _processEngineEx;
+	private ProcessEngineTool _processEngineTool;
 
 	@RequestMapping("claimTask.action")
 	public String claimTask(@WebFlowParam
@@ -43,7 +42,7 @@ public class DefaultWebFlowController
 	{
 		TaskTool tool = holder.getTaskTool();
 		tool.claim();
-		return _processEngineEx.getWebFlowConfiguration().getDefaultClaimTaskActionView();
+		return super.getDefaultClaimTaskActionView();
 	}
 
 	@RequestMapping("completeTaskForm.action")
@@ -57,7 +56,7 @@ public class DefaultWebFlowController
 
 		//创建event
 		TaskEventContextImpl ctx = new TaskEventContextImpl();
-		ctx.setProcessEngineEx(_processEngineEx);
+		ctx.setProcessEngineEx(_processEngineTool);
 		ctx.setTaskId(tool.getTaskId());
 		ctx.setTask(tool.getTask());
 		ctx.setProcessInstance(tool.getProcessInstance());
@@ -66,7 +65,7 @@ public class DefaultWebFlowController
 
 		if (formKey == null)
 		{
-			formKey = _processEngineEx.getWebFlowConfiguration().getDefaultCompleteTaskFormView();
+			formKey = super.getDefaultCompleteTaskFormView();
 		}
 
 		model.put("task", task);
@@ -86,12 +85,11 @@ public class DefaultWebFlowController
 
 		//创建event
 		TaskEventContextImpl ctx = new TaskEventContextImpl();
-		ctx.setProcessEngineEx(_processEngineEx);
+		ctx.setProcessEngineEx(_processEngineTool);
 		ctx.setTaskId(tool.getTaskId());
 		ctx.setTask(tool.getTask());
 		ctx.setProcessInstance(processInstance);
-		ctx.getProcessVariableMap().putAll(
-			_processEngineEx.getWebFlowConfiguration().getFormVariablesFilter().filterRequestParameters(request));
+		ctx.getProcessVariableMap().putAll(super.getFormVariablesFilter().filterRequestParameters(request));
 
 		fireEvent(request, response, mav, formKey, EventType.BeforeDoCompleteTask, ctx);
 		tool.completeTask(ctx.getProcessVariableMap());
@@ -100,8 +98,7 @@ public class DefaultWebFlowController
 		model.put("task", task);
 		model.put("process", processInstance);
 
-		return mav.hasView() ? mav.getViewName() : _processEngineEx.getWebFlowConfiguration()
-				.getDefaultCompleteTaskActionView();
+		return mav.hasView() ? mav.getViewName() : super.getDefaultCompleteTaskActionView();
 	}
 
 	@RequestMapping("doStartProcess.action")
@@ -114,11 +111,10 @@ public class DefaultWebFlowController
 
 		//创建event
 		ProcessEventContextImpl ctx = new ProcessEventContextImpl();
-		ctx.setProcessEngineEx(_processEngineEx);
+		ctx.setProcessEngineEx(_processEngineTool);
 		ctx.setProcessDefinitionId(tool.getProcessDefinitionId());
 		ctx.setProcessDefinition(tool.getProcessDefinition());
-		ctx.getProcessVariableMap().putAll(
-			_processEngineEx.getWebFlowConfiguration().getFormVariablesFilter().filterRequestParameters(request));
+		ctx.getProcessVariableMap().putAll(super.getFormVariablesFilter().filterRequestParameters(request));
 
 		fireEvent(request, response, mav, startFormKey, EventType.BeforeDoStartProcess, ctx);
 
@@ -130,8 +126,7 @@ public class DefaultWebFlowController
 		ctx.setProcessInstance(processInstance);
 
 		fireEvent(request, response, mav, startFormKey, EventType.AfterDoStartProcess, ctx);
-		return mav.hasView() ? mav.getViewName() : _processEngineEx.getWebFlowConfiguration()
-				.getDefaultStartProcessActionView();
+		return mav.hasView() ? mav.getViewName() : super.getDefaultStartProcessActionView();
 	}
 
 	private void fireEvent(HttpServletRequest request, HttpServletResponse response, ModelAndView mav, String formKey,
@@ -151,7 +146,7 @@ public class DefaultWebFlowController
 		if (eventKey == null)
 			return new NullEventHandler();
 
-		EventHandler handler = _customProcessActionHandlerFactory.getEventHandler(eventType, eventKey);
+		EventHandler handler = super.getCustomProcessActionHandlerFactory().getEventHandler(eventType, eventKey);
 
 		if (handler == null)
 			return new NullEventHandler();
@@ -179,14 +174,13 @@ public class DefaultWebFlowController
 
 		//创建event
 		ProcessEventContextImpl ctx = new ProcessEventContextImpl();
-		ctx.setProcessEngineEx(_processEngineEx);
+		ctx.setProcessEngineEx(_processEngineTool);
 		ctx.setProcessDefinitionId(tool.getProcessDefinitionId());
 		ctx.setProcessDefinition(tool.getProcessDefinition());
 
 		fireEvent(request, response, mav, startFormKey, EventType.OnStartProcessForm, ctx);
 
-		String viewName = (startFormKey == null ? _processEngineEx.getWebFlowConfiguration()
-				.getDefaultStartProcessFormView() : startFormKey);
+		String viewName = (startFormKey == null ? super.getDefaultStartProcessFormView() : startFormKey);
 		return viewName;
 	}
 }

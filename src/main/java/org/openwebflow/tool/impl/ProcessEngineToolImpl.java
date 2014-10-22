@@ -8,48 +8,23 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricVariableInstance;
-import org.activiti.engine.impl.RepositoryServiceImpl;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.Task;
-import org.openwebflow.mvc.WebFlowConfiguration;
-import org.openwebflow.permission.ActivityPermission;
-import org.openwebflow.permission.ActivityPermissionService;
 import org.openwebflow.tool.ActivityTool;
 import org.openwebflow.tool.ProcessDefinitionTool;
 import org.openwebflow.tool.ProcessEngineTool;
 import org.openwebflow.tool.ProcessInstanceTool;
 import org.openwebflow.tool.TaskTool;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.openwebflow.util.ActivityUtils;
 
-public class ProcessEngineToolImpl implements InitializingBean, ProcessEngineTool
+public class ProcessEngineToolImpl implements ProcessEngineTool
 {
-	ActivityPermissionService _activityPermissionService;
-
-	boolean _loadPermissionsOnStartup = true;
-
-	@Autowired
 	private ProcessEngine _processEngine;
-
-	private WebFlowConfiguration _webFlowConfiguration;
-
-	@Override
-	public void afterPropertiesSet() throws Exception
-	{
-		if (_loadPermissionsOnStartup)
-		{
-			loadAllPermissions();
-		}
-	}
 
 	@Override
 	public ActivityTool createActivityTool(String processDefId, String activityId)
 	{
-		ProcessDefinitionEntity pde = (ProcessDefinitionEntity) ((RepositoryServiceImpl) _processEngine
-				.getRepositoryService()).getDeployedProcessDefinition(processDefId);
-		return new ActivityToolImpl(this, (ActivityImpl) pde.findActivity(activityId));
+		return new ActivityToolImpl(this, ActivityUtils.getActivity(_processEngine, processDefId, activityId));
 	}
 
 	@Override
@@ -89,12 +64,6 @@ public class ProcessEngineToolImpl implements InitializingBean, ProcessEngineToo
 	public Map<String, Object> getActiveProcessVariables(String processId)
 	{
 		return _processEngine.getRuntimeService().getVariables(processId);
-	}
-
-	@Override
-	public ActivityPermissionService getActivityPermissionService()
-	{
-		return _activityPermissionService;
 	}
 
 	@Override
@@ -154,17 +123,6 @@ public class ProcessEngineToolImpl implements InitializingBean, ProcessEngineToo
 	}
 
 	@Override
-	public WebFlowConfiguration getWebFlowConfiguration()
-	{
-		return _webFlowConfiguration;
-	}
-
-	public boolean isLoadPermissionsOnStartup()
-	{
-		return _loadPermissionsOnStartup;
-	}
-
-	@Override
 	public List<HistoricProcessInstance> listActiveProcessInstances()
 	{
 		return getProcessEngine().getHistoryService().createHistoricProcessInstanceQuery().unfinished()
@@ -213,27 +171,9 @@ public class ProcessEngineToolImpl implements InitializingBean, ProcessEngineToo
 				.desc().list();
 	}
 
-	public void loadAllPermissions() throws Exception
+	public void setProcessEngine(ProcessEngine processEngine)
 	{
-		for (ActivityPermission ap : _activityPermissionService.list())
-		{
-			this.createActivityTool(ap.getProcessDefId(), ap.getActivityId()).grantPermission(ap.getAssignedUser(),
-				ap.getGrantedGroups(), ap.getGrantedUsers());
-		}
+		_processEngine = processEngine;
 	}
 
-	public void setActivityPermissionService(ActivityPermissionService activityPermissionService)
-	{
-		_activityPermissionService = activityPermissionService;
-	}
-
-	public void setLoadPermissionsOnStartup(boolean loadPermissionsOnStartup)
-	{
-		_loadPermissionsOnStartup = loadPermissionsOnStartup;
-	}
-
-	public void setWebFlowConfiguration(WebFlowConfiguration webFlowConfiguration)
-	{
-		_webFlowConfiguration = webFlowConfiguration;
-	}
 }

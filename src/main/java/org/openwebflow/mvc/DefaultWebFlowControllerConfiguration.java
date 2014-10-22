@@ -1,7 +1,11 @@
 package org.openwebflow.mvc;
 
-public class WebFlowConfiguration
+import org.openwebflow.mvc.event.handler.EventHandlerFactory;
+
+public class DefaultWebFlowControllerConfiguration
 {
+	private EventHandlerFactory _customProcessActionHandlerFactory;
+
 	private String _defaultClaimTaskActionView;
 
 	private String _defaultCompleteTaskActionView;
@@ -13,6 +17,11 @@ public class WebFlowConfiguration
 	private String _defaultStartProcessFormView;
 
 	private FormVariablesFilter _formVariablesFilter;
+
+	public EventHandlerFactory getCustomProcessActionHandlerFactory()
+	{
+		return _customProcessActionHandlerFactory;
+	}
 
 	public String getDefaultClaimTaskActionView()
 	{
@@ -42,6 +51,11 @@ public class WebFlowConfiguration
 	public FormVariablesFilter getFormVariablesFilter()
 	{
 		return _formVariablesFilter;
+	}
+
+	public void setCustomProcessActionHandlerFactory(EventHandlerFactory customProcessActionHandlerFactory)
+	{
+		_customProcessActionHandlerFactory = customProcessActionHandlerFactory;
 	}
 
 	public void setDefaultClaimTaskActionView(String defaultClaimTaskActionView)

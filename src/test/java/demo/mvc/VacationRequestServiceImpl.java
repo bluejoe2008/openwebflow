@@ -1,4 +1,4 @@
-package org.openwebflow.mvc;
+package demo.mvc;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,7 +9,6 @@ import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
-
 
 @Service
 public class VacationRequestServiceImpl implements VacationRequestService

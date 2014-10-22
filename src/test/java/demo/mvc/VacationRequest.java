@@ -1,27 +1,23 @@
-package org.openwebflow.mvc;
+package demo.mvc;
 
 public class VacationRequest
 {
+	long _days;
+
 	long _id;
 
-	public long getId()
-	{
-		return _id;
-	}
+	String _motivation;
 
-	public void setId(long id)
-	{
-		_id = id;
-	}
+	String _processId;
 
 	public long getDays()
 	{
 		return _days;
 	}
 
-	public void setDays(long days)
+	public long getId()
 	{
-		_days = days;
+		return _id;
 	}
 
 	public String getMotivation()
@@ -29,24 +25,28 @@ public class VacationRequest
 		return _motivation;
 	}
 
-	public void setMotivation(String motivation)
-	{
-		_motivation = motivation;
-	}
-
 	public String getProcessId()
 	{
 		return _processId;
+	}
+
+	public void setDays(long days)
+	{
+		_days = days;
+	}
+
+	public void setId(long id)
+	{
+		_id = id;
+	}
+
+	public void setMotivation(String motivation)
+	{
+		_motivation = motivation;
 	}
 
 	public void setProcessId(String processId)
 	{
 		_processId = processId;
 	}
-
-	long _days;
-
-	String _motivation;
-
-	String _processId;
 }

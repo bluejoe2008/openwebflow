@@ -1,8 +1,8 @@
-package org.openwebflow.mvc;
+package demo.mvc;
 
 public interface VacationRequestService
 {
-	public void insert(VacationRequest vr);
-
 	public VacationRequest getByProcessId(String processId);
+
+	public void insert(VacationRequest vr);
 }

@@ -1,4 +1,4 @@
-package org.openwebflow.mvc;
+package demo.mvc;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,21 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
 
-
 @EventHandlerClass
 @Component
 public class MyEventHandler
 {
 	@Autowired
 	VacationRequestService _vacationRequestService;
-
-	@EventHandlerMethod(eventType = EventType.BeforeDoStartProcess, formKey = "/startVacationRequest")
-	public void beforeDoStartVacationRequest(EventContextHolder holder, String processDefId, ModelMap model,
-			HttpServletRequest request, HttpServletResponse response) throws Exception
-	{
-		DoStartProcessEventContext event = holder.getDoStartProcessEventContext();
-		event.setBussinessKey("" + System.currentTimeMillis());
-	}
 
 	@EventHandlerMethod(eventType = EventType.AfterDoStartProcess, formKey = "/startVacationRequest")
 	public void afterDoStartVacationRequest(EventContextHolder holder, String processDefId, long var_numberOfDays,
@@ -40,5 +31,13 @@ public class MyEventHandler
 		vr.setMotivation(var_vacationMotivation);
 		vr.setProcessId(event.getProcessInstance().getId());
 		_vacationRequestService.insert(vr);
+	}
+
+	@EventHandlerMethod(eventType = EventType.BeforeDoStartProcess, formKey = "/startVacationRequest")
+	public void beforeDoStartVacationRequest(EventContextHolder holder, String processDefId, ModelMap model,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		DoStartProcessEventContext event = holder.getDoStartProcessEventContext();
+		event.setBussinessKey("" + System.currentTimeMillis());
 	}
 }

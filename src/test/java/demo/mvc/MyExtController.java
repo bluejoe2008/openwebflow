@@ -1,4 +1,4 @@
-package org.openwebflow.mvc;
+package demo.mvc;
 
 import java.util.Map;
 

@@ -1,4 +1,4 @@
-package org.openwebflow;
+package org.openwebflow.mvc;
 
 import org.activiti.engine.form.AbstractFormType;
 
