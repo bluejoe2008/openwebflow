@@ -17,6 +17,6 @@ OpenWebFlow针对如上需求，做了一些改善。简单来说，OpenWebFlow�
 * 剥离了活动（activity）的权限管理，实现了与流程定义的解耦，即用户对活动的访问控制信息单独管理（而不是在流程定义中预先写死），这样有利于动态调整权限；
 * 剥离了用户群的管理！客户程序可以忘掉Activiti的用户表、群组表、成员关系表；
 
-[用户使用帮助](https://github.com/bluejoe2008/openwebflow/wiki)
+用户使用帮助：[wiki首页](wiki)
 
 感谢咖啡兔<http://www.kafeitu.me/>，里面有很多的关于Activiti应用方案的讨论。
