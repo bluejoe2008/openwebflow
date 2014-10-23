@@ -1,4 +1,4 @@
-package demo.identity;
+package org.openwebflow.identity.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,7 +16,7 @@ import org.openwebflow.identity.CustomMembershipManager;
  * @author bluejoe2008@gmail.com
  * 
  */
-public class MyUserManager implements CustomMembershipManager
+public class InMemoryMembershipManager implements CustomMembershipManager
 {
 	private Map<String, Group> _groups = new HashMap<String, Group>();
 
@@ -38,7 +38,7 @@ public class MyUserManager implements CustomMembershipManager
 			_userGroupMembership.put(userId, groups);
 		}
 
-		groups.add(_groups.get(groupId));
+		groups.add(getGroupById(groupId));
 	}
 
 	@Override
@@ -53,8 +53,31 @@ public class MyUserManager implements CustomMembershipManager
 		return groups;
 	}
 
+	protected Group getGroupById(String groupId)
+	{
+		return _groups.get(groupId);
+	}
+
 	public Collection<Group> getGroups()
 	{
 		return _groups.values();
+	}
+
+	public void setGroupsText(String text)
+	{
+		for (String pair : text.split(";"))
+		{
+			String[] gp = pair.split(":");
+			createGroup(gp[0], gp[1]);
+		}
+	}
+
+	public void setPermissionsText(String text)
+	{
+		for (String pair : text.split(";"))
+		{
+			String[] gp = pair.split(":");
+			createMembership(gp[0], gp[1]);
+		}
 	}
 }

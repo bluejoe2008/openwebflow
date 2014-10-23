@@ -16,13 +16,27 @@ import org.openwebflow.identity.impl.DummyGroupIdentityManager;
 import org.openwebflow.identity.impl.DummyMembershipIdentityManager;
 import org.openwebflow.identity.impl.DummyUserIdentityManager;
 import org.openwebflow.mvc.DummyFormType;
-import org.openwebflow.permission.ActivityPermissionServiceConfiguration;
+import org.openwebflow.permission.ActivityPermission;
+import org.openwebflow.permission.ActivityPermissionManager;
+import org.openwebflow.util.ActivityUtils;
 
 public class ProcessEngineConfigurationEx extends SpringProcessEngineConfiguration
 {
-	ActivityPermissionServiceConfiguration _activityPermissionServiceConfiguration;
+	ActivityPermissionManager _activityPermissionManager;
+
+	public ActivityPermissionManager getActivityPermissionManager()
+	{
+		return _activityPermissionManager;
+	}
+
+	public void setActivityPermissionManager(ActivityPermissionManager activityPermissionManager)
+	{
+		_activityPermissionManager = activityPermissionManager;
+	}
 
 	CustomMembershipManager _customMembershipManager;
+
+	boolean _loadPermissionsOnStartup = true;
 
 	@Override
 	public ProcessEngine buildProcessEngine()
@@ -49,9 +63,9 @@ public class ProcessEngineConfigurationEx extends SpringProcessEngineConfigurati
 		ProcessEngine processEngine = super.buildProcessEngine();
 		try
 		{
-			if (_activityPermissionServiceConfiguration != null)
+			if (_loadPermissionsOnStartup)
 			{
-				_activityPermissionServiceConfiguration.load(processEngine);
+				loadAllPermissions(processEngine);
 			}
 		}
 		catch (Exception e)
@@ -62,24 +76,33 @@ public class ProcessEngineConfigurationEx extends SpringProcessEngineConfigurati
 		return processEngine;
 	}
 
-	public ActivityPermissionServiceConfiguration getActivityPermissionServiceConfiguration()
-	{
-		return _activityPermissionServiceConfiguration;
-	}
-
 	public CustomMembershipManager getCustomMembershipManager()
 	{
 		return _customMembershipManager;
 	}
 
-	public void setActivityPermissionServiceConfiguration(
-			ActivityPermissionServiceConfiguration activityPermissionServiceConfiguration)
+	public boolean isLoadPermissionsOnStartup()
 	{
-		_activityPermissionServiceConfiguration = activityPermissionServiceConfiguration;
+		return _loadPermissionsOnStartup;
+	}
+
+	private void loadAllPermissions(ProcessEngine processEngine) throws Exception
+	{
+		for (ActivityPermission ap : _activityPermissionManager.loadAll())
+		{
+			ActivityUtils.grantPermission(
+				ActivityUtils.getActivity(processEngine, ap.getProcessDefId(), ap.getActivityId()),
+				ap.getAssignedUser(), ap.getGrantedGroups(), ap.getGrantedUsers());
+		}
 	}
 
 	public void setCustomMembershipManager(CustomMembershipManager customMembershipManager)
 	{
 		_customMembershipManager = customMembershipManager;
+	}
+
+	public void setLoadPermissionsOnStartup(boolean loadPermissionsOnStartup)
+	{
+		_loadPermissionsOnStartup = loadPermissionsOnStartup;
 	}
 }
