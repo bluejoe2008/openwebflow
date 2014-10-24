@@ -3,20 +3,20 @@ package org.openwebflow.mvc.event.ctx;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openwebflow.tool.ProcessEngineTool;
+import org.openwebflow.tool.ToolFactory;
 
 public class AbstractWebFlowEventContext
 {
 	Map<String, Object> _attributes = new HashMap<String, Object>();
 
-	ProcessEngineTool _processEngineEx;
+	ToolFactory _processEngineEx;
 
 	public <T> T getAttribute(String key)
 	{
 		return (T) _attributes.get(key);
 	}
 
-	public ProcessEngineTool getProcessEngineTool()
+	public ToolFactory getProcessEngineTool()
 	{
 		return _processEngineEx;
 	}
@@ -26,7 +26,7 @@ public class AbstractWebFlowEventContext
 		_attributes.put(key, value);
 	}
 
-	public void setProcessEngineEx(ProcessEngineTool processEngineEx)
+	public void setProcessEngineEx(ToolFactory processEngineEx)
 	{
 		_processEngineEx = processEngineEx;
 	}

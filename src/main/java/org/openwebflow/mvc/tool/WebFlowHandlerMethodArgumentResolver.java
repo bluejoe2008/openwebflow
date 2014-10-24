@@ -3,7 +3,7 @@ package org.openwebflow.mvc.tool;
 import javax.servlet.http.HttpServletRequest;
 
 import org.openwebflow.tool.ContextToolHolder;
-import org.openwebflow.tool.ProcessEngineTool;
+import org.openwebflow.tool.ToolFactory;
 import org.openwebflow.tool.impl.ContextToolHolderImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
@@ -15,7 +15,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 public class WebFlowHandlerMethodArgumentResolver implements HandlerMethodArgumentResolver
 {
 	@Autowired
-	private ProcessEngineTool _processEngineTool;
+	private ToolFactory _processEngineTool;
 
 	@Override
 	public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,

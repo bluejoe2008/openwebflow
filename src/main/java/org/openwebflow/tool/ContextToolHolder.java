@@ -6,7 +6,7 @@ public interface ContextToolHolder
 
 	ProcessDefinitionTool getProcessDefinitionTool();
 
-	ProcessEngineTool getProcessEngineTool();
+	ToolFactory getProcessEngineTool();
 
 	ProcessInstanceTool getProcessInstanceTool();
 

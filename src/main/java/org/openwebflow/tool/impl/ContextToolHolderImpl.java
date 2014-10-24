@@ -7,19 +7,19 @@ import org.openwebflow.mvc.tool.WebFlowParam;
 import org.openwebflow.tool.ActivityTool;
 import org.openwebflow.tool.ContextToolHolder;
 import org.openwebflow.tool.ProcessDefinitionTool;
-import org.openwebflow.tool.ProcessEngineTool;
 import org.openwebflow.tool.ProcessInstanceTool;
 import org.openwebflow.tool.TaskTool;
+import org.openwebflow.tool.ToolFactory;
 
 public class ContextToolHolderImpl implements ContextToolHolder
 {
 	private WebFlowParam _an;
 
-	private ProcessEngineTool _processEngineTool;
+	private ToolFactory _processEngineTool;
 
 	private HttpServletRequest _request;
 
-	public ContextToolHolderImpl(ProcessEngineTool processEngineTool, HttpServletRequest request, WebFlowParam an)
+	public ContextToolHolderImpl(ToolFactory processEngineTool, HttpServletRequest request, WebFlowParam an)
 	{
 		super();
 		_processEngineTool = processEngineTool;
@@ -52,7 +52,7 @@ public class ContextToolHolderImpl implements ContextToolHolder
 	}
 
 	@Override
-	public ProcessEngineTool getProcessEngineTool()
+	public ToolFactory getProcessEngineTool()
 	{
 		return _processEngineTool;
 	}

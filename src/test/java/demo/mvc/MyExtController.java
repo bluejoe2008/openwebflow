@@ -8,8 +8,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.openwebflow.mvc.tool.WebFlowParam;
 import org.openwebflow.tool.ContextToolHolder;
-import org.openwebflow.tool.ProcessEngineTool;
 import org.openwebflow.tool.TaskTool;
+import org.openwebflow.tool.ToolFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class MyExtController
 {
 	@Autowired
-	private ProcessEngineTool _processEngineTool;
+	private ToolFactory _processEngineTool;
 
 	@RequestMapping("/doCompleteAdjustTask.action")
 	public String doCompleteAdjustTask(@WebFlowParam

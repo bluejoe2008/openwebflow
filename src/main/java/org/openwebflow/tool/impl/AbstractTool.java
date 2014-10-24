@@ -2,6 +2,7 @@ package org.openwebflow.tool.impl;
 
 import org.activiti.engine.ProcessEngine;
 import org.openwebflow.tool.ProcessEngineTool;
+import org.openwebflow.tool.ToolFactory;
 
 public abstract class AbstractTool
 {
@@ -18,7 +19,7 @@ public abstract class AbstractTool
 		return _processEngineTool.getProcessEngine();
 	}
 
-	public ProcessEngineTool getProcessEngineTool()
+	public ToolFactory getProcessEngineTool()
 	{
 		return _processEngineTool;
 	}

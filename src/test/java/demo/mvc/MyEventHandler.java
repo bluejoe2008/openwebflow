@@ -9,7 +9,7 @@ import org.openwebflow.mvc.event.ctx.DoStartProcessEventContext;
 import org.openwebflow.mvc.event.ctx.EventContextHolder;
 import org.openwebflow.mvc.event.handler.EventHandlerClass;
 import org.openwebflow.mvc.event.handler.EventHandlerMethod;
-import org.openwebflow.tool.ProcessEngineTool;
+import org.openwebflow.tool.ToolFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
@@ -19,7 +19,7 @@ import org.springframework.ui.ModelMap;
 public class MyEventHandler
 {
 	@Autowired
-	private ProcessEngineTool _processEngineTool;
+	private ToolFactory _processEngineTool;
 
 	@EventHandlerMethod(eventType = EventType.BeforeDoStartProcess, formKey = "/startVacationRequest")
 	public void beforeDoStartVacationRequest(EventContextHolder holder, String processDefId, ModelMap model,
