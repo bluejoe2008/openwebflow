@@ -3,15 +3,15 @@ package org.openwebflow.mvc.event.ctx;
 import javax.servlet.http.HttpServletRequest;
 
 import org.openwebflow.mvc.event.StartProcessFormEvent;
-import org.openwebflow.tool.ToolFactory;
+import org.openwebflow.tool.ProcessEngineTool;
 
 public class EventContextHolderImpl implements EventContextHolder
 {
-	private ToolFactory _processEngineEx;
+	private ProcessEngineTool _processEngineEx;
 
 	private HttpServletRequest _request;
 
-	public EventContextHolderImpl(ToolFactory processEngineEx, HttpServletRequest request)
+	public EventContextHolderImpl(ProcessEngineTool processEngineEx, HttpServletRequest request)
 	{
 		super();
 		_processEngineEx = processEngineEx;

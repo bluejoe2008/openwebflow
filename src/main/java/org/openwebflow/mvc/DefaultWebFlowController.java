@@ -18,8 +18,8 @@ import org.openwebflow.mvc.event.handler.NullEventHandler;
 import org.openwebflow.mvc.tool.WebFlowParam;
 import org.openwebflow.tool.ContextToolHolder;
 import org.openwebflow.tool.ProcessDefinitionTool;
+import org.openwebflow.tool.ProcessEngineTool;
 import org.openwebflow.tool.TaskTool;
-import org.openwebflow.tool.ToolFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -34,7 +34,7 @@ public class DefaultWebFlowController extends DefaultWebFlowControllerConfigurat
 	private ProcessEngineConfigurationEx _processEngineConfiguration;
 
 	@Autowired
-	private ToolFactory _processEngineTool;
+	private ProcessEngineTool _processEngineTool;
 
 	@RequestMapping("claimTask.action")
 	public String claimTask(@WebFlowParam

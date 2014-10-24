@@ -9,7 +9,7 @@ import org.springframework.util.Assert;
 
 public class ProcessEngineToolTest
 {
-	ToolFactory _tool;
+	ProcessEngineTool _tool;
 
 	@Before
 	public void setUp() throws Exception
