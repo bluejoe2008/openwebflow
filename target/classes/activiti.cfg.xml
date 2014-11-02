@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
-	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd
 	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
 	http://www.springframework.org/schema/tx   http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
@@ -20,14 +21,14 @@
 	</bean>
 		
 	<!-- 自定义成员关系管理 -->
-	<bean id="myMembershipManager" class="org.openwebflow.identity.impl.InMemoryMembershipManager">
-		<property name="permissionsText"
-			value="kermit:admin;kermit:management;fozzie:engineering" />
-	</bean>
+	<bean id="myMembershipManager" class="org.openwebflow.identity.impl.InMemoryMembershipManager" />
 
 	<!-- 自定义的活动权限表管理 -->
-	<bean id="myActivityPermissionManager"
-		class="org.openwebflow.permission.impl.InMemoryActivityPermissionManager" />
+	<bean id="myActivityAccessControlList"
+		class="org.openwebflow.permission.acl.InMemoryActivityAccessControlList" />
+	<!-- 代理关系管理 -->
+	<bean id="myDelegationManager"
+		class="org.openwebflow.permission.delegate.InMemoryDelegationManager" />
 
 	<bean id="transactionManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
@@ -36,21 +37,45 @@
 	<tx:annotation-driven transaction-manager="transactionManager" />
 
 	<!-- 配置对象 -->
-	<bean id="processEngineConfiguration" class="org.openwebflow.ProcessEngineConfigurationEx">
+	<bean id="processEngineConfiguration" class="org.openwebflow.conf.ProcessEngineConfigurationEx">
 		<property name="dataSource" ref="dataSource" />
 		<property name="transactionManager" ref="transactionManager" />
 		<property name="databaseSchemaUpdate" value="true" />
 		<property name="jobExecutorActivate" value="false" />
-		
-		<!-- 自动部署 -->
-		<property name="deploymentResources" value="classpath:/models/*.bpmn" />
-		<property name="deploymentMode" value="single-resource" />
-		
-		<!-- 自定义成员关系管理 -->
-		<property name="customMembershipManager" ref="myMembershipManager" />
-		<!-- 自定义活动权限管理 -->
-		<property name="activityPermissionManager" ref="myActivityPermissionManager" />
-		<property name="loadPermissionsOnStartup" value="true" />
+		<property name="startEngineEventListeners">
+			<list>
+				<!-- 自定义表单元素类型 -->
+				<bean class="org.openwebflow.conf.LoadDummyFormTypes">
+					<property name="typeNames" value="user" />
+				</bean>
+				<!-- 自定义成员关系管理 -->
+				<bean class="org.openwebflow.conf.ReplaceMembershipManager">
+					<property name="customMembershipManager" ref="myMembershipManager" />
+				</bean>
+				<!-- 自定义活动权限管理 -->
+				<bean class="org.openwebflow.conf.ReplaceActivityAccessController">
+					<!-- 授权策略列表，越靠后优先级越高 -->
+					<property name="accessControlStrategies">
+						<list>
+							<!-- 自定义ACL -->
+							<bean class="org.openwebflow.permission.acl.ActivityAclBasedStrategy">
+								<property name="accessControlList" ref="myActivityAccessControlList" />
+							</bean>
+							<!-- 代理策略 -->
+							<bean
+								class="org.openwebflow.permission.delegate.DelegationBasedStrategy">
+								<property name="delegationManager" ref="myDelegationManager" />
+								<property name="hideDelegated" value="false" />
+							</bean>
+						</list>
+					</property>
+				</bean>
+				<!-- 自动导入流程模型 -->
+				<bean class="org.openwebflow.conf.ImportDefinedProcessModels">
+					<property name="modelDir" value="./models" />
+				</bean>
+			</list>
+		</property>
 	</bean>
 
 	<!-- processEngine -->
