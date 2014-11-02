@@ -26,13 +26,13 @@ public class ProcessEngineToolTest
 
 	ProcessEngine _processEngine;
 
-	ApplicationContext acf;
+	ApplicationContext _ctx;
 
 	@Before
 	public void setUp() throws Exception
 	{
-		acf = new ClassPathXmlApplicationContext("classpath:activiti.cfg.xml");
-		_tool = acf.getBean(ProcessEngineTool.class);
+		_ctx = new ClassPathXmlApplicationContext("classpath:activiti.cfg.xml");
+		_tool = _ctx.getBean(ProcessEngineTool.class);
 		Assert.assertNotNull(_tool);
 		_processEngine = _tool.getProcessEngine();
 	}
@@ -45,8 +45,8 @@ public class ProcessEngineToolTest
 	@Test
 	public void test() throws Exception
 	{
-		InMemoryMembershipManager myMembershipManager = acf.getBean(InMemoryMembershipManager.class);
-		InMemoryActivityAccessControlList myActivityPermissionManager = acf
+		InMemoryMembershipManager myMembershipManager = _ctx.getBean(InMemoryMembershipManager.class);
+		InMemoryActivityAccessControlList myActivityPermissionManager = _ctx
 				.getBean(InMemoryActivityAccessControlList.class);
 
 		//设置用户
@@ -100,22 +100,23 @@ public class ProcessEngineToolTest
 
 		//允许step2可以让engineering操作
 		myActivityPermissionManager.addEntry(processDefId, "step2", null, new String[] { "engineering", "management" },
-			new String[] { "bluejoe" });
+			new String[] { "neo" });
 
 		//再启动一个流程
 		instance = _processEngine.getRuntimeService().startProcessInstanceByKey(pd.getKey());
 		Assert.assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("engineering").count());
 		Assert.assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("management").count());
 		Assert.assertEquals(1, taskService.createTaskQuery().taskCandidateUser("bluejoe").count());
+		Assert.assertEquals(1, taskService.createTaskQuery().taskCandidateUser("neo").count());
 		Assert.assertEquals(1, taskService.createTaskQuery().taskCandidateUser("kermit").count());
 		_processEngine.getRuntimeService().deleteProcessInstance(instance.getId(), "test");
 
 		//代理关系
-		InMemoryDelegationManager imdm = acf.getBean(InMemoryDelegationManager.class);
-		imdm.add("bluejoe", "alex");
+		InMemoryDelegationManager imdm = _ctx.getBean(InMemoryDelegationManager.class);
+		imdm.add("neo", "alex");
 		//再启动一个流程
 		instance = _processEngine.getRuntimeService().startProcessInstanceByKey(pd.getKey());
-		Assert.assertEquals(1, taskService.createTaskQuery().taskCandidateUser("bluejoe").count());
+		Assert.assertEquals(1, taskService.createTaskQuery().taskCandidateUser("neo").count());
 		Assert.assertEquals(1, taskService.createTaskQuery().taskCandidateUser("alex").count());
 		_processEngine.getRuntimeService().deleteProcessInstance(instance.getId(), "test");
 
@@ -126,8 +127,8 @@ public class ProcessEngineToolTest
 		
 		//再启动一个流程
 		instance = _processEngine.getRuntimeService().startProcessInstanceByKey(pd.getKey());
-		//bluejoe被屏蔽了
+		//neo被屏蔽了
 		Assert.assertEquals(1, taskService.createTaskQuery().taskCandidateUser("alex").count());
-		Assert.assertEquals(0, taskService.createTaskQuery().taskCandidateUser("bluejoe").count());
+		Assert.assertEquals(0, taskService.createTaskQuery().taskCandidateUser("neo").count());
 	}
 }
