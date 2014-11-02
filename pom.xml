@@ -32,9 +32,9 @@
 			<version>2.6</version>
 		</dependency>
 		<dependency>
-			<groupId>org.activiti</groupId>
-			<artifactId>activiti-engine</artifactId>
-			<version>${activiti-version}</version>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -51,11 +51,23 @@
 			<artifactId>spring-security-web</artifactId>
 			<version>3.2.5.RELEASE</version>
 		</dependency>
+		<!-- activiti工作流引擎 -->
+		<dependency>
+			<groupId>org.activiti</groupId>
+			<artifactId>activiti-engine</artifactId>
+			<version>${activiti-version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-spring</artifactId>
 			<version>${activiti-version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.activiti</groupId>
+			<artifactId>activiti-explorer</artifactId>
+			<version>${activiti-version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>

@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import org.openwebflow.ProcessEngineConfigurationEx;
+import org.openwebflow.conf.ProcessEngineConfigurationEx;
 import org.openwebflow.mvc.event.EventType;
 import org.openwebflow.mvc.event.ctx.EventContext;
 import org.openwebflow.mvc.event.ctx.ProcessEventContextImpl;

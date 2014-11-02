@@ -22,11 +22,21 @@ public class InMemoryMembershipManager implements CustomMembershipManager
 
 	private Map<String, List<Group>> _userGroupMembership = new HashMap<String, List<Group>>();
 
-	public void createGroup(String groupId, String groupName)
+	public Group createGroup(String groupId, String groupName)
 	{
-		GroupEntity group = new GroupEntity(groupId);
-		group.setName(groupName);
-		_groups.put(groupId, group);
+		Group group = _groups.get(groupId);
+		if (group == null)
+		{
+			group = new GroupEntity(groupId);
+			_groups.put(groupId, group);
+		}
+
+		if (groupName != null)
+		{
+			group.setName(groupName);
+		}
+		
+		return group;
 	}
 
 	public void createMembership(String userId, String groupId)
@@ -41,6 +51,11 @@ public class InMemoryMembershipManager implements CustomMembershipManager
 		groups.add(getGroupById(groupId));
 	}
 
+	protected Group getGroupById(String groupId)
+	{
+		return createGroup(groupId, null);
+	}
+
 	@Override
 	public List<Group> findGroupsByUser(String userId)
 	{
@@ -51,11 +66,6 @@ public class InMemoryMembershipManager implements CustomMembershipManager
 		}
 
 		return groups;
-	}
-
-	protected Group getGroupById(String groupId)
-	{
-		return _groups.get(groupId);
 	}
 
 	public Collection<Group> getGroups()

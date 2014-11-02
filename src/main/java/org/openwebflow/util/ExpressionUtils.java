@@ -4,10 +4,16 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.el.FixedValue;
 
 public abstract class ExpressionUtils
 {
+	public static Expression stringToExpression(ProcessEngineConfigurationImpl conf, String expr)
+	{
+		return conf.getExpressionManager().createExpression(expr);
+	}
+
 	public static Expression stringToExpression(String expr)
 	{
 		return new FixedValue(expr);
