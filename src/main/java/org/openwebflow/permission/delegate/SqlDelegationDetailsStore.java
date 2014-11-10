@@ -10,7 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.util.StringUtils;
 
-public class SqlDelegationManager implements DelegationManager
+public class SqlDelegationDetailsStore implements DelegationDetailsService
 {
 	DataSource _dataSource;
 

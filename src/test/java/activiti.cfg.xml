@@ -8,6 +8,9 @@
 	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
 	http://www.springframework.org/schema/tx   http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
+	<context:property-placeholder location="settings.properties" />
+	<context:annotation-config />
+
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
 		<property name="driverClassName" value="org.h2.Driver" />
@@ -21,14 +24,45 @@
 	</bean>
 		
 	<!-- 自定义成员关系管理 -->
-	<bean id="myMembershipManager" class="org.openwebflow.identity.impl.InMemoryMembershipManager" />
+	<bean id="myMembershipService" class="org.openwebflow.identity.impl.InMemoryMembershipStore" />
+	<bean id="myUserDetailsService" class="org.openwebflow.identity.impl.InMemoryUserDetailsStore" />
+	
+	<!-- 任务催办配置 -->
+	<bean id="myTaskAlarmService" class="org.openwebflow.alarm.impl.TaskAlarmServiceImpl">
+		<!-- 截止日期提前量 -->
+		<property name="periodInAdvance" value="P2D" />
+		<!-- 设置消息通知机制 -->
+		<property name="messageNotifier">
+			<!-- 采用邮件发送 -->
+			<bean class="org.openwebflow.alarm.impl.MailMessageNotifier">
+				<property name="subjectTemplate" value="请尽快处理#{'$'}{task.name}任务" />
+				<property name="messageTemplateResource" value="classpath:/alarm-template.txt" />
+				<property name="mailSender">
+					<bean class="org.openwebflow.alarm.impl.MailSender">
+						<property name="serverHost" value="${mail.host}" />
+						<property name="serverPort" value="${mail.port}" />
+						<property name="authUserName" value="${mail.username}" />
+						<property name="authPassword" value="${mail.password}" />
+						<property name="mailFrom" value="${mail.from}" />
+					</bean>
+				</property>
+			</bean>
+		</property>
+		<property name="membershipService" ref="myMembershipService" />
+		<property name="userDetailsService" ref="myUserDetailsService" />
+		<property name="notificationDetailsStore">
+			<bean class="org.openwebflow.alarm.impl.InMemoryNotificationDetailsStore">
+			</bean>
+		</property>
+	</bean>
 
 	<!-- 自定义的活动权限表管理 -->
 	<bean id="myActivityAccessControlList"
 		class="org.openwebflow.permission.acl.InMemoryActivityAccessControlList" />
+		
 	<!-- 代理关系管理 -->
-	<bean id="myDelegationManager"
-		class="org.openwebflow.permission.delegate.InMemoryDelegationManager" />
+	<bean id="myDelegationDetailsService"
+		class="org.openwebflow.permission.delegate.InMemoryDelegationDetailsStore" />
 
 	<bean id="transactionManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
@@ -49,8 +83,8 @@
 					<property name="typeNames" value="user" />
 				</bean>
 				<!-- 自定义成员关系管理 -->
-				<bean class="org.openwebflow.conf.ReplaceMembershipManager">
-					<property name="customMembershipManager" ref="myMembershipManager" />
+				<bean class="org.openwebflow.conf.ReplaceMembershipService">
+					<property name="customMembershipService" ref="myMembershipService" />
 				</bean>
 				<!-- 自定义活动权限管理 -->
 				<bean class="org.openwebflow.conf.ReplaceActivityAccessController">
@@ -64,7 +98,7 @@
 							<!-- 代理策略 -->
 							<bean
 								class="org.openwebflow.permission.delegate.DelegationBasedStrategy">
-								<property name="delegationManager" ref="myDelegationManager" />
+								<property name="delegationDetailsService" ref="myDelegationDetailsService" />
 								<property name="hideDelegated" value="false" />
 							</bean>
 						</list>
@@ -73,6 +107,10 @@
 				<!-- 自动导入流程模型 -->
 				<bean class="org.openwebflow.conf.ImportDefinedProcessModels">
 					<property name="modelDir" value="./models" />
+				</bean>
+				<!-- 启动催办管理器 -->
+				<bean class="org.openwebflow.conf.StartTaskAlarmService">
+					<property name="taskAlarmService" ref="myTaskAlarmService" />
 				</bean>
 			</list>
 		</property>

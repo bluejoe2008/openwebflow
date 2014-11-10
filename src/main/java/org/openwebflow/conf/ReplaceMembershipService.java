@@ -9,15 +9,25 @@ import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
 import org.activiti.engine.impl.persistence.entity.MembershipIdentityManager;
 import org.activiti.engine.impl.persistence.entity.UserIdentityManager;
-import org.openwebflow.identity.CustomEntityManagerFactory;
-import org.openwebflow.identity.CustomMembershipManager;
+import org.openwebflow.identity.SessionedEntityManagerFactory;
+import org.openwebflow.identity.IdentityMembershipService;
 import org.openwebflow.identity.impl.DummyGroupIdentityManager;
 import org.openwebflow.identity.impl.DummyMembershipIdentityManager;
 import org.openwebflow.identity.impl.DummyUserIdentityManager;
 
-public class ReplaceMembershipManager implements StartEngineEventListener
+public class ReplaceMembershipService implements StartEngineEventListener
 {
-	CustomMembershipManager _customMembershipManager;
+	IdentityMembershipService _customMembershipService;
+
+	public IdentityMembershipService getCustomMembershipService()
+	{
+		return _customMembershipService;
+	}
+
+	public void setCustomMembershipService(IdentityMembershipService customMembershipService)
+	{
+		_customMembershipService = customMembershipService;
+	}
 
 	@Override
 	public void afterStartEngine(ProcessEngineConfigurationImpl conf, ProcessEngine processEngine)
@@ -28,24 +38,14 @@ public class ReplaceMembershipManager implements StartEngineEventListener
 	public void beforeStartEngine(ProcessEngineConfigurationImpl conf)
 	{
 		List<SessionFactory> sessionFactories = new ArrayList<SessionFactory>();
-		sessionFactories.add(new CustomEntityManagerFactory(UserIdentityManager.class, new DummyUserIdentityManager(
-				_customMembershipManager)));
-		sessionFactories.add(new CustomEntityManagerFactory(GroupIdentityManager.class, new DummyGroupIdentityManager(
-				_customMembershipManager)));
-		sessionFactories.add(new CustomEntityManagerFactory(MembershipIdentityManager.class,
+		sessionFactories.add(new SessionedEntityManagerFactory(UserIdentityManager.class, new DummyUserIdentityManager(
+				_customMembershipService)));
+		sessionFactories.add(new SessionedEntityManagerFactory(GroupIdentityManager.class, new DummyGroupIdentityManager(
+				_customMembershipService)));
+		sessionFactories.add(new SessionedEntityManagerFactory(MembershipIdentityManager.class,
 				new DummyMembershipIdentityManager()));
 
 		conf.setCustomSessionFactories(sessionFactories);
-	}
-
-	public CustomMembershipManager getCustomMembershipManager()
-	{
-		return _customMembershipManager;
-	}
-
-	public void setCustomMembershipManager(CustomMembershipManager customMembershipManager)
-	{
-		_customMembershipManager = customMembershipManager;
 	}
 
 }

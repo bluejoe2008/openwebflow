@@ -3,7 +3,7 @@
   <process id="vacationRequest" name="请假申请" isExecutable="true">
     <startEvent id="step1" name="步骤1" activiti:initiator="employeeName" activiti:formKey="/startVacationRequest"></startEvent>
     <sequenceFlow id="flow1" sourceRef="step1" targetRef="step2"></sequenceFlow>
-    <userTask id="step2" name="步骤2" activiti:candidateGroups="management" activiti:formKey="/handleVacationRequest">
+    <userTask id="step2" name="步骤2" activiti:candidateGroups="management" activiti:dueDate="PT1S" activiti:formKey="/handleVacationRequest">
       <extensionElements>
         <activiti:formProperty id="vacationApproved" name="Do you approve this vacation" type="enum" required="true">
           <activiti:value id="true" name="Approve"></activiti:value>

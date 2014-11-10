@@ -1,21 +1,27 @@
 package org.openwebflow.tool;
 
+import java.util.List;
+
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.IdentityLink;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openwebflow.conf.ProcessEngineConfigurationEx;
 import org.openwebflow.conf.ReplaceActivityAccessController;
-import org.openwebflow.identity.impl.InMemoryMembershipManager;
+import org.openwebflow.identity.impl.InMemoryMembershipStore;
+import org.openwebflow.identity.impl.InMemoryUserDetailsStore;
+import org.openwebflow.identity.impl.MyUserDetails;
 import org.openwebflow.permission.acl.InMemoryActivityAccessControlList;
 import org.openwebflow.permission.delegate.DelegationBasedStrategy;
-import org.openwebflow.permission.delegate.InMemoryDelegationManager;
+import org.openwebflow.permission.delegate.InMemoryDelegationDetailsStore;
 import org.openwebflow.util.ModelUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -45,7 +51,7 @@ public class ProcessEngineToolTest
 	@Test
 	public void test() throws Exception
 	{
-		InMemoryMembershipManager myMembershipManager = _ctx.getBean(InMemoryMembershipManager.class);
+		InMemoryMembershipStore myMembershipManager = _ctx.getBean(InMemoryMembershipStore.class);
 		InMemoryActivityAccessControlList myActivityPermissionManager = _ctx
 				.getBean(InMemoryActivityAccessControlList.class);
 
@@ -57,6 +63,10 @@ public class ProcessEngineToolTest
 		myMembershipManager.createMembership("bluejoe", "engineering");
 		myMembershipManager.createMembership("gonzo", "sales");
 		myMembershipManager.createMembership("kermit", "management");
+
+		//设置用户email信息
+		InMemoryUserDetailsStore userDetailsStore = _ctx.getBean(InMemoryUserDetailsStore.class);
+		userDetailsStore.add(new MyUserDetails("bluejoe", "白乔", "bluejoe2008@gmail.com", "13800138000"));
 
 		// 取得 Activiti 服务
 		RepositoryService repositoryService = _processEngine.getRepositoryService();
@@ -112,7 +122,7 @@ public class ProcessEngineToolTest
 		_processEngine.getRuntimeService().deleteProcessInstance(instance.getId(), "test");
 
 		//代理关系
-		InMemoryDelegationManager imdm = _ctx.getBean(InMemoryDelegationManager.class);
+		InMemoryDelegationDetailsStore imdm = _ctx.getBean(InMemoryDelegationDetailsStore.class);
 		imdm.add("neo", "alex");
 		//再启动一个流程
 		instance = _processEngine.getRuntimeService().startProcessInstanceByKey(pd.getKey());
@@ -124,11 +134,16 @@ public class ProcessEngineToolTest
 		((DelegationBasedStrategy) (((ReplaceActivityAccessController) (((ProcessEngineConfigurationEx) _processEngine
 				.getProcessEngineConfiguration()).getStartEngineEventListeners().get(2))).getAccessControlStrategies()
 				.get(1))).setHideDelegated(true);
-		
+
 		//再启动一个流程
 		instance = _processEngine.getRuntimeService().startProcessInstanceByKey(pd.getKey());
 		//neo被屏蔽了
 		Assert.assertEquals(1, taskService.createTaskQuery().taskCandidateUser("alex").count());
 		Assert.assertEquals(0, taskService.createTaskQuery().taskCandidateUser("neo").count());
+		TaskEntity taskEntity = (TaskEntity) taskService.createTaskQuery().active().taskCandidateUser("alex")
+				.singleResult();
+		List<IdentityLink> list = taskService.getIdentityLinksForTask(taskEntity.getId());
+		//taskEntity.getIdentityLinks();
+		Thread.sleep(600000);
 	}
 }

@@ -11,7 +11,17 @@ import org.openwebflow.permission.AccessControlStrategyChain;
 
 public class DelegationBasedStrategy implements AccessControlStrategy
 {
-	DelegationManager _delegationManager;
+	DelegationDetailsService _delegationDetailsService;
+
+	public DelegationDetailsService getDelegationDetailsService()
+	{
+		return _delegationDetailsService;
+	}
+
+	public void setDelegationDetailsService(DelegationDetailsService delegationDetailsService)
+	{
+		_delegationDetailsService = delegationDetailsService;
+	}
 
 	boolean _hideDelegated = false;
 
@@ -25,16 +35,6 @@ public class DelegationBasedStrategy implements AccessControlStrategy
 		_hideDelegated = hideDelegated;
 	}
 
-	public DelegationManager getDelegationManager()
-	{
-		return _delegationManager;
-	}
-
-	public void setDelegationManager(DelegationManager delegationManager)
-	{
-		_delegationManager = delegationManager;
-	}
-
 	@Override
 	public void apply(AccessControlStrategyChain chain, TaskEntity task, ActivityExecution execution)
 	{
@@ -45,7 +45,7 @@ public class DelegationBasedStrategy implements AccessControlStrategy
 		//受理人是否被代理
 		if (assignee != null)
 		{
-			String[] delegates = _delegationManager.getDelegates(assignee);
+			String[] delegates = _delegationDetailsService.getDelegates(assignee);
 			if (delegates != null && delegates.length > 0)
 			{
 				task.setAssignee(delegates[0]);
@@ -56,7 +56,7 @@ public class DelegationBasedStrategy implements AccessControlStrategy
 		Map<String, Object> userIdMap = getCandidateUserIds(task);
 		for (String userId : userIdMap.keySet())
 		{
-			String[] delegates = _delegationManager.getDelegates(userId);
+			String[] delegates = _delegationDetailsService.getDelegates(userId);
 			if (delegates != null && delegates.length > 0)
 			{
 				if (_hideDelegated)

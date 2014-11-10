@@ -1,6 +1,6 @@
 package org.openwebflow.permission.delegate;
 
-public interface DelegationManager
+public interface DelegationDetailsService
 {
 	String[]  getDelegates(String delegated);
 }

@@ -3,13 +3,13 @@ package org.openwebflow.identity;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 
-public class CustomEntityManagerFactory implements SessionFactory
+public class SessionedEntityManagerFactory implements SessionFactory
 {
 	Session _entityManager;
 
 	Class<?> _sessionType;
 
-	public CustomEntityManagerFactory(Class<?> sessionType, Session entityManager)
+	public SessionedEntityManagerFactory(Class<?> sessionType, Session entityManager)
 	{
 		super();
 		_sessionType = sessionType;

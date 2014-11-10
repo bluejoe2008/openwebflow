@@ -13,13 +13,14 @@ import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.persistence.entity.IdentityInfoEntity;
 import org.activiti.engine.impl.persistence.entity.UserIdentityManager;
 import org.apache.log4j.Logger;
-import org.openwebflow.identity.CustomMembershipManager;
+import org.openwebflow.identity.IdentityMembershipService;
+import org.openwebflow.util.IdentityUtils;
 
 public class DummyUserIdentityManager implements UserIdentityManager, Session
 {
-	CustomMembershipManager _customMembershipManager;
+	IdentityMembershipService _customMembershipManager;
 
-	public DummyUserIdentityManager(CustomMembershipManager customMembershipManager)
+	public DummyUserIdentityManager(IdentityMembershipService customMembershipManager)
 	{
 		_customMembershipManager = customMembershipManager;
 	}
@@ -59,7 +60,7 @@ public class DummyUserIdentityManager implements UserIdentityManager, Session
 		Logger.getLogger(this.getClass()).debug(
 			String.format("%s#findGroupsByUser(\"%s\")", _customMembershipManager, userId));
 
-		return _customMembershipManager.findGroupsByUser(userId);
+		return IdentityUtils.getGroupsFromIds(_customMembershipManager.findGroupIdsByUser(userId));
 	}
 
 	@Override
