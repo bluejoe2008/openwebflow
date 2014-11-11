@@ -10,9 +10,9 @@ import org.activiti.engine.identity.Group;
 import org.activiti.engine.impl.persistence.entity.GroupEntity;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
-import org.openwebflow.identity.IdentityMembershipService;
+import org.openwebflow.identity.IdentityMembershipManager;
 import org.openwebflow.identity.IdentityUserDetails;
-import org.openwebflow.identity.UserDetailsService;
+import org.openwebflow.identity.UserDetailsManager;
 
 public abstract class IdentityUtils
 {
@@ -27,19 +27,20 @@ public abstract class IdentityUtils
 		return groups;
 	}
 
-	public static List<IdentityUserDetails> getUserDetailsFromIds(List<String> userIds, UserDetailsService userDetailsService)
+	public static List<IdentityUserDetails> getUserDetailsFromIds(List<String> userIds,
+			UserDetailsManager userDetailsManager)
 	{
 		List<IdentityUserDetails> detailsList = new ArrayList<IdentityUserDetails>();
 		for (String userId : userIds)
 		{
-			detailsList.add(userDetailsService.getUserDetails(userId));
+			detailsList.add(userDetailsManager.getUserDetails(userId));
 		}
 
 		return detailsList;
 	}
 
 	public static List<String> getInvolvedUsers(TaskService taskService, Task task,
-			IdentityMembershipService membershipService)
+			IdentityMembershipManager membershipManager)
 	{
 		Map<String, Object> userIds = new HashMap<String, Object>();
 		String assignee = task.getAssignee();
@@ -60,7 +61,7 @@ public abstract class IdentityUtils
 				String groupId = link.getGroupId();
 				if (groupId != null)
 				{
-					for (String gUserId : membershipService.findUserIdsByGroup(groupId))
+					for (String gUserId : membershipManager.findUserIdsByGroup(groupId))
 					{
 						userIds.put(gUserId, new Object());
 					}

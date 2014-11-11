@@ -1,13 +1,12 @@
-package org.openwebflow.permission.acl;
+package org.openwebflow.permission.list;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.openwebflow.permission.ActivityAcessControlEntry;
 
-public class InMemoryActivityAccessControlList implements ActivityAccessControlList
+public class InMemoryTaskAssignementEntryStore implements TaskAssignementEntryManager
 {
-	Map<String, ActivityAcessControlEntry> _entryMap = new HashMap<String, ActivityAcessControlEntry>();
+	Map<String, TaskAssignementEntry> _entryMap = new HashMap<String, TaskAssignementEntry>();
 
 	private String getKey(String processDefId, String taskDefinitionKey)
 	{
@@ -17,7 +16,7 @@ public class InMemoryActivityAccessControlList implements ActivityAccessControlL
 	public void addEntry(String processDefId, String taskDefinitionKey, String assignee,
 			String[] candidateGroupIds, String[] candidateUserIds) throws Exception
 	{
-		ActivityAcessControlEntryImpl entry = new ActivityAcessControlEntryImpl();
+		TaskAssignmentEntryImpl entry = new TaskAssignmentEntryImpl();
 		entry.setAssignee(assignee);
 		entry.setGrantedGroupIds(candidateGroupIds);
 		entry.setGrantedUserIds(candidateUserIds);
@@ -26,7 +25,7 @@ public class InMemoryActivityAccessControlList implements ActivityAccessControlL
 	}
 
 	@Override
-	public ActivityAcessControlEntry load(String processDefinitionId, String taskDefinitionKey, boolean addOrRemove)
+	public TaskAssignementEntry load(String processDefinitionId, String taskDefinitionKey, boolean addOrRemove)
 	{
 		if (addOrRemove)
 			return _entryMap.get(getKey(processDefinitionId, taskDefinitionKey));

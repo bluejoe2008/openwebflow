@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.openwebflow.identity.IdentityUserDetails;
-import org.openwebflow.identity.UserDetailsService;
+import org.openwebflow.identity.UserDetailsManager;
 
-public class InMemoryUserDetailsStore implements UserDetailsService
+public class InMemoryUserDetailsStore implements UserDetailsManager
 {
 	Map<String, IdentityUserDetails> _users = new HashMap<String, IdentityUserDetails>();
 

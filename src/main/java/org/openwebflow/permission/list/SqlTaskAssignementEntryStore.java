@@ -1,4 +1,4 @@
-package org.openwebflow.permission.acl;
+package org.openwebflow.permission.list;
 
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -6,19 +6,18 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import org.openwebflow.permission.ActivityAcessControlEntry;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.util.StringUtils;
 
-public class SqlActivityAccessControlList implements ActivityAccessControlList
+public class SqlTaskAssignementEntryStore implements TaskAssignementEntryManager
 {
 	class MyRowMapper implements RowMapper
 	{
 		@Override
 		public Object mapRow(ResultSet rs, int rowNum) throws SQLException
 		{
-			ActivityAcessControlEntryImpl ap = new ActivityAcessControlEntryImpl();
+			TaskAssignmentEntryImpl ap = new TaskAssignmentEntryImpl();
 			ap.setId(rs.getLong("ID"));
 			ap.setProcessDefinitionId(rs.getString("PROCESS_DEF_ID"));
 			ap.setActivityKey(rs.getString("ACTIVITY_KEY"));
@@ -37,7 +36,7 @@ public class SqlActivityAccessControlList implements ActivityAccessControlList
 		return _dataSource;
 	}
 
-	public void save(ActivityAcessControlEntryImpl ap) throws Exception
+	public void save(TaskAssignmentEntryImpl ap) throws Exception
 	{
 		//先删除
 		new JdbcTemplate(_dataSource).update("delete from ACTIVITY_ACL_TAB where PROCESS_DEF_ID=? and ACTIVITY_KEY=?",
@@ -58,7 +57,7 @@ public class SqlActivityAccessControlList implements ActivityAccessControlList
 	}
 
 	@Override
-	public ActivityAcessControlEntry load(String processDefinitionId, String taskDefinitionKey, boolean addOrRemove)
+	public TaskAssignementEntry load(String processDefinitionId, String taskDefinitionKey, boolean addOrRemove)
 	{
 		if (!addOrRemove)
 			return null;

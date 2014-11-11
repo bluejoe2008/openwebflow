@@ -15,13 +15,13 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openwebflow.conf.ProcessEngineConfigurationEx;
-import org.openwebflow.conf.ReplaceActivityAccessController;
+import org.openwebflow.conf.ReplaceTaskAssignmentManager;
 import org.openwebflow.identity.impl.InMemoryMembershipStore;
 import org.openwebflow.identity.impl.InMemoryUserDetailsStore;
 import org.openwebflow.identity.impl.MyUserDetails;
-import org.openwebflow.permission.acl.InMemoryActivityAccessControlList;
-import org.openwebflow.permission.delegate.DelegationBasedStrategy;
-import org.openwebflow.permission.delegate.InMemoryDelegationDetailsStore;
+import org.openwebflow.permission.delegation.InMemoryDelegationDetailsStore;
+import org.openwebflow.permission.delegation.TaskDelagation;
+import org.openwebflow.permission.list.InMemoryTaskAssignementEntryStore;
 import org.openwebflow.util.ModelUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -52,8 +52,8 @@ public class ProcessEngineToolTest
 	public void test() throws Exception
 	{
 		InMemoryMembershipStore myMembershipManager = _ctx.getBean(InMemoryMembershipStore.class);
-		InMemoryActivityAccessControlList myActivityPermissionManager = _ctx
-				.getBean(InMemoryActivityAccessControlList.class);
+		InMemoryTaskAssignementEntryStore myActivityPermissionManager = _ctx
+				.getBean(InMemoryTaskAssignementEntryStore.class);
 
 		//设置用户
 		myMembershipManager.createGroup("management", "管理员");
@@ -131,8 +131,8 @@ public class ProcessEngineToolTest
 		_processEngine.getRuntimeService().deleteProcessInstance(instance.getId(), "test");
 
 		//设置屏蔽被代理人
-		((DelegationBasedStrategy) (((ReplaceActivityAccessController) (((ProcessEngineConfigurationEx) _processEngine
-				.getProcessEngineConfiguration()).getStartEngineEventListeners().get(2))).getAccessControlStrategies()
+		((TaskDelagation) (((ReplaceTaskAssignmentManager) (((ProcessEngineConfigurationEx) _processEngine
+				.getProcessEngineConfiguration()).getStartEngineEventListeners().get(2))).getAssignmentHandlers()
 				.get(1))).setHideDelegated(true);
 
 		//再启动一个流程

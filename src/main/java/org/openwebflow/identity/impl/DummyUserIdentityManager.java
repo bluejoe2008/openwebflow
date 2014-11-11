@@ -13,14 +13,14 @@ import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.persistence.entity.IdentityInfoEntity;
 import org.activiti.engine.impl.persistence.entity.UserIdentityManager;
 import org.apache.log4j.Logger;
-import org.openwebflow.identity.IdentityMembershipService;
+import org.openwebflow.identity.IdentityMembershipManager;
 import org.openwebflow.util.IdentityUtils;
 
 public class DummyUserIdentityManager implements UserIdentityManager, Session
 {
-	IdentityMembershipService _customMembershipManager;
+	IdentityMembershipManager _customMembershipManager;
 
-	public DummyUserIdentityManager(IdentityMembershipService customMembershipManager)
+	public DummyUserIdentityManager(IdentityMembershipManager customMembershipManager)
 	{
 		_customMembershipManager = customMembershipManager;
 	}

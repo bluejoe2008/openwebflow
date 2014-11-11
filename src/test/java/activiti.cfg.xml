@@ -24,8 +24,8 @@
 	</bean>
 		
 	<!-- 自定义成员关系管理 -->
-	<bean id="myMembershipService" class="org.openwebflow.identity.impl.InMemoryMembershipStore" />
-	<bean id="myUserDetailsService" class="org.openwebflow.identity.impl.InMemoryUserDetailsStore" />
+	<bean id="myMembershipManager" class="org.openwebflow.identity.impl.InMemoryMembershipStore" />
+	<bean id="myUserDetailsManager" class="org.openwebflow.identity.impl.InMemoryUserDetailsStore" />
 	
 	<!-- 任务催办配置 -->
 	<bean id="myTaskAlarmService" class="org.openwebflow.alarm.impl.TaskAlarmServiceImpl">
@@ -48,8 +48,8 @@
 				</property>
 			</bean>
 		</property>
-		<property name="membershipService" ref="myMembershipService" />
-		<property name="userDetailsService" ref="myUserDetailsService" />
+		<property name="membershipManager" ref="myMembershipManager" />
+		<property name="userDetailsManager" ref="myUserDetailsManager" />
 		<property name="notificationDetailsStore">
 			<bean class="org.openwebflow.alarm.impl.InMemoryNotificationDetailsStore">
 			</bean>
@@ -57,12 +57,12 @@
 	</bean>
 
 	<!-- 自定义的活动权限表管理 -->
-	<bean id="myActivityAccessControlList"
-		class="org.openwebflow.permission.acl.InMemoryActivityAccessControlList" />
+	<bean id="myTaskAssignementEntryManager"
+		class="org.openwebflow.permission.list.InMemoryTaskAssignementEntryStore" />
 		
 	<!-- 代理关系管理 -->
-	<bean id="myDelegationDetailsService"
-		class="org.openwebflow.permission.delegate.InMemoryDelegationDetailsStore" />
+	<bean id="myDelegationDetailsManager"
+		class="org.openwebflow.permission.delegation.InMemoryDelegationDetailsStore" />
 
 	<bean id="transactionManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
@@ -83,22 +83,21 @@
 					<property name="typeNames" value="user" />
 				</bean>
 				<!-- 自定义成员关系管理 -->
-				<bean class="org.openwebflow.conf.ReplaceMembershipService">
-					<property name="customMembershipService" ref="myMembershipService" />
+				<bean class="org.openwebflow.conf.ReplaceMembershipManager">
+					<property name="customMembershipManager" ref="myMembershipManager" />
 				</bean>
 				<!-- 自定义活动权限管理 -->
-				<bean class="org.openwebflow.conf.ReplaceActivityAccessController">
-					<!-- 授权策略列表，越靠后优先级越高 -->
-					<property name="accessControlStrategies">
+				<bean class="org.openwebflow.conf.ReplaceTaskAssignmentManager">
+					<!-- 授权处理器列表，会组成一个链，越靠后优先级越高（越靠外） -->
+					<property name="assignmentHandlers">
 						<list>
-							<!-- 自定义ACL -->
-							<bean class="org.openwebflow.permission.acl.ActivityAclBasedStrategy">
-								<property name="accessControlList" ref="myActivityAccessControlList" />
+							<!-- 自定义授权项列表 -->
+							<bean class="org.openwebflow.permission.list.TaskAssignementEntryList">
+								<property name="assignmentEntryManager" ref="myTaskAssignementEntryManager" />
 							</bean>
-							<!-- 代理策略 -->
-							<bean
-								class="org.openwebflow.permission.delegate.DelegationBasedStrategy">
-								<property name="delegationDetailsService" ref="myDelegationDetailsService" />
+							<!-- 允许授权代理 -->
+							<bean class="org.openwebflow.permission.delegation.TaskDelagation">
+								<property name="delegationDetailsManager" ref="myDelegationDetailsManager" />
 								<property name="hideDelegated" value="false" />
 							</bean>
 						</list>

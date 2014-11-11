@@ -6,14 +6,14 @@ import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
 import org.activiti.engine.impl.task.TaskDefinition;
-import org.openwebflow.permission.AccessControlStrategy;
+import org.openwebflow.permission.TaskAssignmentHandler;
 
 public class MyActivityBehaviorFactory extends ActivityBehaviorFactoryDelegate implements ActivityBehaviorFactory
 {
-	List<AccessControlStrategy> _accessControlStrategies;
+	List<TaskAssignmentHandler> _accessControlStrategies;
 
 	public MyActivityBehaviorFactory(ActivityBehaviorFactory source,
-			List<AccessControlStrategy> accessControlStrategies)
+			List<TaskAssignmentHandler> accessControlStrategies)
 	{
 		super(source);
 		_accessControlStrategies = accessControlStrategies;
@@ -22,6 +22,6 @@ public class MyActivityBehaviorFactory extends ActivityBehaviorFactoryDelegate i
 	@Override
 	public UserTaskActivityBehavior createUserTaskActivityBehavior(UserTask userTask, TaskDefinition taskDefinition)
 	{
-		return new UserTaskActivityBehaviorStrategy(_accessControlStrategies, taskDefinition);
+		return new DefaultTaskAssignmentHandler(_accessControlStrategies, taskDefinition);
 	}
 }

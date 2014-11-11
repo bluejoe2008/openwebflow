@@ -12,9 +12,9 @@ import org.joda.time.Period;
 import org.openwebflow.alarm.MessageNotifier;
 import org.openwebflow.alarm.NotificationDetailsStore;
 import org.openwebflow.alarm.TaskAlarmService;
-import org.openwebflow.identity.IdentityMembershipService;
+import org.openwebflow.identity.IdentityMembershipManager;
 import org.openwebflow.identity.IdentityUserDetails;
-import org.openwebflow.identity.UserDetailsService;
+import org.openwebflow.identity.UserDetailsManager;
 import org.openwebflow.util.IdentityUtils;
 
 public class TaskAlarmServiceImpl implements TaskAlarmService
@@ -40,8 +40,8 @@ public class TaskAlarmServiceImpl implements TaskAlarmService
 				{
 					//没有通知则现在通知
 					List<IdentityUserDetails> involvedUsers = IdentityUtils.getUserDetailsFromIds(
-						IdentityUtils.getInvolvedUsers(_processEngine.getTaskService(), task, _membershipService),
-						_userDetailsService);
+						IdentityUtils.getInvolvedUsers(_processEngine.getTaskService(), task, _membershipManager),
+						_userDetailsManager);
 
 					_messageNotifier.notify(involvedUsers.toArray(new IdentityUserDetails[0]), task);
 					//设置标志
@@ -71,7 +71,27 @@ public class TaskAlarmServiceImpl implements TaskAlarmService
 
 	long _checkInterval = 10000;
 
-	IdentityMembershipService _membershipService;
+	IdentityMembershipManager _membershipManager;
+
+	public IdentityMembershipManager getMembershipManager()
+	{
+		return _membershipManager;
+	}
+
+	public void setMembershipManager(IdentityMembershipManager membershipManager)
+	{
+		_membershipManager = membershipManager;
+	}
+
+	public UserDetailsManager getUserDetailsManager()
+	{
+		return _userDetailsManager;
+	}
+
+	public void setUserDetailsManager(UserDetailsManager userDetailsManager)
+	{
+		_userDetailsManager = userDetailsManager;
+	}
 
 	MessageNotifier _messageNotifier;
 
@@ -87,16 +107,6 @@ public class TaskAlarmServiceImpl implements TaskAlarmService
 	public void setCheckInterval(long checkInterval)
 	{
 		_checkInterval = checkInterval;
-	}
-
-	public IdentityMembershipService getMembershipService()
-	{
-		return _membershipService;
-	}
-
-	public void setMembershipService(IdentityMembershipService membershipService)
-	{
-		_membershipService = membershipService;
 	}
 
 	public MessageNotifier getMessageNotifier()
@@ -129,21 +139,11 @@ public class TaskAlarmServiceImpl implements TaskAlarmService
 		_periodInAdvance = periodInAdvance;
 	}
 
-	public UserDetailsService getUserDetailsService()
-	{
-		return _userDetailsService;
-	}
-
-	public void setUserDetailsService(UserDetailsService userDetailsService)
-	{
-		_userDetailsService = userDetailsService;
-	}
-
 	ProcessEngine _processEngine;
 
 	MonitorThread _thread;
 
-	UserDetailsService _userDetailsService;
+	UserDetailsManager _userDetailsManager;
 
 	@Override
 	public void start(ProcessEngine processEngine) throws Exception

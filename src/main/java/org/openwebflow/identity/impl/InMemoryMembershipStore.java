@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.impl.persistence.entity.GroupEntity;
-import org.openwebflow.identity.IdentityMembershipService;
+import org.openwebflow.identity.IdentityMembershipManager;
 
 /**
  * 本类演示自定义用户管理
@@ -16,7 +16,7 @@ import org.openwebflow.identity.IdentityMembershipService;
  * @author bluejoe2008@gmail.com
  * 
  */
-public class InMemoryMembershipStore implements IdentityMembershipService
+public class InMemoryMembershipStore implements IdentityMembershipManager
 {
 	private Map<String, Group> _groups = new HashMap<String, Group>();
 

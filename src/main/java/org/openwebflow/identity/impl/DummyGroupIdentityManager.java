@@ -10,14 +10,14 @@ import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
 import org.apache.log4j.Logger;
-import org.openwebflow.identity.IdentityMembershipService;
+import org.openwebflow.identity.IdentityMembershipManager;
 import org.openwebflow.util.IdentityUtils;
 
 public class DummyGroupIdentityManager implements GroupIdentityManager, Session
 {
-	IdentityMembershipService _customMembershipManager;
+	IdentityMembershipManager _customMembershipManager;
 
-	public DummyGroupIdentityManager(IdentityMembershipService customMembershipManager)
+	public DummyGroupIdentityManager(IdentityMembershipManager customMembershipManager)
 	{
 		super();
 		_customMembershipManager = customMembershipManager;
