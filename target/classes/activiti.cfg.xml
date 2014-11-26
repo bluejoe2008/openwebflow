@@ -10,7 +10,12 @@
 
 	<context:property-placeholder location="settings.properties" />
 	<context:annotation-config />
-
+	<!-- 
+	<import resource="activiti.mgr.mem.xml" />
+ 	-->
+	<import resource="activiti.mgr.sql.xml" />
+	
+	<!-- 工作流核心数据库配置 -->
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
 		<property name="driverClassName" value="org.h2.Driver" />
@@ -22,11 +27,7 @@
 		<property name="maxIdle" value="20" />
 		<property name="minIdle" value="10" />
 	</bean>
-		
-	<!-- 自定义成员关系管理 -->
-	<bean id="myMembershipManager" class="org.openwebflow.identity.impl.InMemoryMembershipStore" />
-	<bean id="myUserDetailsManager" class="org.openwebflow.identity.impl.InMemoryUserDetailsStore" />
-	
+			
 	<!-- 任务催办配置 -->
 	<bean id="myTaskAlarmService" class="org.openwebflow.alarm.impl.TaskAlarmServiceImpl">
 		<!-- 截止日期提前量 -->
@@ -56,18 +57,11 @@
 		</property>
 	</bean>
 
-	<!-- 自定义的活动权限表管理 -->
-	<bean id="myTaskAssignementEntryManager"
-		class="org.openwebflow.permission.list.InMemoryTaskAssignementEntryStore" />
-		
-	<!-- 代理关系管理 -->
-	<bean id="myDelegationDetailsManager"
-		class="org.openwebflow.permission.delegation.InMemoryDelegationDetailsStore" />
-
 	<bean id="transactionManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="dataSource"></property>
+		<property name="dataSource" ref="dataSource" />
 	</bean>
+
 	<tx:annotation-driven transaction-manager="transactionManager" />
 
 	<!-- 配置对象 -->

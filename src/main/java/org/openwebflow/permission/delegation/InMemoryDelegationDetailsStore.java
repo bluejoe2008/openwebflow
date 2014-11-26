@@ -9,7 +9,7 @@ public class InMemoryDelegationDetailsStore implements DelegationDetailsManager
 {
 	Map<String, List<String>> _map = new HashMap<String, List<String>>();
 
-	public void add(String delegated, String delegate)
+	public void addDelegation(String delegated, String delegate)
 	{
 		List<String> delegates = _map.get(delegated);
 		if (delegates == null)

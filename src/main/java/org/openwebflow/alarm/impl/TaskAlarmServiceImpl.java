@@ -16,12 +16,15 @@ import org.openwebflow.identity.IdentityMembershipManager;
 import org.openwebflow.identity.IdentityUserDetails;
 import org.openwebflow.identity.UserDetailsManager;
 import org.openwebflow.util.IdentityUtils;
+import org.springframework.beans.factory.DisposableBean;
 
-public class TaskAlarmServiceImpl implements TaskAlarmService
+public class TaskAlarmServiceImpl implements TaskAlarmService, DisposableBean
 {
 	class MonitorThread extends Thread
 	{
 		Period _parsedPeriodInAdvance;
+
+		boolean _stopped = false;
 
 		public MonitorThread() throws IOException
 		{
@@ -54,7 +57,7 @@ public class TaskAlarmServiceImpl implements TaskAlarmService
 		@Override
 		public void run()
 		{
-			while (true)
+			while (!_stopped)
 			{
 				try
 				{
@@ -73,40 +76,32 @@ public class TaskAlarmServiceImpl implements TaskAlarmService
 
 	IdentityMembershipManager _membershipManager;
 
-	public IdentityMembershipManager getMembershipManager()
-	{
-		return _membershipManager;
-	}
-
-	public void setMembershipManager(IdentityMembershipManager membershipManager)
-	{
-		_membershipManager = membershipManager;
-	}
-
-	public UserDetailsManager getUserDetailsManager()
-	{
-		return _userDetailsManager;
-	}
-
-	public void setUserDetailsManager(UserDetailsManager userDetailsManager)
-	{
-		_userDetailsManager = userDetailsManager;
-	}
-
 	MessageNotifier _messageNotifier;
 
 	NotificationDetailsStore _notificationDetailsStore;
 
 	String _periodInAdvance;
 
+	ProcessEngine _processEngine;
+
+	MonitorThread _thread;
+
+	UserDetailsManager _userDetailsManager;
+
+	@Override
+	public void destroy() throws Exception
+	{
+		_thread._stopped = true;
+	}
+
 	public long getCheckInterval()
 	{
 		return _checkInterval;
 	}
 
-	public void setCheckInterval(long checkInterval)
+	public IdentityMembershipManager getMembershipManager()
 	{
-		_checkInterval = checkInterval;
+		return _membershipManager;
 	}
 
 	public MessageNotifier getMessageNotifier()
@@ -114,19 +109,9 @@ public class TaskAlarmServiceImpl implements TaskAlarmService
 		return _messageNotifier;
 	}
 
-	public void setMessageNotifier(MessageNotifier messageNotifier)
-	{
-		_messageNotifier = messageNotifier;
-	}
-
 	public NotificationDetailsStore getNotificationDetailsStore()
 	{
 		return _notificationDetailsStore;
-	}
-
-	public void setNotificationDetailsStore(NotificationDetailsStore notificationDetailsStore)
-	{
-		_notificationDetailsStore = notificationDetailsStore;
 	}
 
 	public String getPeriodInAdvance()
@@ -134,16 +119,40 @@ public class TaskAlarmServiceImpl implements TaskAlarmService
 		return _periodInAdvance;
 	}
 
+	public UserDetailsManager getUserDetailsManager()
+	{
+		return _userDetailsManager;
+	}
+
+	public void setCheckInterval(long checkInterval)
+	{
+		_checkInterval = checkInterval;
+	}
+
+	public void setMembershipManager(IdentityMembershipManager membershipManager)
+	{
+		_membershipManager = membershipManager;
+	}
+
+	public void setMessageNotifier(MessageNotifier messageNotifier)
+	{
+		_messageNotifier = messageNotifier;
+	}
+
+	public void setNotificationDetailsStore(NotificationDetailsStore notificationDetailsStore)
+	{
+		_notificationDetailsStore = notificationDetailsStore;
+	}
+
 	public void setPeriodInAdvance(String periodInAdvance)
 	{
 		_periodInAdvance = periodInAdvance;
 	}
 
-	ProcessEngine _processEngine;
-
-	MonitorThread _thread;
-
-	UserDetailsManager _userDetailsManager;
+	public void setUserDetailsManager(UserDetailsManager userDetailsManager)
+	{
+		_userDetailsManager = userDetailsManager;
+	}
 
 	@Override
 	public void start(ProcessEngine processEngine) throws Exception

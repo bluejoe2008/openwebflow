@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
+	http://www.springframework.org/schema/tx   http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+	<!-- 自定义成员关系管理 -->
+	<bean id="myMembershipManager" class="org.openwebflow.identity.impl.InMemoryMembershipStore" />
+	<bean id="myUserDetailsManager" class="org.openwebflow.identity.impl.InMemoryUserDetailsStore" />
+	
+	<!-- 自定义的活动权限表管理 -->
+	<bean id="myTaskAssignementEntryManager"
+		class="org.openwebflow.permission.list.InMemoryTaskAssignementEntryStore" />
+		
+	<!-- 代理关系管理 -->
+	<bean id="myDelegationDetailsManager"
+		class="org.openwebflow.permission.delegation.InMemoryDelegationDetailsStore" />
+
+</beans>
