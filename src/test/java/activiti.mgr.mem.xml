@@ -14,7 +14,7 @@
 	
 	<!-- 自定义的活动权限表管理 -->
 	<bean id="myTaskAssignementEntryManager"
-		class="org.openwebflow.permission.list.InMemoryTaskAssignementEntryStore" />
+		class="org.openwebflow.permission.acl.InMemoryActivityAclStore" />
 		
 	<!-- 代理关系管理 -->
 	<bean id="myDelegationDetailsManager"

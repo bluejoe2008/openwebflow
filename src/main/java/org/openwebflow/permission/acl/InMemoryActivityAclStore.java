@@ -1,22 +1,22 @@
-package org.openwebflow.permission.list;
+package org.openwebflow.permission.acl;
 
 import java.util.HashMap;
 import java.util.Map;
 
 
-public class InMemoryTaskAssignementEntryStore implements TaskAssignementEntryManager
+public class InMemoryActivityAclStore extends AbstractActivityAclStore implements ActivityAclManager
 {
-	Map<String, TaskAssignementEntry> _entryMap = new HashMap<String, TaskAssignementEntry>();
+	Map<String, ActivityAclEntry> _entryMap = new HashMap<String, ActivityAclEntry>();
 
 	private String getKey(String processDefId, String taskDefinitionKey)
 	{
 		return processDefId + "--" + taskDefinitionKey;
 	}
 
-	public void addEntry(String processDefId, String taskDefinitionKey, String assignee,
+	public void save(String processDefId, String taskDefinitionKey, String assignee,
 			String[] candidateGroupIds, String[] candidateUserIds) throws Exception
 	{
-		TaskAssignmentEntryImpl entry = new TaskAssignmentEntryImpl();
+		ActivityAclEntryImpl entry = new ActivityAclEntryImpl();
 		entry.setAssignee(assignee);
 		entry.setGrantedGroupIds(candidateGroupIds);
 		entry.setGrantedUserIds(candidateUserIds);
@@ -25,7 +25,7 @@ public class InMemoryTaskAssignementEntryStore implements TaskAssignementEntryMa
 	}
 
 	@Override
-	public TaskAssignementEntry load(String processDefinitionId, String taskDefinitionKey, boolean addOrRemove)
+	public ActivityAclEntry load(String processDefinitionId, String taskDefinitionKey, boolean addOrRemove)
 	{
 		if (addOrRemove)
 			return _entryMap.get(getKey(processDefinitionId, taskDefinitionKey));

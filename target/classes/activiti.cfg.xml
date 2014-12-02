@@ -86,7 +86,7 @@
 					<property name="assignmentHandlers">
 						<list>
 							<!-- 自定义授权项列表 -->
-							<bean class="org.openwebflow.permission.list.TaskAssignementEntryList">
+							<bean class="org.openwebflow.permission.acl.TaskActivityAcl">
 								<property name="assignmentEntryManager" ref="myTaskAssignementEntryManager" />
 							</bean>
 							<!-- 允许授权代理 -->

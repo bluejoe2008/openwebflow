@@ -33,7 +33,7 @@ public abstract class IdentityUtils
 		List<IdentityUserDetails> detailsList = new ArrayList<IdentityUserDetails>();
 		for (String userId : userIds)
 		{
-			detailsList.add(userDetailsManager.getUserDetails(userId));
+			detailsList.add(userDetailsManager.findUser(userId));
 		}
 
 		return detailsList;

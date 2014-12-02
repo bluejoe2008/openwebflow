@@ -1,4 +1,4 @@
-package org.openwebflow.permission.list;
+package org.openwebflow.permission.acl;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,16 +10,16 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.openwebflow.permission.TaskAssignmentHandler;
 import org.openwebflow.permission.TaskAssignmentHandlerChain;
 
-public class TaskAssignementEntryList implements TaskAssignmentHandler
+public class TaskActivityAcl implements TaskAssignmentHandler
 {
-	TaskAssignementEntryManager _assignmentEntryManager;
+	ActivityAclManager _assignmentEntryManager;
 
-	public TaskAssignementEntryManager getAssignmentEntryManager()
+	public ActivityAclManager getAssignmentEntryManager()
 	{
 		return _assignmentEntryManager;
 	}
 
-	public void setAssignmentEntryManager(TaskAssignementEntryManager assignmentEntryManager)
+	public void setAssignmentEntryManager(ActivityAclManager assignmentEntryManager)
 	{
 		_assignmentEntryManager = assignmentEntryManager;
 	}
@@ -31,7 +31,7 @@ public class TaskAssignementEntryList implements TaskAssignmentHandler
 		String processDefinitionId = task.getProcessDefinitionId();
 		String taskDefinitionKey = task.getTaskDefinitionKey();
 
-		TaskAssignementEntry entry = _assignmentEntryManager.load(processDefinitionId, taskDefinitionKey, true);
+		ActivityAclEntry entry = _assignmentEntryManager.load(processDefinitionId, taskDefinitionKey, true);
 
 		//没有自定义授权规则
 		if (entry == null)

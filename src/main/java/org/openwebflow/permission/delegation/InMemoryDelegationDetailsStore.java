@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class InMemoryDelegationDetailsStore implements DelegationDetailsManager
+public class InMemoryDelegationDetailsStore extends AbstractDelegationStore  implements DelegationDetailsManager
 {
 	Map<String, List<String>> _map = new HashMap<String, List<String>>();
 

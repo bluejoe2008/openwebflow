@@ -1,6 +1,6 @@
-package org.openwebflow.permission.list;
+package org.openwebflow.permission.acl;
 
-public interface TaskAssignementEntry
+public interface ActivityAclEntry
 {
 
 	String getAssignee();

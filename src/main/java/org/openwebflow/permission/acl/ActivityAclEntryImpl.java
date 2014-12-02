@@ -1,4 +1,4 @@
-package org.openwebflow.permission.list;
+package org.openwebflow.permission.acl;
 
 import java.sql.Date;
 
@@ -9,7 +9,7 @@ import java.sql.Date;
  * @author bluejoe2008@gmail.com
  * 
  */
-public class TaskAssignmentEntryImpl implements TaskAssignementEntry
+public class ActivityAclEntryImpl implements ActivityAclEntry
 {
 	private String _activityKey;
 

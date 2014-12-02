@@ -12,12 +12,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openwebflow.conf.ProcessEngineConfigurationEx;
 import org.openwebflow.conf.ReplaceTaskAssignmentManager;
+import org.openwebflow.identity.AbstractUserDetailsStore;
 import org.openwebflow.identity.impl.InMemoryMembershipStore;
 import org.openwebflow.identity.impl.InMemoryUserDetailsStore;
 import org.openwebflow.identity.impl.MyUserDetails;
+import org.openwebflow.permission.acl.AbstractActivityAclStore;
 import org.openwebflow.permission.delegation.InMemoryDelegationDetailsStore;
 import org.openwebflow.permission.delegation.TaskDelagation;
-import org.openwebflow.permission.list.InMemoryTaskAssignementEntryStore;
 import org.openwebflow.util.ModelUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -30,7 +31,7 @@ public class ProcessEngineToolTest
 
 	ApplicationContext _ctx;
 
-	InMemoryTaskAssignementEntryStore _myTaskAssignmentManager;
+	AbstractActivityAclStore _aclStore;
 
 	@Before
 	public void setUp() throws Exception
@@ -40,7 +41,7 @@ public class ProcessEngineToolTest
 		Assert.assertNotNull(_tool);
 		_processEngine = _tool.getProcessEngine();
 
-		_myTaskAssignmentManager = _ctx.getBean(InMemoryTaskAssignementEntryStore.class);
+		_aclStore = (AbstractActivityAclStore) _ctx.getBean("myTaskAssignementEntryManager");
 
 		//用户关系管理
 		if (!_ctx.getBeansOfType(InMemoryMembershipStore.class).isEmpty())
@@ -57,11 +58,8 @@ public class ProcessEngineToolTest
 		}
 
 		//设置用户email等信息
-		if (!_ctx.getBeansOfType(InMemoryUserDetailsStore.class).isEmpty())
-		{
-			InMemoryUserDetailsStore userDetailsStore = _ctx.getBean(InMemoryUserDetailsStore.class);
-			userDetailsStore.add(new MyUserDetails("bluejoe", "白乔", "bluejoe2008@gmail.com", "13800138000"));
-		}
+		AbstractUserDetailsStore userDetailsStore = _ctx.getBean(InMemoryUserDetailsStore.class);
+		userDetailsStore.saveUser(new MyUserDetails("bluejoe", "白乔", "bluejoe2008@gmail.com", "13800138000"));
 	}
 
 	@After
@@ -104,7 +102,7 @@ public class ProcessEngineToolTest
 		Assert.assertEquals(0, taskService.createTaskQuery().taskCandidateUser("bluejoe").count());
 
 		//允许step2可以让engineering操作
-		_myTaskAssignmentManager.addEntry(processDefId, "step2", null, new String[] { "engineering" }, new String[0]);
+		_aclStore.save(processDefId, "step2", null, new String[] { "engineering" }, new String[0]);
 
 		//对现已执行的task没有影响
 		Assert.assertEquals(0, taskService.createTaskQuery().taskCandidateGroup("engineering").count());
@@ -122,7 +120,7 @@ public class ProcessEngineToolTest
 		_processEngine.getRuntimeService().deleteProcessInstance(instance.getId(), "test");
 
 		//允许step2可以让engineering和management操作，允许neo操作
-		_myTaskAssignmentManager.addEntry(processDefId, "step2", null, new String[] { "engineering", "management" },
+		_aclStore.save(processDefId, "step2", null, new String[] { "engineering", "management" },
 			new String[] { "neo" });
 
 		//再启动一个流程
@@ -164,7 +162,7 @@ public class ProcessEngineToolTest
 		Assert.assertEquals(1, taskService.createTaskQuery().taskCandidateUser("alex").count());
 		Assert.assertEquals(0, taskService.createTaskQuery().taskCandidateUser("neo").count());
 
-		//等待催办
+		//等待催办事件发生
 		Thread.sleep(60000);
 	}
 }

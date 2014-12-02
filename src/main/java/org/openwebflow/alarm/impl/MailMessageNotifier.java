@@ -9,7 +9,6 @@ import org.activiti.engine.task.Task;
 import org.h2.util.IOUtils;
 import org.openwebflow.alarm.MessageNotifier;
 import org.openwebflow.identity.IdentityUserDetails;
-import org.openwebflow.identity.impl.HasEmail;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 
@@ -63,8 +62,12 @@ public class MailMessageNotifier implements MessageNotifier, InitializingBean
 			ScriptEngine scriptEngine = new JuelScriptEngineFactory().getScriptEngine();
 			scriptEngine.put("user", user);
 			scriptEngine.put("task", task);
-			_mailSender.sendMail(((HasEmail) user).getEmail(), (String) scriptEngine.eval(_subjectTemplate),
-				(String) scriptEngine.eval(_messageTemplate));
+			String email = user.getProperty(IdentityUserDetails.STRING_PROPERTY_EMAIL);
+			if (email != null)
+			{
+				_mailSender.sendMail(email, (String) scriptEngine.eval(_subjectTemplate),
+					(String) scriptEngine.eval(_messageTemplate));
+			}
 		}
 	}
 

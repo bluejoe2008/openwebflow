@@ -1,71 +1,81 @@
 package org.openwebflow.identity.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.openwebflow.identity.IdentityUserDetails;
 
-public class MyUserDetails implements IdentityUserDetails, HasEmail, HasMobilePhoneNumber, HasNickName
+public class MyUserDetails implements IdentityUserDetails
 {
-	private String _email;
+	private Map<String, Object> _map = new HashMap<String, Object>();
 
-	private String _mobilePhoneNumber;
+	public MyUserDetails()
+	{
 
-	private String _nickName;
-
-	private String _userId;
+	}
 
 	public MyUserDetails(String userId, String nickName, String email, String mobilePhoneNumber)
 	{
 		super();
-		_userId = userId;
-		_nickName = nickName;
-		_email = email;
-		_mobilePhoneNumber = mobilePhoneNumber;
+		_map.put(STRING_PROPERTY_USER_ID, userId);
+		_map.put(STRING_PROPERTY_EMAIL, email);
+		_map.put(STRING_PROPERTY_MOBILE_PHONE_NUMBER, mobilePhoneNumber);
+		_map.put(STRING_PROPERTY_NICK_NAME, nickName);
 	}
 
-	@Override
 	public String getEmail()
 	{
-		return _email;
+		return getProperty(STRING_PROPERTY_EMAIL);
 	}
 
-	@Override
 	public String getMobilePhoneNumber()
 	{
-		return _mobilePhoneNumber;
+		return getProperty(STRING_PROPERTY_MOBILE_PHONE_NUMBER);
 	}
 
 	public String getNickName()
 	{
-		return _nickName;
+		return getProperty(STRING_PROPERTY_NICK_NAME);
+	}
+
+	public <T> T getProperty(String name)
+	{
+		return (T) _map.get(name);
 	}
 
 	public String getUserId()
 	{
-		return _userId;
+		return getProperty(STRING_PROPERTY_USER_ID);
 	}
 
 	public void setEmail(String email)
 	{
-		_email = email;
+		setProperty(STRING_PROPERTY_EMAIL, email);
 	}
 
 	public void setMobilePhoneNumber(String mobilePhoneNumber)
 	{
-		_mobilePhoneNumber = mobilePhoneNumber;
+		setProperty(STRING_PROPERTY_MOBILE_PHONE_NUMBER, mobilePhoneNumber);
 	}
 
 	public void setNickName(String nickName)
 	{
-		_nickName = nickName;
+		setProperty(STRING_PROPERTY_NICK_NAME, nickName);
+	}
+
+	public <T> void setProperty(String name, T value)
+	{
+		_map.put(name, value);
 	}
 
 	public void setUserId(String userId)
 	{
-		_userId = userId;
+		setProperty(STRING_PROPERTY_USER_ID, userId);
 	}
 
 	@Override
 	public String toString()
 	{
-		return String.format("%s(%s)", _userId, _nickName);
+		return _map.toString();
 	}
 }

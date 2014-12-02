@@ -26,25 +26,54 @@
 		<property name="dataSource" ref="owfDataSource" />
 	</bean>
   
-  <!--创建数据映射器，数据映射器必须为接口-->
-	<bean id="delegationEntityMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
-		<property name="mapperInterface"
-			value="org.openwebflow.permission.delegation.sql.SqlDelegationEntityMapper" />
-		<property name="sqlSessionFactory" ref="owlSqlSessionFactory" />
-	</bean>
-
  	<!-- 代理记录管理 -->
 	<bean id="myDelegationDetailsManager"
 		class="org.openwebflow.permission.delegation.sql.SqlDelegationStore">
-		<property name="mapper" ref="delegationEntityMapper" />
+		<property name="mapper">
+			<!--创建数据映射器，数据映射器必须为接口-->
+			<bean class="org.mybatis.spring.mapper.MapperFactoryBean">
+				<property name="mapperInterface"
+					value="org.openwebflow.permission.delegation.sql.SqlDelegationEntityMapper" />
+				<property name="sqlSessionFactory" ref="owlSqlSessionFactory" />
+			</bean>
+		</property>
 	</bean>
 
 	<!-- 自定义成员关系管理 -->
-	<bean id="myMembershipManager" class="org.openwebflow.identity.impl.InMemoryMembershipStore" />
-	<bean id="myUserDetailsManager" class="org.openwebflow.identity.impl.InMemoryUserDetailsStore" />
-	
+	<bean id="myMembershipManager" class="org.openwebflow.identity.sql.SqlMembershipStore">
+		<property name="mapper">
+			<!--创建数据映射器，数据映射器必须为接口-->
+			<bean class="org.mybatis.spring.mapper.MapperFactoryBean">
+				<property name="mapperInterface"
+					value="org.openwebflow.identity.sql.SqlMembershipMapper" />
+				<property name="sqlSessionFactory" ref="owlSqlSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+
+	<!-- 自定义用户表 -->
+	<bean id="myUserDetailsManager" class="org.openwebflow.identity.sql.SqlUserDetailsStore">
+		<property name="mapper">
+			<!--创建数据映射器，数据映射器必须为接口-->
+			<bean class="org.mybatis.spring.mapper.MapperFactoryBean">
+				<property name="mapperInterface"
+					value="org.openwebflow.identity.sql.SqlUserDetailsMapper" />
+				<property name="sqlSessionFactory" ref="owlSqlSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+
 	<!-- 自定义的活动权限表管理 -->
 	<bean id="myTaskAssignementEntryManager"
-		class="org.openwebflow.permission.list.InMemoryTaskAssignementEntryStore" />
-		
+		class="org.openwebflow.permission.acl.sql.SqlActivityAclStore">
+		<property name="mapper">
+			<!--创建数据映射器，数据映射器必须为接口-->
+			<bean class="org.mybatis.spring.mapper.MapperFactoryBean">
+				<property name="mapperInterface"
+					value="org.openwebflow.permission.acl.sql.SqlActivityAclStoreMapper" />
+				<property name="sqlSessionFactory" ref="owlSqlSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+
 </beans>

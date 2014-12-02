@@ -3,9 +3,10 @@ package org.openwebflow.permission.delegation.sql;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.openwebflow.permission.delegation.AbstractDelegationStore;
 import org.openwebflow.permission.delegation.DelegationDetailsManager;
 
-public class SqlDelegationStore implements DelegationDetailsManager
+public class SqlDelegationStore extends AbstractDelegationStore implements DelegationDetailsManager
 {
 	SqlDelegationEntityMapper _mapper;
 
