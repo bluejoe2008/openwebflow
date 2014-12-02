@@ -87,7 +87,7 @@
 						<list>
 							<!-- 自定义授权项列表 -->
 							<bean class="org.openwebflow.permission.acl.TaskActivityAcl">
-								<property name="assignmentEntryManager" ref="myTaskAssignementEntryManager" />
+								<property name="assignmentEntryManager" ref="myTaskActivityAclManager" />
 							</bean>
 							<!-- 允许授权代理 -->
 							<bean class="org.openwebflow.permission.delegation.TaskDelagation">

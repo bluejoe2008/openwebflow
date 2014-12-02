@@ -21,4 +21,10 @@ public class InMemoryUserDetailsStore extends AbstractUserDetailsStore implement
 	{
 		return _users.get(userId);
 	}
+
+	@Override
+	public void removeAll()
+	{
+		_users.clear();
+	}
 }

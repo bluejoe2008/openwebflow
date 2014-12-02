@@ -64,7 +64,7 @@
 	</bean>
 
 	<!-- 自定义的活动权限表管理 -->
-	<bean id="myTaskAssignementEntryManager"
+	<bean id="myTaskActivityAclManager"
 		class="org.openwebflow.permission.acl.sql.SqlActivityAclStore">
 		<property name="mapper">
 			<!--创建数据映射器，数据映射器必须为接口-->

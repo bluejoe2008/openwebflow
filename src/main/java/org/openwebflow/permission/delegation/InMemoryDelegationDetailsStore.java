@@ -40,4 +40,10 @@ public class InMemoryDelegationDetailsStore extends AbstractDelegationStore  imp
 		return delegates.toArray(new String[0]);
 	}
 
+	@Override
+	public void removeAll()
+	{
+		_map.clear();
+	}
+
 }

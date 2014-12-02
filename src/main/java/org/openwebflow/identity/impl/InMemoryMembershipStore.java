@@ -16,7 +16,7 @@ import org.openwebflow.identity.IdentityMembershipManager;
  * @author bluejoe2008@gmail.com
  * 
  */
-public class InMemoryMembershipStore implements IdentityMembershipManager
+public class InMemoryMembershipStore extends AbstractMembershipStore implements IdentityMembershipManager
 {
 	private Map<String, Group> _groups = new HashMap<String, Group>();
 
@@ -53,7 +53,7 @@ public class InMemoryMembershipStore implements IdentityMembershipManager
 		return group;
 	}
 
-	public void createMembership(String userId, String groupId)
+	public void saveMembership(String userId, String groupId)
 	{
 		_memberships.add(new Membership(userId, groupId));
 	}
@@ -97,7 +97,7 @@ public class InMemoryMembershipStore implements IdentityMembershipManager
 		for (String pair : text.split(";"))
 		{
 			String[] gp = pair.split(":");
-			createMembership(gp[0], gp[1]);
+			saveMembership(gp[0], gp[1]);
 		}
 	}
 
@@ -114,5 +114,12 @@ public class InMemoryMembershipStore implements IdentityMembershipManager
 		}
 
 		return new ArrayList<String>(userIds.keySet());
+	}
+
+	@Override
+	public void removeAll()
+	{
+		_groups.clear();
+		_memberships.clear();
 	}
 }

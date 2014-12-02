@@ -1,5 +1,6 @@
 package org.openwebflow.permission.delegation.sql;
 
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,6 +34,22 @@ public class SqlDelegationStore extends AbstractDelegationStore implements Deleg
 		}
 
 		return delegates.keySet().toArray(new String[0]);
+	}
+
+	@Override
+	public void addDelegation(String delegated, String delegate)
+	{
+		SqlDelegationEntity sde = new SqlDelegationEntity();
+		sde.setDelegated(delegated);
+		sde.setDelegates(delegate);
+		sde.setOpTime(new Date(System.currentTimeMillis()));
+		_mapper.saveDelegation(sde);
+	}
+
+	@Override
+	public void removeAll()
+	{
+		_mapper.deleteAll();
 	}
 
 }

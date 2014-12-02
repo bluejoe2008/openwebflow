@@ -32,4 +32,10 @@ public class InMemoryActivityAclStore extends AbstractActivityAclStore implement
 
 		return null;
 	}
+
+	@Override
+	public void removeAll()
+	{
+		_entryMap.clear();
+	}
 }

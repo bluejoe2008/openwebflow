@@ -13,10 +13,12 @@ import org.junit.Test;
 import org.openwebflow.conf.ProcessEngineConfigurationEx;
 import org.openwebflow.conf.ReplaceTaskAssignmentManager;
 import org.openwebflow.identity.AbstractUserDetailsStore;
+import org.openwebflow.identity.impl.AbstractMembershipStore;
 import org.openwebflow.identity.impl.InMemoryMembershipStore;
 import org.openwebflow.identity.impl.InMemoryUserDetailsStore;
 import org.openwebflow.identity.impl.MyUserDetails;
 import org.openwebflow.permission.acl.AbstractActivityAclStore;
+import org.openwebflow.permission.delegation.AbstractDelegationStore;
 import org.openwebflow.permission.delegation.InMemoryDelegationDetailsStore;
 import org.openwebflow.permission.delegation.TaskDelagation;
 import org.openwebflow.util.ModelUtils;
@@ -33,6 +35,8 @@ public class ProcessEngineToolTest
 
 	AbstractActivityAclStore _aclStore;
 
+	AbstractDelegationStore _delegationStore;
+
 	@Before
 	public void setUp() throws Exception
 	{
@@ -41,25 +45,24 @@ public class ProcessEngineToolTest
 		Assert.assertNotNull(_tool);
 		_processEngine = _tool.getProcessEngine();
 
-		_aclStore = (AbstractActivityAclStore) _ctx.getBean("myTaskAssignementEntryManager");
+		_aclStore = (AbstractActivityAclStore) _ctx.getBean("myTaskActivityAclManager");
+		_aclStore.removeAll();
 
 		//用户关系管理
-		if (!_ctx.getBeansOfType(InMemoryMembershipStore.class).isEmpty())
-		{
-			InMemoryMembershipStore myMembershipManager = _ctx.getBean(InMemoryMembershipStore.class);
-			//设置用户
-			myMembershipManager.createGroup("management", "管理员");
-			myMembershipManager.createGroup("sales", "销售");
-			myMembershipManager.createGroup("engineering", "工程师");
-
-			myMembershipManager.createMembership("bluejoe", "engineering");
-			myMembershipManager.createMembership("gonzo", "sales");
-			myMembershipManager.createMembership("kermit", "management");
-		}
+		AbstractMembershipStore myMembershipManager = (AbstractMembershipStore) _ctx.getBean("myMembershipManager");
+		myMembershipManager.removeAll();
+		myMembershipManager.saveMembership("bluejoe", "engineering");
+		myMembershipManager.saveMembership("gonzo", "sales");
+		myMembershipManager.saveMembership("kermit", "management");
 
 		//设置用户email等信息
-		AbstractUserDetailsStore userDetailsStore = _ctx.getBean(InMemoryUserDetailsStore.class);
+		AbstractUserDetailsStore userDetailsStore = (AbstractUserDetailsStore) _ctx.getBean("myUserDetailsManager");
+		userDetailsStore.removeAll();
 		userDetailsStore.saveUser(new MyUserDetails("bluejoe", "白乔", "bluejoe2008@gmail.com", "13800138000"));
+
+		//代理关系
+		_delegationStore = (AbstractDelegationStore) _ctx.getBean("myDelegationDetailsManager");
+		_delegationStore.removeAll();
 	}
 
 	@After
@@ -118,7 +121,8 @@ public class ProcessEngineToolTest
 
 		//删掉流程实例
 		_processEngine.getRuntimeService().deleteProcessInstance(instance.getId(), "test");
-
+		_aclStore.removeAll();
+		
 		//允许step2可以让engineering和management操作，允许neo操作
 		_aclStore.save(processDefId, "step2", null, new String[] { "engineering", "management" },
 			new String[] { "neo" });
@@ -139,11 +143,7 @@ public class ProcessEngineToolTest
 		_processEngine.getRuntimeService().deleteProcessInstance(instance.getId(), "test");
 
 		//代理关系
-		if (!_ctx.getBeansOfType(InMemoryDelegationDetailsStore.class).isEmpty())
-		{
-			InMemoryDelegationDetailsStore imdm = _ctx.getBean(InMemoryDelegationDetailsStore.class);
-			imdm.addDelegation("neo", "alex");
-		}
+		_delegationStore.addDelegation("neo", "alex");
 
 		//再启动一个流程
 		instance = _processEngine.getRuntimeService().startProcessInstanceByKey(pd.getKey());

@@ -13,7 +13,7 @@
 	<bean id="myUserDetailsManager" class="org.openwebflow.identity.impl.InMemoryUserDetailsStore" />
 	
 	<!-- 自定义的活动权限表管理 -->
-	<bean id="myTaskAssignementEntryManager"
+	<bean id="myTaskActivityAclManager"
 		class="org.openwebflow.permission.acl.InMemoryActivityAclStore" />
 		
 	<!-- 代理关系管理 -->
