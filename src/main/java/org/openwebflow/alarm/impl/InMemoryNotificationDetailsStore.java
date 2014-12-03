@@ -5,7 +5,8 @@ import java.util.Map;
 
 import org.openwebflow.alarm.NotificationDetailsStore;
 
-public class InMemoryNotificationDetailsStore implements NotificationDetailsStore
+public class InMemoryNotificationDetailsStore extends AbstractNotificationDetailsStore implements
+		NotificationDetailsStore
 {
 	Map<String, Boolean> _notificationMap = new HashMap<String, Boolean>();
 
@@ -19,6 +20,12 @@ public class InMemoryNotificationDetailsStore implements NotificationDetailsStor
 	public void setNotified(String taskId)
 	{
 		_notificationMap.put(taskId, true);
+	}
+
+	@Override
+	public void removeAll()
+	{
+		_notificationMap.clear();
 	}
 
 }

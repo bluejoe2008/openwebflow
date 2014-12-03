@@ -58,6 +58,7 @@ public abstract class IdentityUtils
 				{
 					userIds.put(userId, new Object());
 				}
+				
 				String groupId = link.getGroupId();
 				if (groupId != null)
 				{

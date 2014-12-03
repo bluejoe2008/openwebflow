@@ -1,7 +1,10 @@
 package org.openwebflow.permission.delegation.sql;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.openwebflow.permission.delegation.AbstractDelegationStore;
@@ -25,12 +28,9 @@ public class SqlDelegationStore extends AbstractDelegationStore implements Deleg
 	public String[] getDelegates(String delegated)
 	{
 		Map<String, Object> delegates = new HashMap<String, Object>();
-		for (SqlDelegationEntity sde : _mapper.findByDelegated(delegated))
+		for (DelegationDetails sde : _mapper.findByDelegated(delegated))
 		{
-			for (String delegate : sde.getDelegates().split(";"))
-			{
-				delegates.put(delegate, new Object());
-			}
+			delegates.put(sde.getDelegate(), 0);
 		}
 
 		return delegates.keySet().toArray(new String[0]);
@@ -41,7 +41,7 @@ public class SqlDelegationStore extends AbstractDelegationStore implements Deleg
 	{
 		SqlDelegationEntity sde = new SqlDelegationEntity();
 		sde.setDelegated(delegated);
-		sde.setDelegates(delegate);
+		sde.setDelegate(delegate);
 		sde.setOpTime(new Date(System.currentTimeMillis()));
 		_mapper.saveDelegation(sde);
 	}
@@ -50,6 +50,14 @@ public class SqlDelegationStore extends AbstractDelegationStore implements Deleg
 	public void removeAll()
 	{
 		_mapper.deleteAll();
+	}
+
+	@Override
+	public List<DelegationDetails> getDelegationDetailsList()
+	{
+		List<DelegationDetails> list = new ArrayList<DelegationDetails>();
+		Collections.addAll(list, _mapper.selectAll().toArray(new DelegationDetails[0]));
+		return list;
 	}
 
 }

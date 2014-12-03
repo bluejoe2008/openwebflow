@@ -5,45 +5,44 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class InMemoryDelegationDetailsStore extends AbstractDelegationStore  implements DelegationDetailsManager
+import org.openwebflow.permission.delegation.sql.DelegationDetails;
+
+public class InMemoryDelegationDetailsStore extends AbstractDelegationStore implements DelegationDetailsManager
 {
-	Map<String, List<String>> _map = new HashMap<String, List<String>>();
+	List<DelegationDetails> _list = new ArrayList<DelegationDetails>();
 
 	public void addDelegation(String delegated, String delegate)
 	{
-		List<String> delegates = _map.get(delegated);
-		if (delegates == null)
-		{
-			delegates = new ArrayList<String>();
-			_map.put(delegated, delegates);
-		}
-
-		delegates.add(delegate);
-	}
-
-	public void remove(String delegated, String delegate)
-	{
-		List<String> delegates = _map.get(delegated);
-		if (delegates != null)
-		{
-			delegates.remove(delegate);
-		}
+		_list.add(new DelegationDetails(delegated, delegate));
 	}
 
 	@Override
 	public String[] getDelegates(String delegated)
 	{
-		List<String> delegates = _map.get(delegated);
-		if (delegates == null)
-			return new String[0];
+		Map<String, Object> map = new HashMap<String, Object>();
+		for (DelegationDetails item : _list)
+		{
+			if (delegated.equals(item.getDelegated()))
+				map.put(item.getDelegate(), 0);
+		}
 
-		return delegates.toArray(new String[0]);
+		return map.keySet().toArray(new String[0]);
+	}
+
+	@Override
+	public List<DelegationDetails> getDelegationDetailsList()
+	{
+		return new ArrayList<DelegationDetails>(_list);
+	}
+
+	public void remove(String delegated, String delegate)
+	{
+		_list.remove(new DelegationDetails(delegated, delegate));
 	}
 
 	@Override
 	public void removeAll()
 	{
-		_map.clear();
+		_list.clear();
 	}
-
 }

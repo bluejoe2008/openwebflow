@@ -3,6 +3,7 @@ package org.openwebflow.tool;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -10,22 +11,21 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.openwebflow.alarm.impl.AbstractNotificationDetailsStore;
 import org.openwebflow.conf.ProcessEngineConfigurationEx;
 import org.openwebflow.conf.ReplaceTaskAssignmentManager;
 import org.openwebflow.identity.AbstractUserDetailsStore;
 import org.openwebflow.identity.impl.AbstractMembershipStore;
-import org.openwebflow.identity.impl.InMemoryMembershipStore;
-import org.openwebflow.identity.impl.InMemoryUserDetailsStore;
 import org.openwebflow.identity.impl.MyUserDetails;
 import org.openwebflow.permission.acl.AbstractActivityAclStore;
 import org.openwebflow.permission.delegation.AbstractDelegationStore;
-import org.openwebflow.permission.delegation.InMemoryDelegationDetailsStore;
 import org.openwebflow.permission.delegation.TaskDelagation;
 import org.openwebflow.util.ModelUtils;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class ProcessEngineToolTest
+public abstract class AbstractProcessEngineToolTest
 {
 	ProcessEngineTool _tool;
 
@@ -37,16 +37,20 @@ public class ProcessEngineToolTest
 
 	AbstractDelegationStore _delegationStore;
 
+	ProcessDefinition _processDef;
+
 	@Before
 	public void setUp() throws Exception
 	{
-		_ctx = new ClassPathXmlApplicationContext("classpath:activiti.cfg.xml");
+		_ctx = new ClassPathXmlApplicationContext(getConfigFilePath());
 		_tool = _ctx.getBean(ProcessEngineTool.class);
 		Assert.assertNotNull(_tool);
 		_processEngine = _tool.getProcessEngine();
 
 		_aclStore = (AbstractActivityAclStore) _ctx.getBean("myTaskActivityAclManager");
 		_aclStore.removeAll();
+
+		((AbstractNotificationDetailsStore) _ctx.getBean("myNotificationDetailsStore")).removeAll();
 
 		//用户关系管理
 		AbstractMembershipStore myMembershipManager = (AbstractMembershipStore) _ctx.getBean("myMembershipManager");
@@ -59,38 +63,64 @@ public class ProcessEngineToolTest
 		AbstractUserDetailsStore userDetailsStore = (AbstractUserDetailsStore) _ctx.getBean("myUserDetailsManager");
 		userDetailsStore.removeAll();
 		userDetailsStore.saveUser(new MyUserDetails("bluejoe", "白乔", "bluejoe2008@gmail.com", "13800138000"));
+		userDetailsStore.saveUser(new MyUserDetails("kermit", "老黄", "bluejoe@cnic.cn", "13800138000"));
 
 		//代理关系
 		_delegationStore = (AbstractDelegationStore) _ctx.getBean("myDelegationDetailsManager");
 		_delegationStore.removeAll();
+
+		// 取model，该model会自动注册
+		RepositoryService repositoryService = _processEngine.getRepositoryService();
+		Model model = repositoryService.createModelQuery().modelKey("test.bpmn").singleResult();
+		//部署该model
+		if (repositoryService.createProcessDefinitionQuery().list().isEmpty())
+		{
+			ModelUtils.deployModel(repositoryService, model.getId());
+		}
+
+		_processDef = repositoryService.createProcessDefinitionQuery().singleResult();
 	}
+
+	protected abstract String getConfigFilePath();
 
 	@After
 	public void tearDown() throws Exception
 	{
+		_processEngine.close();
+		_processEngine = null;
+		((AbstractApplicationContext) _ctx).getBeanFactory().destroySingletons();
+		_ctx = null;
+		_processDef = null;
 	}
 
 	@Test
-	public void test() throws Exception
+	public void testModelDeployment() throws Exception
 	{
 		// 取model，该model会自动注册
 		RepositoryService repositoryService = _processEngine.getRepositoryService();
-		Model model = repositoryService.createModelQuery().modelKey("test.bpmn").singleResult();
+		Model model = repositoryService.createModelQuery().modelKey("vacation.bpmn").singleResult();
 		//确定已注册
 		Assert.assertNotNull(model);
 		//由于没有部署，应该拿不到
-		Assert.assertEquals(0, repositoryService.createProcessDefinitionQuery().list().size());
+		Assert.assertEquals(1, repositoryService.createProcessDefinitionQuery().list().size());
 
 		//部署该model
-		ModelUtils.deployModel(repositoryService, model.getId());
+		Deployment dep = ModelUtils.deployModel(repositoryService, model.getId());
 		//现在应该拿得到了
-		Assert.assertEquals(1, repositoryService.createProcessDefinitionQuery().list().size());
-		ProcessDefinition pd = repositoryService.createProcessDefinitionQuery().singleResult();
-		Assert.assertNotNull(pd);
-		String processDefId = pd.getId();
+		Assert.assertEquals(2, repositoryService.createProcessDefinitionQuery().list().size());
 
+		//删除掉
+		repositoryService.deleteDeployment(dep.getId(), true);
+		//现在再取就拿不到了
+		Assert.assertEquals(1, repositoryService.createProcessDefinitionQuery().list().size());
+	}
+
+	@Test
+	public void testAcl() throws Exception
+	{
+		String processDefId = _processDef.getId();
 		// 启动流程实例
-		ProcessInstance instance = _processEngine.getRuntimeService().startProcessInstanceByKey(pd.getKey());
+		ProcessInstance instance = _processEngine.getRuntimeService().startProcessInstanceByKey(_processDef.getKey());
 		Assert.assertNotNull(instance);
 
 		TaskService taskService = _processEngine.getTaskService();
@@ -104,7 +134,7 @@ public class ProcessEngineToolTest
 		Assert.assertEquals(0, taskService.createTaskQuery().taskAssignee("kermit").count());
 		Assert.assertEquals(0, taskService.createTaskQuery().taskCandidateUser("bluejoe").count());
 
-		//允许step2可以让engineering操作
+		//现在允许step2可以让engineering操作
 		_aclStore.save(processDefId, "step2", null, new String[] { "engineering" }, new String[0]);
 
 		//对现已执行的task没有影响
@@ -113,7 +143,7 @@ public class ProcessEngineToolTest
 		_processEngine.getRuntimeService().deleteProcessInstance(instance.getId(), "test");
 
 		//再启动一个流程
-		instance = _processEngine.getRuntimeService().startProcessInstanceByKey(pd.getKey());
+		instance = _processEngine.getRuntimeService().startProcessInstanceByKey(_processDef.getKey());
 		//engineering应该可以执行任务了
 		Assert.assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("engineering").count());
 		//management不可以执行任务
@@ -122,13 +152,13 @@ public class ProcessEngineToolTest
 		//删掉流程实例
 		_processEngine.getRuntimeService().deleteProcessInstance(instance.getId(), "test");
 		_aclStore.removeAll();
-		
+
 		//允许step2可以让engineering和management操作，允许neo操作
 		_aclStore.save(processDefId, "step2", null, new String[] { "engineering", "management" },
 			new String[] { "neo" });
 
 		//再启动一个流程
-		instance = _processEngine.getRuntimeService().startProcessInstanceByKey(pd.getKey());
+		instance = _processEngine.getRuntimeService().startProcessInstanceByKey(_processDef.getKey());
 		//engineering应该可以执行任务
 		Assert.assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("engineering").count());
 		//management应该可以执行任务
@@ -141,13 +171,26 @@ public class ProcessEngineToolTest
 
 		//删掉流程
 		_processEngine.getRuntimeService().deleteProcessInstance(instance.getId(), "test");
+	}
+
+	@Test
+	public void testDelegation()
+	{
+		ProcessInstance instance;
+		TaskService taskService = _processEngine.getTaskService();
+
+		((TaskDelagation) (((ReplaceTaskAssignmentManager) (((ProcessEngineConfigurationEx) _processEngine
+				.getProcessEngineConfiguration()).getStartEngineEventListeners().get(2))).getAssignmentHandlers()
+				.get(1))).setHideDelegated(false);
 
 		//代理关系
-		_delegationStore.addDelegation("neo", "alex");
+		//alex将代理kermit
+		_delegationStore.addDelegation("kermit", "alex");
 
-		//再启动一个流程
-		instance = _processEngine.getRuntimeService().startProcessInstanceByKey(pd.getKey());
-		Assert.assertEquals(1, taskService.createTaskQuery().taskCandidateUser("neo").count());
+		//启动一个流程
+		instance = _processEngine.getRuntimeService().startProcessInstanceByKey(_processDef.getKey());
+		//kermit是management，所以可以访问
+		Assert.assertEquals(1, taskService.createTaskQuery().taskCandidateUser("kermit").count());
 		Assert.assertEquals(1, taskService.createTaskQuery().taskCandidateUser("alex").count());
 		_processEngine.getRuntimeService().deleteProcessInstance(instance.getId(), "test");
 
@@ -157,12 +200,23 @@ public class ProcessEngineToolTest
 				.get(1))).setHideDelegated(true);
 
 		//再启动一个流程
-		instance = _processEngine.getRuntimeService().startProcessInstanceByKey(pd.getKey());
+		instance = _processEngine.getRuntimeService().startProcessInstanceByKey(_processDef.getKey());
 		//neo被屏蔽了
-		Assert.assertEquals(1, taskService.createTaskQuery().taskCandidateUser("alex").count());
+		Assert.assertEquals(1, taskService.createTaskQuery().taskCandidateUser("kermit").count());
 		Assert.assertEquals(0, taskService.createTaskQuery().taskCandidateUser("neo").count());
+		//删掉流程
+		_processEngine.getRuntimeService().deleteProcessInstance(instance.getId(), "test");
+	}
 
+	@Test
+	public void testAlarm() throws Exception
+	{
+		ProcessInstance instance;
+		instance = _processEngine.getRuntimeService().startProcessInstanceByKey(_processDef.getKey());
 		//等待催办事件发生
 		Thread.sleep(60000);
+		//删掉流程
+		_processEngine.getRuntimeService().deleteProcessInstance(instance.getId(), "test");
 	}
+
 }

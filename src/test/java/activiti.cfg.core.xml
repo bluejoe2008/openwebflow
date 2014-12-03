@@ -10,10 +10,6 @@
 
 	<context:property-placeholder location="settings.properties" />
 	<context:annotation-config />
-	<!-- 
-	<import resource="activiti.mgr.mem.xml" />
- 	-->
-	<import resource="activiti.mgr.sql.xml" />
 	
 	<!-- 工作流核心数据库配置 -->
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
@@ -51,10 +47,7 @@
 		</property>
 		<property name="membershipManager" ref="myMembershipManager" />
 		<property name="userDetailsManager" ref="myUserDetailsManager" />
-		<property name="notificationDetailsStore">
-			<bean class="org.openwebflow.alarm.impl.InMemoryNotificationDetailsStore">
-			</bean>
-		</property>
+		<property name="notificationDetailsStore" ref="myNotificationDetailsStore" />
 	</bean>
 
 	<bean id="transactionManager"
@@ -92,6 +85,7 @@
 							<!-- 允许授权代理 -->
 							<bean class="org.openwebflow.permission.delegation.TaskDelagation">
 								<property name="delegationDetailsManager" ref="myDelegationDetailsManager" />
+								<property name="membershipManager" ref="myMembershipManager" />
 								<property name="hideDelegated" value="false" />
 							</bean>
 						</list>

@@ -1,6 +1,5 @@
 package org.openwebflow.alarm.impl;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -26,7 +25,7 @@ public class TaskAlarmServiceImpl implements TaskAlarmService, DisposableBean
 
 		boolean _stopped = false;
 
-		public MonitorThread() throws IOException
+		public MonitorThread()
 		{
 			_parsedPeriodInAdvance = Period.parse(_periodInAdvance);
 		}
