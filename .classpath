@@ -3,7 +3,6 @@
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER"/>
-	<classpathentry kind="var" path="servlet-api"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre6"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="target/classes"/>
