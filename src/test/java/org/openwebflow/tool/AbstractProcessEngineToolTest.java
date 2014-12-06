@@ -1,12 +1,19 @@
 package org.openwebflow.tool;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.history.HistoricActivityInstanceQuery;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -14,6 +21,7 @@ import org.junit.Test;
 import org.openwebflow.alarm.impl.AbstractNotificationDetailsStore;
 import org.openwebflow.conf.ProcessEngineConfigurationEx;
 import org.openwebflow.conf.ReplaceTaskAssignmentManager;
+import org.openwebflow.ctrl.TaskFlowControlService;
 import org.openwebflow.identity.AbstractUserDetailsStore;
 import org.openwebflow.identity.impl.AbstractMembershipStore;
 import org.openwebflow.identity.impl.MyUserDetails;
@@ -116,6 +124,62 @@ public abstract class AbstractProcessEngineToolTest
 	}
 
 	@Test
+	public void testTaskSequence() throws Exception
+	{
+		//_processDef对应于vacationRequest流程，参见https://github.com/bluejoe2008/openwebflow/blob/master/models/test.bpmn
+		ProcessInstance instance = _processEngine.getRuntimeService().startProcessInstanceByKey(_processDef.getKey());
+		String instanceId = instance.getId();
+
+		TaskService taskService = _processEngine.getTaskService();
+		Task task1 = taskService.createTaskQuery().singleResult();
+		Assert.assertEquals("step2", task1.getTaskDefinitionKey());
+
+		Map<String, Object> vars = new HashMap<String, Object>();
+		vars.put("vacationApproved", false);
+		vars.put("numberOfDays", 10);
+		vars.put("managerMotivation", "get sick");
+
+		String taskId = taskService.createTaskQuery().taskCandidateUser("kermit").singleResult().getId();
+		taskService.complete(taskId, vars);
+		Task task2 = taskService.createTaskQuery().singleResult();
+		Assert.assertEquals("adjustVacationRequestTask", task2.getTaskDefinitionKey());
+
+		TaskFlowControlService tfcs = new TaskFlowControlService(_processEngine, instanceId);
+
+		//跳回至 step2
+		tfcs.jump("step2");
+		Task task3 = taskService.createTaskQuery().singleResult();
+		Assert.assertEquals("step2", task3.getTaskDefinitionKey());
+
+		//确认权限都拷贝过来了
+		//management可以访问该task
+		Assert.assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("management").count());
+		//engineering不可以访问该task
+		Assert.assertEquals(0, taskService.createTaskQuery().taskCandidateGroup("engineering").count());
+
+		//确认历史轨迹里已保存
+		List<HistoricActivityInstance> activities = _processEngine.getHistoryService()
+				.createHistoricActivityInstanceQuery().processInstanceId(instanceId).list();
+		Assert.assertEquals(5, activities.size());
+		Assert.assertEquals("step1", activities.get(0).getActivityId());
+		Assert.assertEquals("step2", activities.get(1).getActivityId());
+		Assert.assertEquals("requestApprovedDecision", activities.get(2).getActivityId());
+		Assert.assertEquals("adjustVacationRequestTask", activities.get(3).getActivityId());
+		Assert.assertEquals("step2", activities.get(4).getActivityId());
+
+		//测试一下往前跳
+		tfcs.jump("adjustVacationRequestTask");
+		Task task4 = taskService.createTaskQuery().singleResult();
+		Assert.assertEquals("adjustVacationRequestTask", task4.getTaskDefinitionKey());
+
+		activities = _processEngine.getHistoryService().createHistoricActivityInstanceQuery()
+				.processInstanceId(instanceId).list();
+		Assert.assertEquals(6, activities.size());
+		Assert.assertEquals("adjustVacationRequestTask", activities.get(5).getActivityId());
+		_processEngine.getRuntimeService().deleteProcessInstance(instanceId, "test");
+	}
+
+	@Test
 	public void testAcl() throws Exception
 	{
 		String processDefId = _processDef.getId();
@@ -139,6 +203,7 @@ public abstract class AbstractProcessEngineToolTest
 
 		//对现已执行的task没有影响
 		Assert.assertEquals(0, taskService.createTaskQuery().taskCandidateGroup("engineering").count());
+
 		//删除掉该流程
 		_processEngine.getRuntimeService().deleteProcessInstance(instance.getId(), "test");
 

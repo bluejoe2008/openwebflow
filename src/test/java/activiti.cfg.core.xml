@@ -12,7 +12,8 @@
 	<context:annotation-config />
 	
 	<!-- 工作流核心数据库配置 -->
-	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+	<!-- 
+	<bean id="activitiDataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
 		<property name="driverClassName" value="org.h2.Driver" />
 		<property name="url" value="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000" />
@@ -23,7 +24,20 @@
 		<property name="maxIdle" value="20" />
 		<property name="minIdle" value="10" />
 	</bean>
-			
+	-->
+	<bean id="activitiDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url"
+			value="jdbc:mysql://localhost:3306/activitidb0?useUnicode=true&amp;characterEncoding=UTF-8" />
+		<property name="username" value="root" />
+		<property name="password" value="1" />
+		<property name="initialSize" value="20" />
+		<property name="maxActive" value="50" />
+		<property name="maxIdle" value="20" />
+		<property name="minIdle" value="10" />
+	</bean>
+	
 	<!-- 任务催办配置 -->
 	<bean id="myTaskAlarmService" class="org.openwebflow.alarm.impl.TaskAlarmServiceImpl">
 		<!-- 截止日期提前量 -->
@@ -52,15 +66,15 @@
 
 	<bean id="transactionManager"
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="dataSource" />
+		<property name="dataSource" ref="activitiDataSource" />
 	</bean>
 
 	<tx:annotation-driven transaction-manager="transactionManager" />
 
 	<!-- 配置对象 -->
 	<bean id="processEngineConfiguration" class="org.openwebflow.conf.ProcessEngineConfigurationEx">
-		<property name="dataSource" ref="dataSource" />
-		<property name="transactionManager" ref="transactionManager" />
+		<property name="dataSource" ref="activitiDataSource" />
+		 <property name="transactionManager" ref="transactionManager" />
 		<property name="databaseSchemaUpdate" value="true" />
 		<property name="jobExecutorActivate" value="false" />
 		<property name="startEngineEventListeners">
@@ -98,6 +112,7 @@
 				<!-- 启动催办管理器 -->
 				<bean class="org.openwebflow.conf.StartTaskAlarmService">
 					<property name="taskAlarmService" ref="myTaskAlarmService" />
+					<property name="runOnStartup" value="false" />
 				</bean>
 			</list>
 		</property>

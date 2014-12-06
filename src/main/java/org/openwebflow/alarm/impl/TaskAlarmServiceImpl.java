@@ -90,7 +90,10 @@ public class TaskAlarmServiceImpl implements TaskAlarmService, DisposableBean
 	@Override
 	public void destroy() throws Exception
 	{
-		_thread._stopped = true;
+		if (_thread != null)
+		{
+			_thread._stopped = true;
+		}
 	}
 
 	public long getCheckInterval()

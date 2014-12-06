@@ -8,6 +8,18 @@ public class StartTaskAlarmService implements StartEngineEventListener
 {
 	TaskAlarmService _taskAlarmService;
 
+	boolean _runOnStartup = true;
+
+	public boolean isRunOnStartup()
+	{
+		return _runOnStartup;
+	}
+
+	public void setRunOnStartup(boolean runOnStartup)
+	{
+		_runOnStartup = runOnStartup;
+	}
+
 	public TaskAlarmService getTaskAlarmService()
 	{
 		return _taskAlarmService;
@@ -21,7 +33,10 @@ public class StartTaskAlarmService implements StartEngineEventListener
 	@Override
 	public void afterStartEngine(ProcessEngineConfigurationImpl conf, ProcessEngine processEngine) throws Exception
 	{
-		_taskAlarmService.start(processEngine);
+		if (_runOnStartup)
+		{
+			_taskAlarmService.start(processEngine);
+		}
 	}
 
 	@Override
