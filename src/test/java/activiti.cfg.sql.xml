@@ -31,7 +31,7 @@
   
  	<!-- 代理记录管理 -->
 	<bean id="myDelegationDetailsManager"
-		class="org.openwebflow.permission.delegation.sql.SqlDelegationStore">
+		class="org.openwebflow.assign.delegation.sql.SqlDelegationStore">
 		<property name="mapper">
 			<!--创建数据映射器，数据映射器必须为接口-->
 			<bean class="org.mybatis.spring.mapper.MapperFactoryBean">
@@ -67,7 +67,7 @@
 	</bean>
 
 	<!-- 自定义的活动权限表管理 -->
-	<bean id="myTaskActivityAclManager" class="org.openwebflow.permission.acl.sql.SqlActivityAclStore">
+	<bean id="myTaskActivityAclManager" class="org.openwebflow.assign.acl.sql.SqlActivityAclStore">
 		<property name="mapper">
 			<!--创建数据映射器，数据映射器必须为接口-->
 			<bean class="org.mybatis.spring.mapper.MapperFactoryBean">

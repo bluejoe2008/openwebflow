@@ -1,6 +1,7 @@
 package org.openwebflow.ctrl;
 
 import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.RuntimeServiceImpl;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -36,8 +37,10 @@ public class TaskFlowControlService
 
 	/**
 	 * 
-	 * @param currentTaskEntity 当前任务节点
-	 * @param targetTaskDefinitionKey 目标任务节点（在模型定义里面的节点名称）
+	 * @param currentTaskEntity
+	 *            当前任务节点
+	 * @param targetTaskDefinitionKey
+	 *            目标任务节点（在模型定义里面的节点名称）
 	 * @throws Exception
 	 */
 	private void jump(final TaskEntity currentTaskEntity, String targetTaskDefinitionKey) throws Exception
@@ -47,6 +50,8 @@ public class TaskFlowControlService
 
 		final ExecutionEntity execution = (ExecutionEntity) _processEngine.getRuntimeService().createExecutionQuery()
 				.executionId(currentTaskEntity.getExecutionId()).singleResult();
+
+		final TaskService taskService = _processEngine.getTaskService();
 
 		//包装一个Command对象
 		((RuntimeServiceImpl) _processEngine.getRuntimeService()).getCommandExecutor().execute(
@@ -58,12 +63,12 @@ public class TaskFlowControlService
 					//创建新任务
 					execution.setActivity(activity);
 					execution.executeActivity(activity);
-					
+
 					//删除当前的任务
 					//不能删除当前正在执行的任务，所以要先清除掉关联
 					currentTaskEntity.setExecutionId(null);
-					_processEngine.getTaskService().saveTask(currentTaskEntity);
-					_processEngine.getTaskService().deleteTask(currentTaskEntity.getId(), true);
+					taskService.saveTask(currentTaskEntity);
+					taskService.deleteTask(currentTaskEntity.getId(), true);
 
 					return null;
 				}

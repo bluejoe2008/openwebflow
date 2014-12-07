@@ -1,4 +1,4 @@
-package org.openwebflow.permission.acl;
+package org.openwebflow.assign.acl;
 
 import java.util.HashMap;
 import java.util.Map;

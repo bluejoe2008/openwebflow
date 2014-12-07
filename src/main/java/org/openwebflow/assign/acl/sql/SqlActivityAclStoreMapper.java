@@ -1,4 +1,4 @@
-package org.openwebflow.permission.acl.sql;
+package org.openwebflow.assign.acl.sql;
 
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;

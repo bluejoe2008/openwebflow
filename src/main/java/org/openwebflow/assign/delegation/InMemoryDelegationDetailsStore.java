@@ -1,11 +1,11 @@
-package org.openwebflow.permission.delegation;
+package org.openwebflow.assign.delegation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openwebflow.permission.delegation.sql.DelegationDetails;
+import org.openwebflow.assign.delegation.sql.DelegationDetails;
 
 public class InMemoryDelegationDetailsStore extends AbstractDelegationStore implements DelegationDetailsManager
 {

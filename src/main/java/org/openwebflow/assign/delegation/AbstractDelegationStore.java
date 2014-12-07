@@ -1,4 +1,4 @@
-package org.openwebflow.permission.delegation;
+package org.openwebflow.assign.delegation;
 
 public abstract class AbstractDelegationStore implements DelegationDetailsManager
 {

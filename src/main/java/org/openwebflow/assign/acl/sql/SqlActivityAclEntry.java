@@ -1,6 +1,6 @@
-package org.openwebflow.permission.acl.sql;
+package org.openwebflow.assign.acl.sql;
 
-import org.openwebflow.permission.acl.ActivityAclEntryImpl;
+import org.openwebflow.assign.acl.ActivityAclEntryImpl;
 import org.springframework.util.StringUtils;
 
 public class SqlActivityAclEntry extends ActivityAclEntryImpl

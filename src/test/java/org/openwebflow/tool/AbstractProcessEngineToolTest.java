@@ -8,7 +8,6 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricActivityInstance;
-import org.activiti.engine.history.HistoricActivityInstanceQuery;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -19,15 +18,15 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openwebflow.alarm.impl.AbstractNotificationDetailsStore;
+import org.openwebflow.assign.acl.AbstractActivityAclStore;
+import org.openwebflow.assign.delegation.AbstractDelegationStore;
+import org.openwebflow.assign.delegation.TaskDelagation;
 import org.openwebflow.conf.ProcessEngineConfigurationEx;
-import org.openwebflow.conf.ReplaceTaskAssignmentManager;
+import org.openwebflow.conf.ReplaceTaskAssignmentHandler;
 import org.openwebflow.ctrl.TaskFlowControlService;
 import org.openwebflow.identity.AbstractUserDetailsStore;
 import org.openwebflow.identity.impl.AbstractMembershipStore;
 import org.openwebflow.identity.impl.MyUserDetails;
-import org.openwebflow.permission.acl.AbstractActivityAclStore;
-import org.openwebflow.permission.delegation.AbstractDelegationStore;
-import org.openwebflow.permission.delegation.TaskDelagation;
 import org.openwebflow.util.ModelUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
@@ -244,9 +243,9 @@ public abstract class AbstractProcessEngineToolTest
 		ProcessInstance instance;
 		TaskService taskService = _processEngine.getTaskService();
 
-		((TaskDelagation) (((ReplaceTaskAssignmentManager) (((ProcessEngineConfigurationEx) _processEngine
-				.getProcessEngineConfiguration()).getStartEngineEventListeners().get(2))).getAssignmentHandlers()
-				.get(1))).setHideDelegated(false);
+		((TaskDelagation) (((ReplaceTaskAssignmentHandler) (((ProcessEngineConfigurationEx) _processEngine
+				.getProcessEngineConfiguration()).getStartEngineEventListeners().get(2))).getHandlers().get(1)))
+				.setHideDelegated(false);
 
 		//代理关系
 		//alex将代理kermit
@@ -260,9 +259,9 @@ public abstract class AbstractProcessEngineToolTest
 		_processEngine.getRuntimeService().deleteProcessInstance(instance.getId(), "test");
 
 		//设置屏蔽被代理人
-		((TaskDelagation) (((ReplaceTaskAssignmentManager) (((ProcessEngineConfigurationEx) _processEngine
-				.getProcessEngineConfiguration()).getStartEngineEventListeners().get(2))).getAssignmentHandlers()
-				.get(1))).setHideDelegated(true);
+		((TaskDelagation) (((ReplaceTaskAssignmentHandler) (((ProcessEngineConfigurationEx) _processEngine
+				.getProcessEngineConfiguration()).getStartEngineEventListeners().get(2))).getHandlers().get(1)))
+				.setHideDelegated(true);
 
 		//再启动一个流程
 		instance = _processEngine.getRuntimeService().startProcessInstanceByKey(_processDef.getKey());

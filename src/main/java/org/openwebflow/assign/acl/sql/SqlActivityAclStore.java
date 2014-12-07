@@ -1,10 +1,10 @@
-package org.openwebflow.permission.acl.sql;
+package org.openwebflow.assign.acl.sql;
 
 import java.sql.Date;
 
-import org.openwebflow.permission.acl.AbstractActivityAclStore;
-import org.openwebflow.permission.acl.ActivityAclEntry;
-import org.openwebflow.permission.acl.ActivityAclManager;
+import org.openwebflow.assign.acl.AbstractActivityAclStore;
+import org.openwebflow.assign.acl.ActivityAclEntry;
+import org.openwebflow.assign.acl.ActivityAclManager;
 
 public class SqlActivityAclStore extends AbstractActivityAclStore implements ActivityAclManager
 {

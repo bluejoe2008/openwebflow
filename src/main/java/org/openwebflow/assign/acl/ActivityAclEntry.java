@@ -1,4 +1,4 @@
-package org.openwebflow.permission.acl;
+package org.openwebflow.assign.acl;
 
 public interface ActivityAclEntry
 {

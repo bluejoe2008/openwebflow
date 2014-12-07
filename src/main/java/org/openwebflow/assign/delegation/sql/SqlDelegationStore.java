@@ -1,4 +1,4 @@
-package org.openwebflow.permission.delegation.sql;
+package org.openwebflow.assign.delegation.sql;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -7,8 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openwebflow.permission.delegation.AbstractDelegationStore;
-import org.openwebflow.permission.delegation.DelegationDetailsManager;
+import org.openwebflow.assign.delegation.AbstractDelegationStore;
+import org.openwebflow.assign.delegation.DelegationDetailsManager;
 
 public class SqlDelegationStore extends AbstractDelegationStore implements DelegationDetailsManager
 {

@@ -1,4 +1,4 @@
-package org.openwebflow.permission.impl;
+package org.openwebflow.assign.impl;
 
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;

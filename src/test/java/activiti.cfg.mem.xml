@@ -15,11 +15,11 @@
 	<bean id="myUserDetailsManager" class="org.openwebflow.identity.impl.InMemoryUserDetailsStore" />
 	
 	<!-- 自定义的活动权限表管理 -->
-	<bean id="myTaskActivityAclManager" class="org.openwebflow.permission.acl.InMemoryActivityAclStore" />
+	<bean id="myTaskActivityAclManager" class="org.openwebflow.assign.acl.InMemoryActivityAclStore" />
 		
 	<!-- 代理关系管理 -->
 	<bean id="myDelegationDetailsManager"
-		class="org.openwebflow.permission.delegation.InMemoryDelegationDetailsStore" />
+		class="org.openwebflow.assign.delegation.InMemoryDelegationDetailsStore" />
 
 	<bean id="myNotificationDetailsStore"
 		class="org.openwebflow.alarm.impl.InMemoryNotificationDetailsStore" />

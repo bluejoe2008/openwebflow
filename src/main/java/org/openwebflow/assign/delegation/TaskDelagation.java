@@ -1,4 +1,4 @@
-package org.openwebflow.permission.delegation;
+package org.openwebflow.assign.delegation;
 
 import java.util.HashMap;
 import java.util.List;
@@ -8,10 +8,10 @@ import java.util.Set;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.task.IdentityLink;
+import org.openwebflow.assign.TaskAssignmentHandler;
+import org.openwebflow.assign.TaskAssignmentHandlerChain;
+import org.openwebflow.assign.delegation.sql.DelegationDetails;
 import org.openwebflow.identity.IdentityMembershipManager;
-import org.openwebflow.permission.TaskAssignmentHandler;
-import org.openwebflow.permission.TaskAssignmentHandlerChain;
-import org.openwebflow.permission.delegation.sql.DelegationDetails;
 
 public class TaskDelagation implements TaskAssignmentHandler
 {

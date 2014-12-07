@@ -1,4 +1,4 @@
-package org.openwebflow.permission.acl;
+package org.openwebflow.assign.acl;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,8 +7,8 @@ import java.util.List;
 
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.openwebflow.permission.TaskAssignmentHandler;
-import org.openwebflow.permission.TaskAssignmentHandlerChain;
+import org.openwebflow.assign.TaskAssignmentHandler;
+import org.openwebflow.assign.TaskAssignmentHandlerChain;
 
 public class TaskActivityAcl implements TaskAssignmentHandler
 {

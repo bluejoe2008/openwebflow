@@ -1,4 +1,4 @@
-package org.openwebflow.permission.delegation.sql;
+package org.openwebflow.assign.delegation.sql;
 
 import java.sql.Date;
 

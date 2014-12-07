@@ -1,12 +1,12 @@
-package org.openwebflow.permission.impl;
+package org.openwebflow.assign.impl;
 
 import java.util.List;
 import java.util.Stack;
 
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.openwebflow.permission.TaskAssignmentHandlerChain;
-import org.openwebflow.permission.TaskAssignmentHandler;
+import org.openwebflow.assign.TaskAssignmentHandler;
+import org.openwebflow.assign.TaskAssignmentHandlerChain;
 
 public class TaskAssignmentHandlerChainImpl implements TaskAssignmentHandlerChain
 {
