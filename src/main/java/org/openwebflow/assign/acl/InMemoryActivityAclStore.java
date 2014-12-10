@@ -3,7 +3,6 @@ package org.openwebflow.assign.acl;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class InMemoryActivityAclStore extends AbstractActivityAclStore implements ActivityAclManager
 {
 	Map<String, ActivityAclEntry> _entryMap = new HashMap<String, ActivityAclEntry>();
@@ -13,8 +12,8 @@ public class InMemoryActivityAclStore extends AbstractActivityAclStore implement
 		return processDefId + "--" + taskDefinitionKey;
 	}
 
-	public void save(String processDefId, String taskDefinitionKey, String assignee,
-			String[] candidateGroupIds, String[] candidateUserIds) throws Exception
+	public void save(String processDefId, String taskDefinitionKey, String assignee, String[] candidateGroupIds,
+			String[] candidateUserIds) throws Exception
 	{
 		ActivityAclEntryImpl entry = new ActivityAclEntryImpl();
 		entry.setAssignee(assignee);

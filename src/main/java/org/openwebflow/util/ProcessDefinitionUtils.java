@@ -10,13 +10,18 @@ import org.activiti.engine.impl.task.TaskDefinition;
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.apache.log4j.Logger;
 
-public abstract class ActivityUtils
+public abstract class ProcessDefinitionUtils
 {
 	public static ActivityImpl getActivity(ProcessEngine processEngine, String processDefId, String activityId)
 	{
-		ProcessDefinitionEntity pde = (ProcessDefinitionEntity) ((RepositoryServiceImpl) processEngine
-				.getRepositoryService()).getDeployedProcessDefinition(processDefId);
+		ProcessDefinitionEntity pde = getProcessDefinition(processEngine, processDefId);
 		return (ActivityImpl) pde.findActivity(activityId);
+	}
+
+	public static ProcessDefinitionEntity getProcessDefinition(ProcessEngine processEngine, String processDefId)
+	{
+		return (ProcessDefinitionEntity) ((RepositoryServiceImpl) processEngine.getRepositoryService())
+				.getDeployedProcessDefinition(processDefId);
 	}
 
 	public static void grantPermission(ActivityImpl activity, String assigneeExpression,
@@ -29,7 +34,7 @@ public abstract class ActivityUtils
 		FieldUtils.writeField(taskDefinition, "candidateGroupIdExpressions",
 			ExpressionUtils.stringToExpressionSet(candidateGroupIdExpressions), true);
 
-		Logger.getLogger(ActivityUtils.class).info(
+		Logger.getLogger(ProcessDefinitionUtils.class).info(
 			String.format("granting previledges for [%s, %s, %s] on [%s, %s]", assigneeExpression,
 				candidateGroupIdExpressions, candidateUserIdExpressions, activity.getProcessDefinition().getKey(),
 				activity.getProperty("name")));

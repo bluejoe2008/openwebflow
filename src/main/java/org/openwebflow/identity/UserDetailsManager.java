@@ -1,6 +1,5 @@
 package org.openwebflow.identity;
 
-
 public interface UserDetailsManager
 {
 

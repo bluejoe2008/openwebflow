@@ -1,6 +1,6 @@
 package org.openwebflow.alarm.impl;
 
-public class MailSenderSupport 
+public class MailSenderSupport
 {
 	protected String _authPassword;
 

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://activiti.org/bpmn20" id="definitions">
+  <process id="test2" name="测试2" isExecutable="true">
+    <startEvent id="step1" name="步骤1" activiti:initiator="employeeName" activiti:formKey="/startVacationRequest"></startEvent>
+    <userTask id="step4" name="步骤4" activiti:assignee="${assignee}" activiti:formKey="/handleVacationRequest">
+      <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="assigneeList" activiti:elementVariable="assignee">
+        <loopCardinality>2</loopCardinality>
+      </multiInstanceLoopCharacteristics>
+    </userTask>
+    <endEvent id="theEnd1"></endEvent>
+    <userTask id="step2" name="步骤2"></userTask>
+    <userTask id="step5" name="步骤5"></userTask>
+    <userTask id="step6" name="步骤6">
+      <multiInstanceLoopCharacteristics isSequential="true" activiti:collection="assigneeList" activiti:elementVariable="assignee">
+        <loopCardinality>2</loopCardinality>
+      </multiInstanceLoopCharacteristics>
+    </userTask>
+    <userTask id="step7" name="步骤7"></userTask>
+    <userTask id="step3" name="步骤3"></userTask>
+    <sequenceFlow id="flow1" sourceRef="step1" targetRef="step2"></sequenceFlow>
+    <sequenceFlow id="flow2" sourceRef="step2" targetRef="step3"></sequenceFlow>
+    <sequenceFlow id="flow3" sourceRef="step3" targetRef="step4"></sequenceFlow>
+    <sequenceFlow id="flow4" sourceRef="step4" targetRef="step5"></sequenceFlow>
+    <sequenceFlow id="flow5" sourceRef="step5" targetRef="step6"></sequenceFlow>
+    <sequenceFlow id="flow6" sourceRef="step6" targetRef="step7"></sequenceFlow>
+    <sequenceFlow id="flow7" sourceRef="step7" targetRef="theEnd1"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_test2">
+    <bpmndi:BPMNPlane bpmnElement="test2" id="BPMNPlane_test2">
+      <bpmndi:BPMNShape bpmnElement="step1" id="BPMNShape_step1">
+        <omgdc:Bounds height="35.0" width="35.0" x="40.0" y="93.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="step4" id="BPMNShape_step4">
+        <omgdc:Bounds height="60.0" width="100.0" x="640.0" y="214.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="theEnd1" id="BPMNShape_theEnd1">
+        <omgdc:Bounds height="35.0" width="35.0" x="20.0" y="214.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="step2" id="BPMNShape_step2">
+        <omgdc:Bounds height="55.0" width="105.0" x="240.0" y="55.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="step5" id="BPMNShape_step5">
+        <omgdc:Bounds height="55.0" width="105.0" x="536.0" y="358.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="step6" id="BPMNShape_step6">
+        <omgdc:Bounds height="55.0" width="105.0" x="299.0" y="345.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="step7" id="BPMNShape_step7">
+        <omgdc:Bounds height="55.0" width="105.0" x="90.0" y="316.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="step3" id="BPMNShape_step3">
+        <omgdc:Bounds height="55.0" width="105.0" x="480.0" y="55.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="75.0" y="110.0"></omgdi:waypoint>
+        <omgdi:waypoint x="240.0" y="82.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="345.0" y="82.0"></omgdi:waypoint>
+        <omgdi:waypoint x="480.0" y="82.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="532.0" y="110.0"></omgdi:waypoint>
+        <omgdi:waypoint x="690.0" y="214.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="690.0" y="274.0"></omgdi:waypoint>
+        <omgdi:waypoint x="588.0" y="358.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="536.0" y="385.0"></omgdi:waypoint>
+        <omgdi:waypoint x="404.0" y="372.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="299.0" y="372.0"></omgdi:waypoint>
+        <omgdi:waypoint x="195.0" y="343.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+        <omgdi:waypoint x="142.0" y="316.0"></omgdi:waypoint>
+        <omgdi:waypoint x="37.0" y="249.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

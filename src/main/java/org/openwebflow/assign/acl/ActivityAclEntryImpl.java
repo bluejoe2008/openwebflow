@@ -2,7 +2,6 @@ package org.openwebflow.assign.acl;
 
 import java.sql.Date;
 
-
 /**
  * 20141015于高空
  * 

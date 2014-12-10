@@ -31,7 +31,7 @@ public class MyUserTaskActivityBehavior extends UserTaskActivityBehavior
 				myUserTaskActivityBehavior.superHandleAssignments(task, execution);
 			}
 		});
-		
+
 		handlerChain.addHandlers(_handlers);
 		return handlerChain;
 	}

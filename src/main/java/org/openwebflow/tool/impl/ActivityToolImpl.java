@@ -3,7 +3,7 @@ package org.openwebflow.tool.impl;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.openwebflow.tool.ActivityTool;
 import org.openwebflow.tool.ProcessEngineTool;
-import org.openwebflow.util.ActivityUtils;
+import org.openwebflow.util.ProcessDefinitionUtils;
 
 public class ActivityToolImpl extends AbstractTool implements ActivityTool
 {
@@ -25,7 +25,7 @@ public class ActivityToolImpl extends AbstractTool implements ActivityTool
 	public void grantPermission(String assigneeExpression, String candidateGroupIdExpressions,
 			String candidateUserIdExpressions) throws Exception
 	{
-		ActivityUtils.grantPermission(_activityImpl, assigneeExpression, candidateGroupIdExpressions,
+		ProcessDefinitionUtils.grantPermission(_activityImpl, assigneeExpression, candidateGroupIdExpressions,
 			candidateUserIdExpressions);
 	}
 }

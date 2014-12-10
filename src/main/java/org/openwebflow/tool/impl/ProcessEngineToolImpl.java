@@ -15,7 +15,7 @@ import org.openwebflow.tool.ProcessDefinitionTool;
 import org.openwebflow.tool.ProcessEngineTool;
 import org.openwebflow.tool.ProcessInstanceTool;
 import org.openwebflow.tool.TaskTool;
-import org.openwebflow.util.ActivityUtils;
+import org.openwebflow.util.ProcessDefinitionUtils;
 
 public class ProcessEngineToolImpl implements ProcessEngineTool
 {
@@ -24,7 +24,7 @@ public class ProcessEngineToolImpl implements ProcessEngineTool
 	@Override
 	public ActivityTool createActivityTool(String processDefId, String activityId)
 	{
-		return new ActivityToolImpl(this, ActivityUtils.getActivity(_processEngine, processDefId, activityId));
+		return new ActivityToolImpl(this, ProcessDefinitionUtils.getActivity(_processEngine, processDefId, activityId));
 	}
 
 	@Override

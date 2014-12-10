@@ -5,38 +5,55 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.editor.constants.ModelDataJsonConstants;
-import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.impl.util.io.StringStreamSource;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.apache.log4j.Logger;
+import org.h2.util.IOUtils;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public abstract class ModelUtils
 {
+	private static String DEFAULT_MODEL_XML = "";
+
+	private static String DEFAULT_MODEL_XML_PATH = "default-model.bpmn";
+
+	static
+	{
+		Resource defaultModelXmlResource = new ClassPathResource(DEFAULT_MODEL_XML_PATH);
+		try
+		{
+			DEFAULT_MODEL_XML = IOUtils.readStringAndClose(
+				new InputStreamReader(defaultModelXmlResource.getInputStream()),
+				(int) defaultModelXmlResource.contentLength());
+		}
+		catch (IOException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+
 	public static Deployment deployModel(RepositoryService repositoryService, String modelId) throws IOException
 	{
 		Model modelData = repositoryService.getModel(modelId);
-		ObjectNode modelNode = (ObjectNode) new ObjectMapper().readTree(repositoryService
-				.getModelEditorSource(modelData.getId()));
-		byte[] bpmnBytes = null;
-
-		BpmnModel model = new BpmnJsonConverter().convertToBpmnModel(modelNode);
-		bpmnBytes = new BpmnXMLConverter().convertToXML(model);
+		//EditorSource就是XML格式的
+		byte[] bpmnBytes = repositoryService.getModelEditorSource(modelId);
 
 		String processName = modelData.getName() + ".bpmn20.xml";
 		Deployment deployment = repositoryService.createDeployment().name(modelData.getName())
 				.addString(processName, new String(bpmnBytes, "utf-8")).deploy();
 
+		//设置部署ID
 		modelData.setDeploymentId(deployment.getId());
 		repositoryService.saveModel(modelData);
 
@@ -47,12 +64,6 @@ public abstract class ModelUtils
 			throws IOException
 	{
 		ObjectMapper objectMapper = new ObjectMapper();
-		ObjectNode editorNode = objectMapper.createObjectNode();
-		editorNode.put("id", "canvas");
-		editorNode.put("resourceId", "canvas");
-		ObjectNode stencilSetNode = objectMapper.createObjectNode();
-		stencilSetNode.put("namespace", "http://b3mn.org/stencilset/bpmn2.0#");
-		editorNode.put("stencilset", stencilSetNode);
 		Model modelData = repositoryService.newModel();
 
 		ObjectNode modelObjectNode = objectMapper.createObjectNode();
@@ -64,19 +75,18 @@ public abstract class ModelUtils
 		modelData.setName(name);
 
 		repositoryService.saveModel(modelData);
-		repositoryService.addModelEditorSource(modelData.getId(), editorNode.toString().getBytes("utf-8"));
+		repositoryService.addModelEditorSource(modelData.getId(), DEFAULT_MODEL_XML.getBytes("utf-8"));
 		return modelData;
 	}
 
 	public static void importModel(RepositoryService repositoryService, File modelFile) throws IOException,
 			XMLStreamException
 	{
-		BpmnXMLConverter xmlConverter = new BpmnXMLConverter();
-		XMLInputFactory xif = XMLInputFactory.newInstance();
-		InputStreamReader in = new InputStreamReader(new FileInputStream(modelFile), "utf-8");
-		XMLStreamReader xtr = xif.createXMLStreamReader(in);
-		BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
-		xmlConverter.convertToBpmnModel(xtr);
+		InputStreamReader reader = new InputStreamReader(new FileInputStream(modelFile));
+		String fileContent = IOUtils.readStringAndClose(reader, (int) modelFile.length());
+
+		BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(new StringStreamSource(fileContent), false,
+			false);
 
 		String processName = bpmnModel.getMainProcess().getName();
 		if (processName == null || processName.isEmpty())
@@ -94,10 +104,10 @@ public abstract class ModelUtils
 
 		repositoryService.saveModel(modelData);
 
-		BpmnJsonConverter jsonConverter = new BpmnJsonConverter();
-		ObjectNode editorNode = jsonConverter.convertToJson(bpmnModel);
-
-		repositoryService.addModelEditorSource(modelData.getId(), editorNode.toString().getBytes("utf-8"));
+		//BpmnJsonConverter jsonConverter = new BpmnJsonConverter();
+		//ObjectNode editorNode = jsonConverter.convertToJson(bpmnModel);
+		//repositoryService.addModelEditorSource(modelData.getId(), editorNode.toString().getBytes("utf-8"));
+		repositoryService.addModelEditorSource(modelData.getId(), fileContent.getBytes("utf-8"));
 		Logger.getLogger(ModelUtils.class)
 				.info(String.format("importing model file: %s", modelFile.getCanonicalPath()));
 	}

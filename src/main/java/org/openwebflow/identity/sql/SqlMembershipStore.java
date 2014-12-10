@@ -49,7 +49,7 @@ public class SqlMembershipStore extends AbstractMembershipStore implements Ident
 	@Override
 	public void saveMembership(String userId, String groupId)
 	{
-		SqlMembershipEntity mse=new SqlMembershipEntity();
+		SqlMembershipEntity mse = new SqlMembershipEntity();
 		mse.setGroupId(groupId);
 		mse.setUserId(userId);
 		_mapper.saveMembership(mse);
