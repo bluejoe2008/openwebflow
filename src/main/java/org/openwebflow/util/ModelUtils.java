@@ -24,16 +24,16 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public abstract class ModelUtils
 {
-	private static String DEFAULT_MODEL_XML = "";
+	private static String EMPTY_MODEL_XML = "";
 
-	private static String DEFAULT_MODEL_XML_PATH = "default-model.bpmn";
+	private static String EMPTY_MODEL_XML_PATH = "empty-model.bpmn";
 
 	static
 	{
-		Resource defaultModelXmlResource = new ClassPathResource(DEFAULT_MODEL_XML_PATH);
+		Resource defaultModelXmlResource = new ClassPathResource(EMPTY_MODEL_XML_PATH);
 		try
 		{
-			DEFAULT_MODEL_XML = IOUtils.readStringAndClose(
+			EMPTY_MODEL_XML = IOUtils.readStringAndClose(
 				new InputStreamReader(defaultModelXmlResource.getInputStream()),
 				(int) defaultModelXmlResource.contentLength());
 		}
@@ -75,7 +75,7 @@ public abstract class ModelUtils
 		modelData.setName(name);
 
 		repositoryService.saveModel(modelData);
-		repositoryService.addModelEditorSource(modelData.getId(), DEFAULT_MODEL_XML.getBytes("utf-8"));
+		repositoryService.addModelEditorSource(modelData.getId(), EMPTY_MODEL_XML.getBytes("utf-8"));
 		return modelData;
 	}
 

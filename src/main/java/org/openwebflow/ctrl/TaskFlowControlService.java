@@ -21,10 +21,6 @@ public class TaskFlowControlService
 
 	private String _processInstanceId;
 
-	CloneActivityFactory _cloneActivityFactory;
-
-	private static int SEQUNCE_NUMBER = 0;
-
 	public TaskFlowControlService(ProcessEngine processEngine, String processId)
 	{
 		_processEngine = processEngine;
@@ -34,7 +30,96 @@ public class TaskFlowControlService
 				.processInstanceId(_processInstanceId).singleResult().getProcessDefinitionId();
 
 		_processDefinition = ProcessDefinitionUtils.getProcessDefinition(_processEngine, processDefId);
-		_cloneActivityFactory = new CloneActivityFactory(_processEngine, _processDefinition);
+	}
+
+	private ActivityImpl[] cloneAndMakeChain(String prototypeActivityId, String nextActivityId, String[] assignees)
+			throws Exception
+	{
+		ActivitiesCreationEntity info = new ActivitiesCreationEntity();
+		info.setFactoryName(CloneActivitiesCreator.class.getName());
+		info.setProcessDefinitionId(_processDefinition.getId());
+		info.setProcessInstanceId(_processInstanceId);
+		info.setPrototypeActivityId(prototypeActivityId);
+		info.setAssignees(assignees);
+		info.setNextActivityId(nextActivityId);
+		info.setCloneActivityIds(new String[assignees.length]);
+
+		ActivityImpl[] activities = new CloneActivitiesCreator().createActivities(_processEngine, _processDefinition,
+			info);
+
+		moveTo(activities[0].getId());
+		recordActivitiesCreation(info);
+
+		return activities;
+	}
+
+	private void executeCommand(Command<java.lang.Void> command)
+	{
+		((RuntimeServiceImpl) _processEngine.getRuntimeService()).getCommandExecutor().execute(command);
+	}
+
+	private TaskEntity getCurrentTask()
+	{
+		return (TaskEntity) _processEngine.getTaskService().createTaskQuery().processInstanceId(_processInstanceId)
+				.active().singleResult();
+	}
+
+	private TaskEntity getTaskById(String taskId)
+	{
+		return (TaskEntity) _processEngine.getTaskService().createTaskQuery().taskId(taskId).singleResult();
+	}
+
+	/**
+	 * 后加签
+	 */
+	public ActivityImpl[] insertTasksAfter(String targetTaskDefinitionKey, String... assignees) throws Exception
+	{
+		List<String> assigneeList = new ArrayList<String>();
+		assigneeList.add(Authentication.getAuthenticatedUserId());
+		assigneeList.addAll(CollectionUtils.arrayToList(assignees));
+		String[] newAssignees = assigneeList.toArray(new String[0]);
+
+		ActivityImpl prototypeActivity = ProcessDefinitionUtils.getActivity(_processEngine, _processDefinition.getId(),
+			targetTaskDefinitionKey);
+
+		return cloneAndMakeChain(targetTaskDefinitionKey, prototypeActivity.getOutgoingTransitions().get(0)
+				.getDestination().getId(), newAssignees);
+	}
+
+	/**
+	 * 前加签
+	 */
+	public ActivityImpl[] insertTasksBefore(String targetTaskDefinitionKey, String... assignees) throws Exception
+	{
+		return cloneAndMakeChain(targetTaskDefinitionKey, targetTaskDefinitionKey, assignees);
+	}
+
+	public void moveBack() throws Exception
+	{
+		moveBack(getCurrentTask());
+	}
+
+	public void moveBack(TaskEntity currentTaskEntity) throws Exception
+	{
+		ActivityImpl activity = (ActivityImpl) ProcessDefinitionUtils
+				.getActivity(_processEngine, currentTaskEntity.getProcessDefinitionId(),
+					currentTaskEntity.getTaskDefinitionKey()).getIncomingTransitions().get(0).getSource();
+
+		moveTo(currentTaskEntity, activity);
+	}
+
+	public void moveForward() throws Exception
+	{
+		moveForward(getCurrentTask());
+	}
+
+	public void moveForward(TaskEntity currentTaskEntity) throws Exception
+	{
+		ActivityImpl activity = (ActivityImpl) ProcessDefinitionUtils
+				.getActivity(_processEngine, currentTaskEntity.getProcessDefinitionId(),
+					currentTaskEntity.getTaskDefinitionKey()).getOutgoingTransitions().get(0).getDestination();
+
+		moveTo(currentTaskEntity, activity);
 	}
 
 	/**
@@ -48,20 +133,15 @@ public class TaskFlowControlService
 		moveTo(getCurrentTask(), targetTaskDefinitionKey);
 	}
 
-	private TaskEntity getCurrentTask()
-	{
-		return (TaskEntity) _processEngine.getTaskService().createTaskQuery().processInstanceId(_processInstanceId)
-				.active().singleResult();
-	}
-
 	public void moveTo(String currentTaskId, String targetTaskDefinitionKey) throws Exception
 	{
 		moveTo(getTaskById(currentTaskId), targetTaskDefinitionKey);
 	}
 
-	private TaskEntity getTaskById(String taskId)
+	private void moveTo(TaskEntity currentTaskEntity, ActivityImpl activity)
 	{
-		return (TaskEntity) _processEngine.getTaskService().createTaskQuery().taskId(taskId).singleResult();
+		executeCommand(new StartActivityCmd(currentTaskEntity.getExecutionId(), activity));
+		executeCommand(new DeleteRunningTaskCmd(currentTaskEntity));
 	}
 
 	/**
@@ -80,108 +160,8 @@ public class TaskFlowControlService
 		moveTo(currentTaskEntity, activity);
 	}
 
-	private void moveTo(TaskEntity currentTaskEntity, ActivityImpl activity)
+	private void recordActivitiesCreation(ActivitiesCreationEntity info)
 	{
-		executeCommand(new StartActivityCmd(currentTaskEntity.getExecutionId(), activity));
-		executeCommand(new DeleteRunningTaskCmd(currentTaskEntity));
-	}
-
-	public void moveForward(TaskEntity currentTaskEntity) throws Exception
-	{
-		ActivityImpl activity = (ActivityImpl) ProcessDefinitionUtils
-				.getActivity(_processEngine, currentTaskEntity.getProcessDefinitionId(),
-					currentTaskEntity.getTaskDefinitionKey()).getOutgoingTransitions().get(0).getDestination();
-
-		moveTo(currentTaskEntity, activity);
-	}
-
-	public void moveForward() throws Exception
-	{
-		moveForward(getCurrentTask());
-	}
-
-	public void moveBack(TaskEntity currentTaskEntity) throws Exception
-	{
-		ActivityImpl activity = (ActivityImpl) ProcessDefinitionUtils
-				.getActivity(_processEngine, currentTaskEntity.getProcessDefinitionId(),
-					currentTaskEntity.getTaskDefinitionKey()).getIncomingTransitions().get(0).getSource();
-
-		moveTo(currentTaskEntity, activity);
-	}
-
-	public void moveBack() throws Exception
-	{
-		moveBack(getCurrentTask());
-	}
-
-	/**
-	 * 前加签
-	 */
-	public ActivityImpl[] insertTasksBefore(String targetTaskDefinitionKey, String... assignee) throws Exception
-	{
-		ActivityImpl prototypeActivity = ProcessDefinitionUtils.getActivity(_processEngine, _processDefinition.getId(),
-			targetTaskDefinitionKey);
-
-		List<ActivityImpl> activities = new ArrayList<ActivityImpl>();
-		for (String userId : assignee)
-		{
-			ActivityImpl clone = _cloneActivityFactory.createActivity(prototypeActivity,
-				createUniqueActivityId(targetTaskDefinitionKey), userId);
-			activities.add(clone);
-		}
-
-		createActivityChain(activities, prototypeActivity);
-		moveTo(activities.get(0).getId());
-		return activities.toArray(new ActivityImpl[0]);
-	}
-
-	/**
-	 * 后加签
-	 */
-	public ActivityImpl[] insertTasksAfter(String targetTaskDefinitionKey, String... assignee) throws Exception
-	{
-		ActivityImpl prototypeActivity = ProcessDefinitionUtils.getActivity(_processEngine, _processDefinition.getId(),
-			targetTaskDefinitionKey);
-
-		List<ActivityImpl> activities = new ArrayList<ActivityImpl>();
-		List<String> assigneeList = new ArrayList<String>();
-		assigneeList.add(Authentication.getAuthenticatedUserId());
-		assigneeList.addAll(CollectionUtils.arrayToList(assignee));
-
-		for (String userId : assigneeList)
-		{
-			ActivityImpl clone = _cloneActivityFactory.createActivity(prototypeActivity,
-				createUniqueActivityId(targetTaskDefinitionKey), userId);
-			activities.add(clone);
-		}
-
-		ActivityImpl nextActivity = (ActivityImpl) prototypeActivity.getOutgoingTransitions().get(0).getDestination();
-		createActivityChain(activities, nextActivity);
-		moveTo(activities.get(0).getId());
-
-		return activities.toArray(new ActivityImpl[0]);
-	}
-
-	protected void createActivityChain(List<ActivityImpl> activities, ActivityImpl tailActivity)
-	{
-		for (int i = 0; i < activities.size(); i++)
-		{
-			//设置各活动的下线
-			activities.get(i).getOutgoingTransitions().clear();
-			activities.get(i).createOutgoingTransition("flow" + (i + 1))
-					.setDestination(i == activities.size() - 1 ? tailActivity : activities.get(i + 1));
-		}
-	}
-
-	protected String createUniqueActivityId(String targetTaskDefinitionKey)
-	{
-		return this._processInstanceId + ":" + targetTaskDefinitionKey + ":" + System.currentTimeMillis() + "-"
-				+ (SEQUNCE_NUMBER++);
-	}
-
-	public ActivityImpl split(String targetTaskDefinitionKey, String... assignee)
-	{
-		return split(targetTaskDefinitionKey, true, assignee);
 	}
 
 	/**
@@ -192,21 +172,31 @@ public class TaskFlowControlService
 	 * @throws IllegalAccessException
 	 * @throws IllegalArgumentException
 	 */
-	public ActivityImpl split(String targetTaskDefinitionKey, boolean isSequential, String... assignee)
+	public ActivityImpl split(String targetTaskDefinitionKey, boolean isSequential, String... assignees)
 	{
-		ActivityImpl clone = _cloneActivityFactory.createMultiInstanceActivity(targetTaskDefinitionKey,
-			createUniqueActivityId(targetTaskDefinitionKey), isSequential, assignee);
+		ActivitiesCreationEntity info = new ActivitiesCreationEntity();
+		info.setFactoryName(CloneActivitiesCreator.class.getName());
+		info.setProcessDefinitionId(_processDefinition.getId());
+		info.setProcessInstanceId(_processInstanceId);
+		info.setPrototypeActivityId(targetTaskDefinitionKey);
+		info.setAssignees(assignees);
+		info.setSequential(isSequential);
+
+		ActivityImpl clone = new MultiInstanceActivityCreator().createActivities(_processEngine, _processDefinition,
+			info)[0];
 
 		TaskEntity currentTaskEntity = getCurrentTask();
 		executeCommand(new CreateAndTakeTransitionCmd(currentTaskEntity.getExecutionId(), clone));
 		executeCommand(new DeleteRunningTaskCmd(currentTaskEntity));
 
+		recordActivitiesCreation(info);
+
 		return clone;
 	}
 
-	private void executeCommand(Command<java.lang.Void> command)
+	public ActivityImpl split(String targetTaskDefinitionKey, String... assignee)
 	{
-		((RuntimeServiceImpl) _processEngine.getRuntimeService()).getCommandExecutor().execute(command);
+		return split(targetTaskDefinitionKey, true, assignee);
 	}
 
 }
