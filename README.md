@@ -16,7 +16,7 @@ OpenWebFlow针对如上需求，做了一些工作。简单来说，OpenWebFlow�
 * 包装了一系列的事件，注意这些事件是Web上下文的（不同于Activiti的事件机制），开发用户可以基于该事件机制写自己的EventHandler，比较方便的是，EventHandler的写法与Spring Controller的方法一样（支持参数自动映射），详见[OpenWebFlow的事件机制](Events)；
 * 剥离了活动（activity）的权限管理，实现了与流程定义的解耦，即用户对活动的访问控制信息单独管理（而不是在流程定义中预先写死），这样有利于动态调整权限，详见[自定义活动权限管理](Activity-Permission-Management)；
 * 剥离了用户信息表的统一管理！客户程序可以忘掉Activiti的用户表、群组表、成员关系表，详见[自定义用户成员关系管理](Custom-User-Group-Membership-Manager)；
-* 允许运行时定义activity！__彻底满足“中国特色”，并提供了安全的催办、代办、加签（包括前加签/后加签）、自由跳转（包括前进/后）、分裂节点等功能__；
+* 允许运行时定义activity！__彻底满足“中国特色”，并提供了安全的（同时也是优雅的）催办、代办、加签（包括前加签/后加签）、自由跳转（包括前进/后）、分裂节点等功能__；
 
 开发者使用帮助：https://github.com/bluejoe2008/openwebflow/wiki
 
