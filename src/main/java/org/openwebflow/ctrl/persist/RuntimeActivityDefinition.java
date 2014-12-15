@@ -1,9 +1,14 @@
-package org.openwebflow.ctrl;
+package org.openwebflow.ctrl.persist;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class ActivitiesCreationEntity
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+public class RuntimeActivityDefinition
 {
 	String _factoryName;
 
@@ -15,7 +20,13 @@ public class ActivitiesCreationEntity
 
 	String _propertiesText;
 
-	public String[] getAssignees()
+	public void deserializeProperties() throws IOException
+	{
+		ObjectMapper objectMapper = new ObjectMapper();
+		_properties = objectMapper.readValue(_propertiesText, Map.class);
+	}
+
+	public List<String> getAssignees()
 	{
 		return getProperty("assignees");
 	}
@@ -25,9 +36,14 @@ public class ActivitiesCreationEntity
 		return getProperty("cloneActivityId");
 	}
 
-	public String[] getCloneActivityIds()
+	public List<String> getCloneActivityIds()
 	{
 		return getProperty("cloneActivityIds");
+	}
+
+	public Class<?> getFactoryClass() throws ClassNotFoundException
+	{
+		return Class.forName(_factoryName);
 	}
 
 	public String getFactoryName()
@@ -52,7 +68,6 @@ public class ActivitiesCreationEntity
 
 	public String getPropertiesText()
 	{
-		//组配
 		return _propertiesText;
 	}
 
@@ -71,7 +86,13 @@ public class ActivitiesCreationEntity
 		return getProperty("sequential");
 	}
 
-	public void setAssignees(String[] assignees)
+	public void serializeProperties() throws JsonProcessingException
+	{
+		ObjectMapper objectMapper = new ObjectMapper();
+		_propertiesText = objectMapper.writeValueAsString(_properties);
+	}
+
+	public void setAssignees(List<String> assignees)
 	{
 		setProperty("assignees", assignees);
 	}
@@ -81,7 +102,7 @@ public class ActivitiesCreationEntity
 		setProperty("cloneActivityId", cloneActivityId);
 	}
 
-	public void setCloneActivityIds(String[] cloneActivityIds)
+	public void setCloneActivityIds(List<String> cloneActivityIds)
 	{
 		setProperty("cloneActivityIds", cloneActivityIds);
 	}
@@ -109,7 +130,6 @@ public class ActivitiesCreationEntity
 	public void setPropertiesText(String propertiesText)
 	{
 		_propertiesText = propertiesText;
-		//解析
 	}
 
 	private <T> void setProperty(String name, T value)

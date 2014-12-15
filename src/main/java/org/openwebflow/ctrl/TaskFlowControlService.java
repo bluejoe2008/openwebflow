@@ -1,5 +1,6 @@
 package org.openwebflow.ctrl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,19 +11,32 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.openwebflow.ctrl.cmd.CreateAndTakeTransitionCmd;
+import org.openwebflow.ctrl.cmd.DeleteRunningTaskCmd;
+import org.openwebflow.ctrl.cmd.StartActivityCmd;
+import org.openwebflow.ctrl.create.ChainedActivitiesCreator;
+import org.openwebflow.ctrl.create.MultiInstanceActivityCreator;
+import org.openwebflow.ctrl.persist.RuntimeActivityDefinition;
+import org.openwebflow.ctrl.persist.RuntimeActivityDefinitionStore;
 import org.openwebflow.util.ProcessDefinitionUtils;
 import org.springframework.util.CollectionUtils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 public class TaskFlowControlService
 {
+	RuntimeActivityDefinitionStore _activitiesCreationStore;
+
 	ProcessDefinitionEntity _processDefinition;
 
 	ProcessEngine _processEngine;
 
 	private String _processInstanceId;
 
-	public TaskFlowControlService(ProcessEngine processEngine, String processId)
+	public TaskFlowControlService(RuntimeActivityDefinitionStore activitiesCreationStore, ProcessEngine processEngine,
+			String processId)
 	{
+		_activitiesCreationStore = activitiesCreationStore;
 		_processEngine = processEngine;
 		_processInstanceId = processId;
 
@@ -32,19 +46,17 @@ public class TaskFlowControlService
 		_processDefinition = ProcessDefinitionUtils.getProcessDefinition(_processEngine, processDefId);
 	}
 
-	private ActivityImpl[] cloneAndMakeChain(String prototypeActivityId, String nextActivityId, String[] assignees)
+	private ActivityImpl[] cloneAndMakeChain(String prototypeActivityId, String nextActivityId, String... assignees)
 			throws Exception
 	{
-		ActivitiesCreationEntity info = new ActivitiesCreationEntity();
-		info.setFactoryName(CloneActivitiesCreator.class.getName());
+		RuntimeActivityDefinition info = new RuntimeActivityDefinition();
 		info.setProcessDefinitionId(_processDefinition.getId());
 		info.setProcessInstanceId(_processInstanceId);
 		info.setPrototypeActivityId(prototypeActivityId);
-		info.setAssignees(assignees);
+		info.setAssignees(CollectionUtils.arrayToList(assignees));
 		info.setNextActivityId(nextActivityId);
-		info.setCloneActivityIds(new String[assignees.length]);
 
-		ActivityImpl[] activities = new CloneActivitiesCreator().createActivities(_processEngine, _processDefinition,
+		ActivityImpl[] activities = new ChainedActivitiesCreator().createActivities(_processEngine, _processDefinition,
 			info);
 
 		moveTo(activities[0].getId());
@@ -160,8 +172,10 @@ public class TaskFlowControlService
 		moveTo(currentTaskEntity, activity);
 	}
 
-	private void recordActivitiesCreation(ActivitiesCreationEntity info)
+	private void recordActivitiesCreation(RuntimeActivityDefinition info) throws JsonProcessingException
 	{
+		info.serializeProperties();
+		_activitiesCreationStore.save(info);
 	}
 
 	/**
@@ -169,17 +183,18 @@ public class TaskFlowControlService
 	 * 
 	 * @param targetTaskDefinitionKey
 	 * @param assignee
+	 * @throws IOException
 	 * @throws IllegalAccessException
 	 * @throws IllegalArgumentException
 	 */
 	public ActivityImpl split(String targetTaskDefinitionKey, boolean isSequential, String... assignees)
+			throws IOException
 	{
-		ActivitiesCreationEntity info = new ActivitiesCreationEntity();
-		info.setFactoryName(CloneActivitiesCreator.class.getName());
+		RuntimeActivityDefinition info = new RuntimeActivityDefinition();
 		info.setProcessDefinitionId(_processDefinition.getId());
 		info.setProcessInstanceId(_processInstanceId);
 		info.setPrototypeActivityId(targetTaskDefinitionKey);
-		info.setAssignees(assignees);
+		info.setAssignees(CollectionUtils.arrayToList(assignees));
 		info.setSequential(isSequential);
 
 		ActivityImpl clone = new MultiInstanceActivityCreator().createActivities(_processEngine, _processDefinition,
@@ -190,11 +205,10 @@ public class TaskFlowControlService
 		executeCommand(new DeleteRunningTaskCmd(currentTaskEntity));
 
 		recordActivitiesCreation(info);
-
 		return clone;
 	}
 
-	public ActivityImpl split(String targetTaskDefinitionKey, String... assignee)
+	public ActivityImpl split(String targetTaskDefinitionKey, String... assignee) throws IOException
 	{
 		return split(targetTaskDefinitionKey, true, assignee);
 	}

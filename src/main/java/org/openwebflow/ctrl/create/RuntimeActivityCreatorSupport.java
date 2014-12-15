@@ -1,4 +1,4 @@
-package org.openwebflow.ctrl;
+package org.openwebflow.ctrl.create;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import org.openwebflow.util.CloneUtils;
 import org.openwebflow.util.ProcessDefinitionUtils;
 import org.springframework.beans.BeanUtils;
 
-public abstract class AbstractActivitiesCreator
+public abstract class RuntimeActivityCreatorSupport
 {
 	private static int SEQUNCE_NUMBER = 0;
 

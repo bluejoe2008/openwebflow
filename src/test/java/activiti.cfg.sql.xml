@@ -15,7 +15,7 @@
 		destroy-method="close">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 		<property name="url"
-			value="jdbc:mysql://localhost:3306/test?useUnicode=true&amp;characterEncoding=UTF-8" />
+			value="jdbc:mysql://localhost:3306/openwebflow?useUnicode=true&amp;characterEncoding=UTF-8" />
 		<property name="username" value="root" />
 		<property name="password" value="1" />
 		<property name="initialSize" value="20" />
@@ -36,7 +36,7 @@
 			<!--创建数据映射器，数据映射器必须为接口-->
 			<bean class="org.mybatis.spring.mapper.MapperFactoryBean">
 				<property name="mapperInterface"
-					value="org.openwebflow.permission.delegation.sql.SqlDelegationEntityMapper" />
+					value="org.openwebflow.assign.delegation.sql.SqlDelegationEntityMapper" />
 				<property name="sqlSessionFactory" ref="owlSqlSessionFactory" />
 			</bean>
 		</property>
@@ -72,7 +72,19 @@
 			<!--创建数据映射器，数据映射器必须为接口-->
 			<bean class="org.mybatis.spring.mapper.MapperFactoryBean">
 				<property name="mapperInterface"
-					value="org.openwebflow.permission.acl.sql.SqlActivityAclStoreMapper" />
+					value="org.openwebflow.assign.acl.sql.SqlActivityAclStoreMapper" />
+				<property name="sqlSessionFactory" ref="owlSqlSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+
+	<!-- 自定义的动态自定义活动管理 -->
+	<bean id="myActivityDefinitionStore" class="org.openwebflow.ctrl.persist.SqlRuntimeActivityDefinitionStore">
+		<property name="mapper">
+			<!--创建数据映射器，数据映射器必须为接口-->
+			<bean class="org.mybatis.spring.mapper.MapperFactoryBean">
+				<property name="mapperInterface"
+					value="org.openwebflow.ctrl.persist.SqlActivitiesCreationEntityMapper" />
 				<property name="sqlSessionFactory" ref="owlSqlSessionFactory" />
 			</bean>
 		</property>

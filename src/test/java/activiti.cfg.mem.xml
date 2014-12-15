@@ -20,6 +20,10 @@
 	<!-- 代理关系管理 -->
 	<bean id="myDelegationDetailsManager"
 		class="org.openwebflow.assign.delegation.InMemoryDelegationDetailsStore" />
+		
+	<!-- 自定义的动态自定义活动管理 -->
+	<bean id="myActivityDefinitionStore"
+		class="org.openwebflow.ctrl.persist.InMemoryRuntimeActivityDefinitionStore" />
 
 	<bean id="myNotificationDetailsStore"
 		class="org.openwebflow.alarm.impl.InMemoryNotificationDetailsStore" />

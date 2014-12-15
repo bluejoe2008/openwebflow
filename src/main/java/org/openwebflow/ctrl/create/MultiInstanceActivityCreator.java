@@ -1,4 +1,6 @@
-package org.openwebflow.ctrl;
+package org.openwebflow.ctrl.create;
+
+import java.util.List;
 
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
@@ -9,15 +11,17 @@ import org.activiti.engine.impl.el.FixedValue;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.openwebflow.ctrl.persist.RuntimeActivityDefinition;
 import org.openwebflow.util.ProcessDefinitionUtils;
-import org.springframework.util.CollectionUtils;
 
-public class MultiInstanceActivityCreator extends AbstractActivitiesCreator implements ActivitiesCreator
+public class MultiInstanceActivityCreator extends RuntimeActivityCreatorSupport implements RuntimeActivityCreator
 {
 	@Override
 	public ActivityImpl[] createActivities(ProcessEngine processEngine, ProcessDefinitionEntity processDefinition,
-			ActivitiesCreationEntity info)
+			RuntimeActivityDefinition info)
 	{
+		info.setFactoryName(MultiInstanceActivityCreator.class.getName());
+
 		if (info.getCloneActivityId() == null)
 		{
 			String cloneActivityId = createUniqueActivityId(info.getProcessInstanceId(), info.getPrototypeActivityId());
@@ -31,7 +35,7 @@ public class MultiInstanceActivityCreator extends AbstractActivitiesCreator impl
 
 	private ActivityImpl createMultiInstanceActivity(ProcessEngine processEngine,
 			ProcessDefinitionEntity processDefinition, String processInstanceId, String prototypeActivityId,
-			String cloneActivityId, boolean isSequential, String... assignee)
+			String cloneActivityId, boolean isSequential, List<String> assignees)
 	{
 		ActivityImpl prototypeActivity = ProcessDefinitionUtils.getActivity(processEngine, processDefinition.getId(),
 			prototypeActivityId);
@@ -55,8 +59,8 @@ public class MultiInstanceActivityCreator extends AbstractActivitiesCreator impl
 		clone.setProperty("multiInstance", isSequential ? "sequential" : "parallel");
 
 		//设置多实例节点属性
-		multiInstanceBehavior.setLoopCardinalityExpression(new FixedValue(assignee.length));
-		multiInstanceBehavior.setCollectionExpression(new FixedValue(CollectionUtils.arrayToList(assignee)));
+		multiInstanceBehavior.setLoopCardinalityExpression(new FixedValue(assignees.size()));
+		multiInstanceBehavior.setCollectionExpression(new FixedValue(assignees));
 		return clone;
 	}
 }

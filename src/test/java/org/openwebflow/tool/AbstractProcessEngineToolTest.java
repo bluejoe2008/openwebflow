@@ -23,12 +23,15 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openwebflow.alarm.impl.AbstractNotificationDetailsStore;
+import org.openwebflow.alarm.impl.TaskAlarmServiceImpl;
 import org.openwebflow.assign.acl.AbstractActivityAclStore;
 import org.openwebflow.assign.delegation.AbstractDelegationStore;
 import org.openwebflow.assign.delegation.TaskDelagation;
 import org.openwebflow.conf.ProcessEngineConfigurationEx;
 import org.openwebflow.conf.ReplaceTaskAssignmentHandler;
 import org.openwebflow.ctrl.TaskFlowControlService;
+import org.openwebflow.ctrl.TaskFlowControlServiceFactory;
+import org.openwebflow.ctrl.persist.RuntimeActivityDefinitionStore;
 import org.openwebflow.identity.AbstractUserDetailsStore;
 import org.openwebflow.identity.impl.AbstractMembershipStore;
 import org.openwebflow.identity.impl.MyUserDetails;
@@ -51,15 +54,13 @@ public abstract class AbstractProcessEngineToolTest
 
 	AbstractDelegationStore _delegationStore;
 
+	TaskFlowControlServiceFactory _taskFlowControlServiceFactory;
+
 	@Before
 	public void setUp() throws Exception
 	{
-		_ctx = new ClassPathXmlApplicationContext(getConfigFilePath());
-		_tool = _ctx.getBean(ProcessEngineTool.class);
-		Assert.assertNotNull(_tool);
-		_processEngine = _tool.getProcessEngine();
+		rebuildApplicationContext();
 
-		_aclStore = (AbstractActivityAclStore) _ctx.getBean("myTaskActivityAclManager");
 		_aclStore.removeAll();
 
 		((AbstractNotificationDetailsStore) _ctx.getBean("myNotificationDetailsStore")).removeAll();
@@ -77,9 +78,10 @@ public abstract class AbstractProcessEngineToolTest
 		userDetailsStore.saveUser(new MyUserDetails("bluejoe", "白乔", "bluejoe2008@gmail.com", "13800138000"));
 		userDetailsStore.saveUser(new MyUserDetails("kermit", "老黄", "bluejoe@cnic.cn", "13800138000"));
 
-		//代理关系
-		_delegationStore = (AbstractDelegationStore) _ctx.getBean("myDelegationDetailsManager");
 		_delegationStore.removeAll();
+
+		//清除自定义活动
+		_ctx.getBean(RuntimeActivityDefinitionStore.class).removeAll();
 
 		// 取model，该model会自动注册
 		RepositoryService repositoryService = _processEngine.getRepositoryService();
@@ -96,6 +98,19 @@ public abstract class AbstractProcessEngineToolTest
 		{
 			ModelUtils.deployModel(repositoryService, model2.getId());
 		}
+	}
+
+	protected void rebuildApplicationContext()
+	{
+		_ctx = new ClassPathXmlApplicationContext(getConfigFilePath());
+		_tool = _ctx.getBean(ProcessEngineTool.class);
+		Assert.assertNotNull(_tool);
+		_processEngine = _tool.getProcessEngine();
+
+		_aclStore = (AbstractActivityAclStore) _ctx.getBean("myTaskActivityAclManager");
+		//代理关系
+		_delegationStore = (AbstractDelegationStore) _ctx.getBean("myDelegationDetailsManager");
+		_taskFlowControlServiceFactory = _ctx.getBean(TaskFlowControlServiceFactory.class);
 	}
 
 	protected abstract String getConfigFilePath();
@@ -115,7 +130,7 @@ public abstract class AbstractProcessEngineToolTest
 		//测试前加签
 		ProcessInstance instance = _processEngine.getRuntimeService().startProcessInstanceByKey("test2");
 		TaskService taskService = _processEngine.getTaskService();
-		TaskFlowControlService tfcs = new TaskFlowControlService(_processEngine, instance.getId());
+		TaskFlowControlService tfcs = _taskFlowControlServiceFactory.create(instance.getId());
 		//到了step2
 		Assert.assertEquals("step2", taskService.createTaskQuery().singleResult().getTaskDefinitionKey());
 		//在前面加两个节点
@@ -153,7 +168,7 @@ public abstract class AbstractProcessEngineToolTest
 		//测试后加签
 		ProcessInstance instance = _processEngine.getRuntimeService().startProcessInstanceByKey("test2");
 		TaskService taskService = _processEngine.getTaskService();
-		TaskFlowControlService tfcs = new TaskFlowControlService(_processEngine, instance.getId());
+		TaskFlowControlService tfcs = _taskFlowControlServiceFactory.create(instance.getId());
 		//到了step2
 		Assert.assertEquals("step2", taskService.createTaskQuery().singleResult().getTaskDefinitionKey());
 		//在前面加两个节点
@@ -188,6 +203,55 @@ public abstract class AbstractProcessEngineToolTest
 	}
 
 	@Test
+	public void testInsertTasksWithPersistence() throws Exception
+	{
+		//测试加签功能的持久化
+		ProcessInstance instance = _processEngine.getRuntimeService().startProcessInstanceByKey("test2");
+		String processInstanceId = instance.getId();
+		TaskService taskService = _processEngine.getTaskService();
+		TaskFlowControlService tfcs = _taskFlowControlServiceFactory.create(instance.getId());
+		//到了step2
+		//在前面加两个节点
+		Authentication.setAuthenticatedUserId("kermit");
+		ActivityImpl[] as = tfcs.insertTasksAfter("step2", "bluejoe", "alex");
+		//应该执行到了第一个节点
+		//完成该节点
+		taskService.complete(taskService.createTaskQuery().singleResult().getId());
+
+		//此时模拟服务器重启
+		ProcessEngine oldProcessEngine = _processEngine;
+		rebuildApplicationContext();
+		Assert.assertNotSame(oldProcessEngine, _processEngine);
+
+		//重新构造以上对象
+		instance = _processEngine.getRuntimeService().createProcessInstanceQuery().processInstanceId(processInstanceId)
+				.singleResult();
+		taskService = _processEngine.getTaskService();
+		tfcs = _taskFlowControlServiceFactory.create(instance.getId());
+
+		//应该到了下一个节点
+		Assert.assertEquals("bluejoe", taskService.createTaskQuery().singleResult().getAssignee());
+		//完成该节点
+		taskService.complete(taskService.createTaskQuery().singleResult().getId());
+		//应该到了下一个节点
+		Assert.assertEquals(as[2].getId(), taskService.createTaskQuery().singleResult().getTaskDefinitionKey());
+		Assert.assertEquals("alex", taskService.createTaskQuery().singleResult().getAssignee());
+		//完成该节点
+		taskService.complete(taskService.createTaskQuery().singleResult().getId());
+		//应该到了下一个节点
+		Assert.assertEquals("step3", taskService.createTaskQuery().singleResult().getTaskDefinitionKey());
+
+		//确认历史轨迹里已保存
+		//step1,step2,step2,step2-1,step2-2,step3
+		List<HistoricActivityInstance> activities = _processEngine.getHistoryService()
+				.createHistoricActivityInstanceQuery().processInstanceId(instance.getId()).list();
+		Assert.assertEquals(6, activities.size());
+
+		//删掉流程
+		_processEngine.getRuntimeService().deleteProcessInstance(instance.getId(), "test");
+	}
+
+	@Test
 	public void testSplit() throws Exception
 	{
 		//测试节点分裂
@@ -199,7 +263,7 @@ public abstract class AbstractProcessEngineToolTest
 		for (int i = 0; i < 2; i++)
 		{
 			ProcessInstance instance = _processEngine.getRuntimeService().startProcessInstanceByKey("test2");
-			TaskFlowControlService tfcs = new TaskFlowControlService(_processEngine, instance.getId());
+			TaskFlowControlService tfcs = _taskFlowControlServiceFactory.create(instance.getId());
 			TaskService taskService = _processEngine.getTaskService();
 			//应该有1个step2任务在执行
 			Assert.assertEquals(1, taskService.createTaskQuery().taskDefinitionKey("step2").count());
@@ -410,7 +474,7 @@ public abstract class AbstractProcessEngineToolTest
 		taskService.complete(taskService.createTaskQuery().singleResult().getId());
 		Assert.assertEquals("step3", taskService.createTaskQuery().singleResult().getTaskDefinitionKey());
 
-		TaskFlowControlService tfcs = new TaskFlowControlService(_processEngine, instanceId);
+		TaskFlowControlService tfcs = _taskFlowControlServiceFactory.create(instance.getId());
 		//测试一下往前跳
 		tfcs.moveTo("step5");
 		Assert.assertEquals("step5", taskService.createTaskQuery().singleResult().getTaskDefinitionKey());
@@ -541,8 +605,8 @@ public abstract class AbstractProcessEngineToolTest
 	@Test
 	public void testAlarm() throws Exception
 	{
-		ProcessInstance instance;
-		instance = _processEngine.getRuntimeService().startProcessInstanceByKey("test1");
+		ProcessInstance instance = _processEngine.getRuntimeService().startProcessInstanceByKey("test1");
+		((TaskAlarmServiceImpl) _ctx.getBean(TaskAlarmServiceImpl.class)).start(_processEngine);
 		//等待催办事件发生
 		Thread.sleep(60000);
 		//删掉流程

@@ -71,6 +71,8 @@
 
 	<tx:annotation-driven transaction-manager="transactionManager" />
 
+	<bean class="org.openwebflow.ctrl.TaskFlowControlServiceFactory" />
+
 	<!-- 配置对象 -->
 	<bean id="processEngineConfiguration" class="org.openwebflow.conf.ProcessEngineConfigurationEx">
 		<property name="dataSource" ref="activitiDataSource" />
@@ -79,7 +81,7 @@
 		<property name="jobExecutorActivate" value="false" />
 		<property name="startEngineEventListeners">
 			<list>
-				<!-- 自定义表单元素类型 -->
+				<!-- 加载自定义表单元素类型 -->
 				<bean class="org.openwebflow.conf.LoadDummyFormTypes">
 					<property name="typeNames" value="user" />
 				</bean>
@@ -113,6 +115,10 @@
 				<bean class="org.openwebflow.conf.StartTaskAlarmService">
 					<property name="taskAlarmService" ref="myTaskAlarmService" />
 					<property name="runOnStartup" value="false" />
+				</bean>
+				<!-- 加载自定义activity -->
+				<bean class="org.openwebflow.conf.LoadRuntimeActivityDefinitions">
+					<property name="activityDefinitionStore" ref="myActivityDefinitionStore" />
 				</bean>
 			</list>
 		</property>

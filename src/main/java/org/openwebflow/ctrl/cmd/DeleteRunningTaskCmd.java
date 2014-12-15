@@ -1,10 +1,11 @@
-package org.openwebflow.ctrl;
+package org.openwebflow.ctrl.cmd;
 
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.apache.log4j.Logger;
+import org.openwebflow.ctrl.TaskFlowControlService;
 
 public class DeleteRunningTaskCmd implements Command<java.lang.Void>
 {

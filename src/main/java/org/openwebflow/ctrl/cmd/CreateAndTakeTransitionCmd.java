@@ -1,4 +1,4 @@
-package org.openwebflow.ctrl;
+package org.openwebflow.ctrl.cmd;
 
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -6,6 +6,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.runtime.AtomicOperation;
 import org.apache.log4j.Logger;
+import org.openwebflow.ctrl.TaskFlowControlService;
 
 public class CreateAndTakeTransitionCmd implements Command<java.lang.Void>
 {
