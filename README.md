@@ -10,7 +10,7 @@ Activiti的用户可能觉得它存在着一些待改进的地方：
 * Activiti允许在设计model的时候指定每个活动的执行权限，但是，业务系统可能需要根据实际情况动态设置这些任务的执行权限（如：动态的Group）；
 * Activiti不支持中国特色^_^ 很多功能，如：催办、代办、加签（包括前加签/后加签）、自由跳转（包括前进/后退，omg!这还是工作流吗？）、分裂节点等；
 
-OpenWebFlow针对如上需求，做了一些工作。简单来说，OpenWebFlow框架：
+OpenWebFlow针对如上需求，做了一些工作。简单来说，OpenWebFlow引擎：
 
 * 提供了一系列的Tool工具类，你可以在java应用中、甚至在自己的Controller的方法里取到这些Tool，参见[工具类的使用](Tools) ；
 * 包装了一系列的事件，注意这些事件是Web上下文的（不同于Activiti的事件机制），开发用户可以基于该事件机制写自己的EventHandler，比较方便的是，EventHandler的写法与Spring Controller的方法一样（支持参数自动映射），详见[OpenWebFlow的事件机制](Events)；
@@ -21,3 +21,6 @@ OpenWebFlow针对如上需求，做了一些工作。简单来说，OpenWebFlow�
 开发者使用帮助：https://github.com/bluejoe2008/openwebflow/wiki
 
 感谢咖啡兔<http://www.kafeitu.me/>，里面有很多的关于Activiti应用方案的讨论。
+
+#####OpenWebFlow也许是你见过的最好的Activiti增强引擎，也许不是，但它保证100%开源，原因很简单，它powered by Activiti。#####
+#####你可以将OpenWebFlow应用于任何场合，而且你的产品不用提及OpenWebFlow的名字。但同为开发者，如果你能够客观的评价并推广OpenWebFlow，我将感激不尽！我也相信你也有这种情怀^_^#####
