@@ -23,4 +23,4 @@ OpenWebFlow针对如上需求，做了一些工作。简单来说，OpenWebFlow�
 感谢咖啡兔<http://www.kafeitu.me/>，里面有很多的关于Activiti应用方案的讨论。
 
 #####OpenWebFlow也许是你见过的最好的Activiti增强引擎，也许不是，但它保证100%开源，原因很简单，它powered by Activiti。#####
-#####你可以将OpenWebFlow应用于任何场合，而且你的产品不用提及OpenWebFlow的名字。但如果你能够客观的评价并推广OpenWebFlow，我将感激不尽！同为开发者，我相信你也有这种情怀^_^#####
+#####你可以将OpenWebFlow应用于任何场合，而且你的产品不用提及OpenWebFlow的名字。但如果你能够从技术的角度客观的评价并推广OpenWebFlow，我将感激不尽！同为开发者，我相信你也有这种情怀^_^#####
