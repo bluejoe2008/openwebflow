@@ -1,7 +1,7 @@
 What's OpenWebFlow
 ===========
 
-OpenWebFlow是基于Activiti（官方网站http://activiti.org/，代码托管在https://github.com/Activiti/Activiti）扩展的工作流引擎，它针对Web环境下的工作流做了一些外围的包装工作。
+OpenWebFlow是基于Activiti（官方网站<http://activiti.org/>，代码托管在<https://github.com/Activiti/Activiti>）扩展的工作流引擎，它针对Web环境下的工作流做了一些外围的包装工作。
 
 Activiti的用户可能觉得它存在着一些待改进的地方：
 
