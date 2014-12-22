@@ -76,7 +76,7 @@ public abstract class AbstractProcessEngineToolTest
 		AbstractUserDetailsStore userDetailsStore = (AbstractUserDetailsStore) _ctx.getBean("myUserDetailsManager");
 		userDetailsStore.removeAll();
 		userDetailsStore.saveUser(new MyUserDetails("bluejoe", "白乔", "bluejoe2008@gmail.com", "13800138000"));
-		userDetailsStore.saveUser(new MyUserDetails("kermit", "老黄", "bluejoe@cnic.cn", "13800138000"));
+		userDetailsStore.saveUser(new MyUserDetails("kermit", "老黄", "heiker@trojo.com", "13800138000"));
 
 		_delegationStore.removeAll();
 
@@ -345,6 +345,7 @@ public abstract class AbstractProcessEngineToolTest
 	@Test
 	public void testMultiInstancesLoop()
 	{
+		//测试多实例节点
 		Map<String, Object> variables = new HashMap<String, Object>();
 		variables.put("assigneeList", CollectionUtils.arrayToList(new String[] { "kermit", "bluejoe" }));
 		ProcessInstance instance = _processEngine.getRuntimeService().startProcessInstanceByKey("test2", variables);
@@ -440,6 +441,7 @@ public abstract class AbstractProcessEngineToolTest
 	@Test
 	public void testModelDeployment() throws Exception
 	{
+		//测试流程模型部署
 		// 取model，该model会自动注册
 		RepositoryService repositoryService = _processEngine.getRepositoryService();
 		Model model = repositoryService.createModelQuery().modelKey("vacation.bpmn").singleResult();
@@ -465,6 +467,7 @@ public abstract class AbstractProcessEngineToolTest
 	@Test
 	public void testMove() throws Exception
 	{
+		//测试自由跳转
 		ProcessInstance instance = _processEngine.getRuntimeService().startProcessInstanceByKey("test2");
 		String instanceId = instance.getId();
 
@@ -510,6 +513,7 @@ public abstract class AbstractProcessEngineToolTest
 	@Test
 	public void testAcl() throws Exception
 	{
+		//测试流程动态授权
 		String processDefId = _processEngine.getRepositoryService().createProcessDefinitionQuery()
 				.processDefinitionKey("test1").singleResult().getId();
 		// 启动流程实例
@@ -570,6 +574,7 @@ public abstract class AbstractProcessEngineToolTest
 	@Test
 	public void testDelegation()
 	{
+		//测试代理功能
 		ProcessInstance instance;
 		TaskService taskService = _processEngine.getTaskService();
 
@@ -605,6 +610,7 @@ public abstract class AbstractProcessEngineToolTest
 	@Test
 	public void testAlarm() throws Exception
 	{
+		//测试催办功能
 		ProcessInstance instance = _processEngine.getRuntimeService().startProcessInstanceByKey("test1");
 		((TaskAlarmServiceImpl) _ctx.getBean(TaskAlarmServiceImpl.class)).start(_processEngine);
 		//等待催办事件发生
