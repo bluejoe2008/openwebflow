@@ -9,10 +9,10 @@ import org.apache.ibatis.annotations.Select;
 
 public interface SqlActivityAclStoreMapper
 {
-	@Insert("INSERT INTO ACTIVITY_ACL_TAB (PROCESS_DEF_ID,ACTIVITY_KEY,ASSIGNED_USER,GRANTED_GROUPS,GRANTED_USERS,OP_TIME) values (#{processDefinitionId},#{activityKey},#{assignee},#{grantedGroupString},#{grantedUserString},#{opTime})")
+	@Insert("INSERT INTO OWF_ACTIVITY_ACL (PROCESS_DEF_ID,ACTIVITY_KEY,ASSIGNED_USER,GRANTED_GROUPS,GRANTED_USERS,OP_TIME) values (#{processDefinitionId},#{activityKey},#{assignee},#{grantedGroupString},#{grantedUserString},#{opTime})")
 	public void save(SqlActivityAclEntry ap) throws Exception;
 
-	@Select("SELECT * FROM ACTIVITY_ACL_TAB where PROCESS_DEF_ID=#{processDefinitionId} and ACTIVITY_KEY=#{taskDefinitionKey}")
+	@Select("SELECT * FROM OWF_ACTIVITY_ACL where PROCESS_DEF_ID=#{processDefinitionId} and ACTIVITY_KEY=#{taskDefinitionKey}")
 	@Results(value = { @Result(property = "processDefinitionId", column = "PROCESS_DEF_ID"),
 			@Result(property = "activityKey", column = "ACTIVITY_KEY"),
 			@Result(property = "assignee", column = "ASSIGNED_USER"),
@@ -22,6 +22,6 @@ public interface SqlActivityAclStoreMapper
 	String processDefinitionId, @Param("taskDefinitionKey")
 	String taskDefinitionKey);
 
-	@Delete("DELETE from ACTIVITY_ACL_TAB")
+	@Delete("DELETE from OWF_ACTIVITY_ACL")
 	public void deleteAll();
 }

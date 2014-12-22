@@ -10,15 +10,15 @@ Target Server Type    : MYSQL
 Target Server Version : 50016
 File Encoding         : 65001
 
-Date: 2014-12-14 17:48:18
+Date: 2014-12-22 16:05:30
 */
 
 SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
--- Table structure for `activity_acl_tab`
+-- Table structure for `owf_activity_acl`
 -- ----------------------------
-DROP TABLE IF EXISTS `activity_acl_tab`;
-CREATE TABLE `activity_acl_tab` (
+DROP TABLE IF EXISTS `owf_activity_acl`;
+CREATE TABLE `owf_activity_acl` (
   `ID` int(19) NOT NULL auto_increment,
   `ACTIVITY_KEY` varchar(255) default NULL,
   `ASSIGNED_USER` varchar(255) default NULL,
@@ -30,14 +30,14 @@ CREATE TABLE `activity_acl_tab` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of activity_acl_tab
+-- Records of owf_activity_acl
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `activity_creation_tab`
+-- Table structure for `owf_activity_creation`
 -- ----------------------------
-DROP TABLE IF EXISTS `activity_creation_tab`;
-CREATE TABLE `activity_creation_tab` (
+DROP TABLE IF EXISTS `owf_activity_creation`;
+CREATE TABLE `owf_activity_creation` (
   `ID` int(11) NOT NULL auto_increment,
   `FACTORYNAME` varchar(255) default NULL,
   `PROCESSDEFINITIONID` varchar(255) default NULL,
@@ -47,14 +47,14 @@ CREATE TABLE `activity_creation_tab` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of activity_creation_tab
+-- Records of owf_activity_creation
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `delegation_tab`
+-- Table structure for `owf_delegation`
 -- ----------------------------
-DROP TABLE IF EXISTS `delegation_tab`;
-CREATE TABLE `delegation_tab` (
+DROP TABLE IF EXISTS `owf_delegation`;
+CREATE TABLE `owf_delegation` (
   `ID` int(19) NOT NULL auto_increment,
   `DELEGATED` varchar(255) default NULL,
   `DELEGATE` varchar(255) default NULL,
@@ -63,14 +63,14 @@ CREATE TABLE `delegation_tab` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of delegation_tab
+-- Records of owf_delegation
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `membership_tab`
+-- Table structure for `owf_membership`
 -- ----------------------------
-DROP TABLE IF EXISTS `membership_tab`;
-CREATE TABLE `membership_tab` (
+DROP TABLE IF EXISTS `owf_membership`;
+CREATE TABLE `owf_membership` (
   `id` int(11) NOT NULL auto_increment,
   `GROUPID` varchar(255) default NULL,
   `USERID` varchar(255) default NULL,
@@ -78,14 +78,14 @@ CREATE TABLE `membership_tab` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of membership_tab
+-- Records of owf_membership
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `notification_tab`
+-- Table structure for `owf_notification`
 -- ----------------------------
-DROP TABLE IF EXISTS `notification_tab`;
-CREATE TABLE `notification_tab` (
+DROP TABLE IF EXISTS `owf_notification`;
+CREATE TABLE `owf_notification` (
   `ID` int(11) NOT NULL auto_increment,
   `TASKID` varchar(255) default NULL,
   `OPTIME` date default NULL,
@@ -93,14 +93,14 @@ CREATE TABLE `notification_tab` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of notification_tab
+-- Records of owf_notification
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for `user_tab`
+-- Table structure for `owf_user`
 -- ----------------------------
-DROP TABLE IF EXISTS `user_tab`;
-CREATE TABLE `user_tab` (
+DROP TABLE IF EXISTS `owf_user`;
+CREATE TABLE `owf_user` (
   `USERID` varchar(255) NOT NULL default '',
   `EMAIL` varchar(255) default NULL,
   `NICKNAME` varchar(255) default NULL,
@@ -109,5 +109,5 @@ CREATE TABLE `user_tab` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of user_tab
+-- Records of owf_user
 -- ----------------------------

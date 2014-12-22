@@ -11,18 +11,18 @@ import org.apache.ibatis.annotations.Select;
 
 public interface SqlDelegationEntityMapper
 {
-	@Select("SELECT * FROM DELEGATION_TAB where DELEGATED=#{delegated}")
+	@Select("SELECT * FROM OWF_DELEGATION where DELEGATED=#{delegated}")
 	@Results(value = { @Result(property = "opTime", column = "OP_TIME") })
 	List<SqlDelegationEntity> findByDelegated(@Param("delegated")
 	String delegated);
 
-	@Insert("INSERT INTO DELEGATION_TAB (DELEGATED,DELEGATE,OP_TIME) values (#{delegated},#{delegate},#{opTime})")
+	@Insert("INSERT INTO OWF_DELEGATION (DELEGATED,DELEGATE,OP_TIME) values (#{delegated},#{delegate},#{opTime})")
 	void saveDelegation(DelegationDetails sde);
 
-	@Delete("DELETE from DELEGATION_TAB")
+	@Delete("DELETE from OWF_DELEGATION")
 	public void deleteAll();
 
-	@Select("SELECT * FROM DELEGATION_TAB")
+	@Select("SELECT * FROM OWF_DELEGATION")
 	@Results(value = { @Result(property = "opTime", column = "OP_TIME") })
 	List<SqlDelegationEntity> selectAll();
 }

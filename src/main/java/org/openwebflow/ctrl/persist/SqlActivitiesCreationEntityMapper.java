@@ -8,12 +8,12 @@ import org.apache.ibatis.annotations.Select;
 
 public interface SqlActivitiesCreationEntityMapper
 {
-	@Select("SELECT * FROM ACTIVITY_CREATION_TAB")
+	@Select("SELECT * FROM OWF_ACTIVITY_CREATION")
 	List<RuntimeActivityDefinition> findAll();
 
-	@Insert("INSERT INTO ACTIVITY_CREATION_TAB (FACTORYNAME,PROCESSDEFINITIONID,PROCESSINSTANCEID,PROPERTIESTEXT) values (#{factoryName},#{processDefinitionId},#{processInstanceId},#{propertiesText})")
+	@Insert("INSERT INTO OWF_ACTIVITY_CREATION (FACTORYNAME,PROCESSDEFINITIONID,PROCESSINSTANCEID,PROPERTIESTEXT) values (#{factoryName},#{processDefinitionId},#{processInstanceId},#{propertiesText})")
 	void save(RuntimeActivityDefinition entity);
 
-	@Delete("DELETE from ACTIVITY_CREATION_TAB")
+	@Delete("DELETE from OWF_ACTIVITY_CREATION")
 	void deleteAll();
 }

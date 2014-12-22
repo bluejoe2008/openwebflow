@@ -11,14 +11,14 @@ import org.apache.ibatis.annotations.Select;
 
 public interface SqlNotificationDetailsMapper
 {
-	@Select("SELECT * FROM NOTIFICATION_TAB where TASKID=#{taskId}")
+	@Select("SELECT * FROM OWF_NOTIFICATION where TASKID=#{taskId}")
 	@Results(value = { @Result(property = "opTime", column = "OP_TIME") })
 	List<SqlNotificationDetails> findByTaskId(@Param("taskId")
 	String taskId);
 
-	@Insert("INSERT INTO NOTIFICATION_TAB (TASKID,OPTIME) values (#{taskId},#{opTime})")
+	@Insert("INSERT INTO OWF_NOTIFICATION (TASKID,OPTIME) values (#{taskId},#{opTime})")
 	void saveNotificationDetails(SqlNotificationDetails sde);
 
-	@Delete("DELETE from NOTIFICATION_TAB")
+	@Delete("DELETE from OWF_NOTIFICATION")
 	public void deleteAll();
 }

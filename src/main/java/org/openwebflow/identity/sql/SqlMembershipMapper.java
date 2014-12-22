@@ -9,17 +9,17 @@ import org.apache.ibatis.annotations.Select;
 
 public interface SqlMembershipMapper
 {
-	@Select("SELECT * FROM MEMBERSHIP_TAB where USERID=#{userId}")
+	@Select("SELECT * FROM OWF_MEMBERSHIP where USERID=#{userId}")
 	List<SqlMembershipEntity> findMembershipsByUserId(@Param("userId")
 	String userId);
 
-	@Select("SELECT * FROM MEMBERSHIP_TAB where GROUPID=#{groupId}")
+	@Select("SELECT * FROM OWF_MEMBERSHIP where GROUPID=#{groupId}")
 	List<SqlMembershipEntity> findMembershipsByGroupId(@Param("groupId")
 	String groupId);
 
-	@Insert("INSERT INTO MEMBERSHIP_TAB (USERID,GROUPID) values (#{userId},#{groupId})")
+	@Insert("INSERT INTO OWF_MEMBERSHIP (USERID,GROUPID) values (#{userId},#{groupId})")
 	void saveMembership(SqlMembershipEntity mse);
 
-	@Delete("DELETE from MEMBERSHIP_TAB")
+	@Delete("DELETE from OWF_MEMBERSHIP")
 	void deleteAll();
 }

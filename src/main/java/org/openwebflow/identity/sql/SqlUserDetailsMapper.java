@@ -8,13 +8,13 @@ import org.openwebflow.identity.IdentityUserDetails;
 
 public interface SqlUserDetailsMapper
 {
-	@Select("SELECT * FROM USER_TAB where USERID=#{userId}")
+	@Select("SELECT * FROM OWF_USER where USERID=#{userId}")
 	IdentityUserDetails findUserById(@Param("userId")
 	String userId);
 
-	@Insert("INSERT INTO USER_TAB (USERID,EMAIL,NICKNAME,MOBILEPHONENUMBER) values (#{userId},#{email},#{nickName},#{mobilePhoneNumber})")
+	@Insert("INSERT INTO OWF_USER (USERID,EMAIL,NICKNAME,MOBILEPHONENUMBER) values (#{userId},#{email},#{nickName},#{mobilePhoneNumber})")
 	void saveUser(IdentityUserDetails userDetails);
 
-	@Delete("DELETE from USER_TAB")
+	@Delete("DELETE from OWF_USER")
 	void deleteAll();
 }
