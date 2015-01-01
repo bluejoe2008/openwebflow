@@ -82,10 +82,10 @@ public abstract class ModelUtils
 	public static void importModel(RepositoryService repositoryService, File modelFile) throws IOException,
 			XMLStreamException
 	{
-		InputStreamReader reader = new InputStreamReader(new FileInputStream(modelFile));
+		InputStreamReader reader = new InputStreamReader(new FileInputStream(modelFile), "utf-8");
 		String fileContent = IOUtils.readStringAndClose(reader, (int) modelFile.length());
 
-		BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(new StringStreamSource(fileContent), false,
+		BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(new StringStreamSourceEx(fileContent), false,
 			false);
 
 		String processName = bpmnModel.getMainProcess().getName();
@@ -104,9 +104,6 @@ public abstract class ModelUtils
 
 		repositoryService.saveModel(modelData);
 
-		//BpmnJsonConverter jsonConverter = new BpmnJsonConverter();
-		//ObjectNode editorNode = jsonConverter.convertToJson(bpmnModel);
-		//repositoryService.addModelEditorSource(modelData.getId(), editorNode.toString().getBytes("utf-8"));
 		repositoryService.addModelEditorSource(modelData.getId(), fileContent.getBytes("utf-8"));
 		Logger.getLogger(ModelUtils.class)
 				.info(String.format("importing model file: %s", modelFile.getCanonicalPath()));

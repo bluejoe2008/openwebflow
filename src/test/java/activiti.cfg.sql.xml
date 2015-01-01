@@ -10,7 +10,7 @@
 
 	<import resource="activiti.cfg.core.xml" />
 
-	<!-- 数据库脚本见test.sql -->
+	<!-- 数据库脚本见openwebflow.sql -->
 	<bean id="owfDataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
