@@ -1,11 +1,11 @@
-package org.openwebflow.tool;
+package test;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ MemProcessEngineToolTest.class, SqlProcessEngineToolTest.class })
+@SuiteClasses({ MemProcessEngineTest.class, SqlProcessEngineTest.class })
 public class AllTests
 {
 

@@ -2,6 +2,8 @@ package org.openwebflow.alarm.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.task.Task;
@@ -19,13 +21,11 @@ import org.springframework.beans.factory.DisposableBean;
 
 public class TaskAlarmServiceImpl implements TaskAlarmService, DisposableBean
 {
-	class MonitorThread extends Thread
+	class MonitorTask extends TimerTask
 	{
 		Period _parsedPeriodInAdvance;
 
-		boolean _stopped = false;
-
-		public MonitorThread()
+		public MonitorTask()
 		{
 			_parsedPeriodInAdvance = Period.parse(_periodInAdvance);
 		}
@@ -56,17 +56,13 @@ public class TaskAlarmServiceImpl implements TaskAlarmService, DisposableBean
 		@Override
 		public void run()
 		{
-			while (!_stopped)
+			try
 			{
-				try
-				{
-					checkAndNotify();
-					Thread.sleep(_checkInterval);
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
+				checkAndNotify();
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
 			}
 		}
 	}
@@ -83,17 +79,14 @@ public class TaskAlarmServiceImpl implements TaskAlarmService, DisposableBean
 
 	ProcessEngine _processEngine;
 
-	MonitorThread _thread;
-
 	UserDetailsManager _userDetailsManager;
+
+	private Timer _monitorTimer = new Timer(true);
 
 	@Override
 	public void destroy() throws Exception
 	{
-		if (_thread != null)
-		{
-			_thread._stopped = true;
-		}
+		_monitorTimer.cancel();
 	}
 
 	public long getCheckInterval()
@@ -160,8 +153,6 @@ public class TaskAlarmServiceImpl implements TaskAlarmService, DisposableBean
 	public void start(ProcessEngine processEngine) throws Exception
 	{
 		_processEngine = processEngine;
-		_thread = new MonitorThread();
-		_thread.setName(_thread.getClass().getName());
-		_thread.start();
+		_monitorTimer.schedule(new MonitorTask(), _checkInterval, _checkInterval);
 	}
 }

@@ -18,9 +18,8 @@ public interface SqlActivityAclStoreMapper
 			@Result(property = "assignee", column = "ASSIGNED_USER"),
 			@Result(property = "grantedGroupString", column = "GRANTED_GROUPS"),
 			@Result(property = "grantedUserString", column = "GRANTED_USERS") })
-	public SqlActivityAclEntry load(@Param("processDefinitionId")
-	String processDefinitionId, @Param("taskDefinitionKey")
-	String taskDefinitionKey);
+	public SqlActivityAclEntry load(@Param("processDefinitionId") String processDefinitionId,
+			@Param("taskDefinitionKey") String taskDefinitionKey);
 
 	@Delete("DELETE from OWF_ACTIVITY_ACL")
 	public void deleteAll();

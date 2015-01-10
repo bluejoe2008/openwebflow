@@ -1,6 +1,7 @@
 package org.openwebflow.conf;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -37,8 +38,11 @@ public class ImportDefinedProcessModels implements StartEngineEventListener
 		}
 	}
 
-	private List<File> checkNewModelNames(RepositoryService repositoryService)
+	private List<File> checkNewModelNames(RepositoryService repositoryService) throws FileNotFoundException
 	{
+		if (!_modelDir.exists())
+			throw new FileNotFoundException(_modelDir.getPath());
+
 		File[] files = _modelDir.listFiles(new FilenameFilter()
 		{
 			@Override
@@ -49,11 +53,14 @@ public class ImportDefinedProcessModels implements StartEngineEventListener
 		});
 
 		List<File> newModelFiles = new ArrayList<File>();
-		for (File file : files)
+		if (files != null)
 		{
-			if (!exists(repositoryService, file.getName()))
+			for (File file : files)
 			{
-				newModelFiles.add(file);
+				if (!exists(repositoryService, file.getName()))
+				{
+					newModelFiles.add(file);
+				}
 			}
 		}
 

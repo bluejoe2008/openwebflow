@@ -7,7 +7,6 @@ import org.activiti.engine.task.Task;
 import org.openwebflow.tool.ProcessEngineTool;
 import org.openwebflow.tool.TaskTool;
 import org.openwebflow.util.MapFactory;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 public class TaskToolImpl extends AbstractTool implements TaskTool
 {
@@ -20,9 +19,8 @@ public class TaskToolImpl extends AbstractTool implements TaskTool
 	}
 
 	@Override
-	public void claim()
+	public void claim(String userId)
 	{
-		String userId = SecurityContextHolder.getContext().getAuthentication().getName();
 		getProcessEngine().getTaskService().claim(_task.getId(), userId);
 	}
 

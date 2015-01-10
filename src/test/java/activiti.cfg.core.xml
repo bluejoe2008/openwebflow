@@ -12,7 +12,6 @@
 	<context:annotation-config />
 	
 	<!-- 工作流核心数据库配置 -->
-	<!-- 
 	<bean id="activitiDataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
 		<property name="driverClassName" value="org.h2.Driver" />
@@ -24,7 +23,8 @@
 		<property name="maxIdle" value="20" />
 		<property name="minIdle" value="10" />
 	</bean>
-	-->
+
+	<!-- 
 	<bean id="activitiDataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
@@ -37,6 +37,7 @@
 		<property name="maxIdle" value="20" />
 		<property name="minIdle" value="10" />
 	</bean>
+	-->
 	
 	<!-- 任务催办配置 -->
 	<bean id="myTaskAlarmService" class="org.openwebflow.alarm.impl.TaskAlarmServiceImpl">
@@ -47,7 +48,7 @@
 			<!-- 采用邮件发送 -->
 			<bean class="org.openwebflow.alarm.impl.MailMessageNotifier">
 				<property name="subjectTemplate" value="请尽快处理#{'$'}{task.name}任务" />
-				<property name="messageTemplateResource" value="classpath:/alarm-template.txt" />
+				<property name="messageTemplateResource" value="${workflow.alarmTemplate}" />
 				<property name="mailSender">
 					<bean class="org.openwebflow.alarm.impl.MailSender">
 						<property name="serverHost" value="${mail.host}" />
@@ -70,8 +71,6 @@
 	</bean>
 
 	<tx:annotation-driven transaction-manager="transactionManager" />
-
-	<bean class="org.openwebflow.ctrl.TaskFlowControlServiceFactory" />
 
 	<!-- 配置对象 -->
 	<bean id="processEngineConfiguration" class="org.openwebflow.conf.ProcessEngineConfigurationEx">
@@ -109,7 +108,7 @@
 				</bean>
 				<!-- 自动导入流程模型 -->
 				<bean class="org.openwebflow.conf.ImportDefinedProcessModels">
-					<property name="modelDir" value="./models" />
+					<property name="modelDir" value="${workflow.modelDir}" />
 				</bean>
 				<!-- 启动催办管理器 -->
 				<bean class="org.openwebflow.conf.StartTaskAlarmService">
@@ -129,9 +128,10 @@
 		<property name="processEngineConfiguration" ref="processEngineConfiguration" />
 	</bean>
 
+	<!-- 工作流流转服务对象工厂 -->
+	<bean class="org.openwebflow.ctrl.TaskFlowControlServiceFactory" />
+	
 	<!-- processEngineTool -->
-	<bean id="processEngineTool" class="org.openwebflow.tool.impl.ProcessEngineToolImpl">
-		<property name="processEngine" ref="processEngine" />
-	</bean>
+	<bean id="processEngineTool" class="org.openwebflow.util.ProcessEngineTool" />
 
 </beans>

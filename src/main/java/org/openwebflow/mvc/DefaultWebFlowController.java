@@ -37,18 +37,17 @@ public class DefaultWebFlowController extends DefaultWebFlowControllerConfigurat
 	private ProcessEngineTool _processEngineTool;
 
 	@RequestMapping("claimTask.action")
-	public String claimTask(@WebFlowParam
-	ContextToolHolder holder)
+	public String claimTask(@WebFlowParam ContextToolHolder holder)
 	{
 		TaskTool tool = holder.getTaskTool();
-		tool.claim();
+		//FIXME
+		tool.claim("bluejoe");
 		return super.getDefaultClaimTaskActionView();
 	}
 
 	@RequestMapping("completeTaskForm.action")
-	public String completeTaskForm(@WebFlowParam
-	ContextToolHolder holder, ModelAndView mav, ModelMap model, HttpServletRequest request, HttpServletResponse response)
-			throws Exception
+	public String completeTaskForm(@WebFlowParam ContextToolHolder holder, ModelAndView mav, ModelMap model,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		TaskTool tool = holder.getTaskTool();
 		Task task = tool.getTask();
@@ -74,9 +73,8 @@ public class DefaultWebFlowController extends DefaultWebFlowControllerConfigurat
 	}
 
 	@RequestMapping("doCompleteTask.action")
-	public String doCompleteTask(String taskId, @WebFlowParam
-	ContextToolHolder holder, ModelAndView mav, ModelMap model, HttpServletRequest request, HttpServletResponse response)
-			throws Exception
+	public String doCompleteTask(String taskId, @WebFlowParam ContextToolHolder holder, ModelAndView mav,
+			ModelMap model, HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		TaskTool tool = holder.getTaskTool();
 		Task task = tool.getTask();
@@ -102,9 +100,8 @@ public class DefaultWebFlowController extends DefaultWebFlowControllerConfigurat
 	}
 
 	@RequestMapping("doStartProcess.action")
-	public String doStartProcess(@WebFlowParam
-	ContextToolHolder holder, ModelAndView mav, ModelMap model, HttpServletRequest request, HttpServletResponse response)
-			throws Exception
+	public String doStartProcess(@WebFlowParam ContextToolHolder holder, ModelAndView mav, ModelMap model,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		ProcessDefinitionTool tool = holder.getProcessDefinitionTool();
 		String startFormKey = tool.getStartFormKey();
@@ -164,9 +161,8 @@ public class DefaultWebFlowController extends DefaultWebFlowControllerConfigurat
 	 * @throws ServletException
 	 */
 	@RequestMapping("startProcessForm.action")
-	public String startProcessForm(@WebFlowParam
-	ContextToolHolder holder, ModelAndView mav, ModelMap model, HttpServletRequest request, HttpServletResponse response)
-			throws Exception
+	public String startProcessForm(@WebFlowParam ContextToolHolder holder, ModelAndView mav, ModelMap model,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		ProcessDefinitionTool tool = holder.getProcessDefinitionTool();
 		model.put("processDef", tool.getProcessDefinition());

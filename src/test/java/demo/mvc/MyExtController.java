@@ -23,10 +23,9 @@ public class MyExtController
 	private ProcessEngineTool _processEngineTool;
 
 	@RequestMapping("/doCompleteAdjustTask.action")
-	public String doCompleteAdjustTask(@WebFlowParam
-	ContextToolHolder holder, @RequestParam
-	Map<String, Object> formValues, ModelMap model, HttpServletRequest request, HttpServletResponse response)
-			throws Exception
+	public String doCompleteAdjustTask(@WebFlowParam ContextToolHolder holder,
+			@RequestParam Map<String, Object> formValues, ModelMap model, HttpServletRequest request,
+			HttpServletResponse response) throws Exception
 	{
 		TaskTool helper = holder.getTaskTool();
 		model.put("task", helper.getTask());

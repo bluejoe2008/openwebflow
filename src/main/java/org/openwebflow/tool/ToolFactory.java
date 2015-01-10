@@ -1,5 +1,10 @@
 package org.openwebflow.tool;
 
+/**
+ * @deprecated
+ * @author bluejoe2008@gmail.com
+ *
+ */
 public interface ToolFactory
 {
 

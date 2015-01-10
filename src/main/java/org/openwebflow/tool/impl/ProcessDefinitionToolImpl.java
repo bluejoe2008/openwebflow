@@ -8,7 +8,6 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.openwebflow.tool.ProcessDefinitionTool;
 import org.openwebflow.tool.ProcessEngineTool;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 public class ProcessDefinitionToolImpl extends AbstractTool implements ProcessDefinitionTool
 {
@@ -48,8 +47,6 @@ public class ProcessDefinitionToolImpl extends AbstractTool implements ProcessDe
 	@Override
 	public ProcessInstance startProcess(String businessKey, Map<String, Object> variables)
 	{
-		String userId = SecurityContextHolder.getContext().getAuthentication().getName();
-		getProcessEngine().getIdentityService().setAuthenticatedUserId(userId);
 		ProcessInstance instance = getProcessEngine().getRuntimeService().startProcessInstanceById(
 			getProcessDefinitionId(), businessKey, variables);
 

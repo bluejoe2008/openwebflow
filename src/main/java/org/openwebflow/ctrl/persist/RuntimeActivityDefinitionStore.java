@@ -5,10 +5,10 @@ import java.util.List;
 public interface RuntimeActivityDefinitionStore
 {
 
-	List<RuntimeActivityDefinition> loadAll();
+	List<RuntimeActivityDefinition> loadAll() throws Exception;
 
-	void save(RuntimeActivityDefinition entity);
+	void save(RuntimeActivityDefinition entity) throws Exception;
 
-	void removeAll();
+	void removeAll() throws Exception;
 
 }

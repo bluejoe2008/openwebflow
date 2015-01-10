@@ -6,9 +6,14 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.openwebflow.util.MapFactory;
 
+/**
+ * @deprecated
+ * @author bluejoe2008@gmail.com
+ *
+ */
 public interface TaskTool
 {
-	void claim();
+	void claim(String userId);
 
 	void completeTask(Map<String, Object> variables);
 

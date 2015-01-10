@@ -8,6 +8,11 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.Task;
 
+/**
+ * @deprecated
+ * @author bluejoe2008@gmail.com
+ *
+ */
 public interface ProcessEngineQueryTool
 {
 	public abstract long getActiveProcessesCount();

@@ -13,8 +13,7 @@ public interface SqlNotificationDetailsMapper
 {
 	@Select("SELECT * FROM OWF_NOTIFICATION where TASKID=#{taskId}")
 	@Results(value = { @Result(property = "opTime", column = "OP_TIME") })
-	List<SqlNotificationDetails> findByTaskId(@Param("taskId")
-	String taskId);
+	List<SqlNotificationDetails> findByTaskId(@Param("taskId") String taskId);
 
 	@Insert("INSERT INTO OWF_NOTIFICATION (TASKID,OPTIME) values (#{taskId},#{opTime})")
 	void saveNotificationDetails(SqlNotificationDetails sde);

@@ -1,4 +1,4 @@
-package org.openwebflow.tool;
+package test;
 
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +11,6 @@ import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
@@ -37,12 +36,13 @@ import org.openwebflow.identity.impl.AbstractMembershipStore;
 import org.openwebflow.identity.impl.MyUserDetails;
 import org.openwebflow.util.ModelUtils;
 import org.openwebflow.util.ProcessDefinitionUtils;
+import org.openwebflow.util.ProcessEngineTool;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.util.CollectionUtils;
 
-public abstract class AbstractProcessEngineToolTest
+public abstract class AbstractProcessEngineTest
 {
 	ProcessEngineTool _tool;
 
@@ -316,11 +316,8 @@ public abstract class AbstractProcessEngineToolTest
 
 		ExecutionEntity instance1 = (ExecutionEntity) _processEngine.getRuntimeService().startProcessInstanceByKey(
 			"test2");
-		TaskService taskService = _processEngine.getTaskService();
 		ExecutionEntity instance2 = (ExecutionEntity) _processEngine.getRuntimeService().startProcessInstanceByKey(
 			"test2");
-		TaskEntity task1 = (TaskEntity) taskService.createTaskQuery().active().list().get(0);
-		TaskEntity task2 = (TaskEntity) taskService.createTaskQuery().active().list().get(1);
 
 		Assert.assertSame(instance1.getProcessDefinition(), instance2.getProcessDefinition());
 		Assert.assertSame(((ProcessDefinitionEntity) instance1.getProcessDefinition()).getTaskDefinitions(),
@@ -572,7 +569,7 @@ public abstract class AbstractProcessEngineToolTest
 	}
 
 	@Test
-	public void testDelegation()
+	public void testDelegation() throws Exception
 	{
 		//测试代理功能
 		ProcessInstance instance;

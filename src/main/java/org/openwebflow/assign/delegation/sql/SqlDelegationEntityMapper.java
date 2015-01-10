@@ -13,8 +13,7 @@ public interface SqlDelegationEntityMapper
 {
 	@Select("SELECT * FROM OWF_DELEGATION where DELEGATED=#{delegated}")
 	@Results(value = { @Result(property = "opTime", column = "OP_TIME") })
-	List<SqlDelegationEntity> findByDelegated(@Param("delegated")
-	String delegated);
+	List<SqlDelegationEntity> findByDelegated(@Param("delegated") String delegated);
 
 	@Insert("INSERT INTO OWF_DELEGATION (DELEGATED,DELEGATE,OP_TIME) values (#{delegated},#{delegate},#{opTime})")
 	void saveDelegation(DelegationDetails sde);

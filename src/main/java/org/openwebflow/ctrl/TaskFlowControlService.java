@@ -21,8 +21,6 @@ import org.openwebflow.ctrl.persist.RuntimeActivityDefinitionStore;
 import org.openwebflow.util.ProcessDefinitionUtils;
 import org.springframework.util.CollectionUtils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 public class TaskFlowControlService
 {
 	RuntimeActivityDefinitionStore _activitiesCreationStore;
@@ -172,7 +170,7 @@ public class TaskFlowControlService
 		moveTo(currentTaskEntity, activity);
 	}
 
-	private void recordActivitiesCreation(RuntimeActivityDefinition info) throws JsonProcessingException
+	private void recordActivitiesCreation(RuntimeActivityDefinition info) throws Exception
 	{
 		info.serializeProperties();
 		_activitiesCreationStore.save(info);
@@ -188,7 +186,7 @@ public class TaskFlowControlService
 	 * @throws IllegalArgumentException
 	 */
 	public ActivityImpl split(String targetTaskDefinitionKey, boolean isSequential, String... assignees)
-			throws IOException
+			throws Exception
 	{
 		RuntimeActivityDefinition info = new RuntimeActivityDefinition();
 		info.setProcessDefinitionId(_processDefinition.getId());
@@ -208,7 +206,7 @@ public class TaskFlowControlService
 		return clone;
 	}
 
-	public ActivityImpl split(String targetTaskDefinitionKey, String... assignee) throws IOException
+	public ActivityImpl split(String targetTaskDefinitionKey, String... assignee) throws Exception
 	{
 		return split(targetTaskDefinitionKey, true, assignee);
 	}

@@ -1,8 +1,8 @@
 package org.openwebflow.util;
 
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -29,11 +29,11 @@ public class HttpServletRequestParameterMap implements MapFactory
 	public Map<String, Object> getMap()
 	{
 		Map<String, Object> vars = new HashMap<String, Object>();
-		Map<String, Object> map = _request.getParameterMap();
-		for (Entry<String, Object> en : map.entrySet())
+		Enumeration<String> names = _request.getParameterNames();
+		while (names.hasMoreElements())
 		{
-			String key = en.getKey();
-			Object value = en.getValue();
+			String key = names.nextElement();
+			Object value = _request.getParameter(key);
 			if (_prefix == null)
 			{
 				vars.put(key, value);
