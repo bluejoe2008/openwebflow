@@ -17,7 +17,7 @@ public class SqlRuntimeActivityDefinitionStore implements RuntimeActivityDefinit
 	}
 
 	@Override
-	public List<RuntimeActivityDefinition> loadAll()
+	public List<RuntimeActivityDefinition> list()
 	{
 		return _mapper.findAll();
 	}

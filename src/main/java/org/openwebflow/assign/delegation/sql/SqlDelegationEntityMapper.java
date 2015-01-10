@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
+import org.openwebflow.assign.delegation.DelegationDetails;
 
 public interface SqlDelegationEntityMapper
 {
@@ -23,5 +24,5 @@ public interface SqlDelegationEntityMapper
 
 	@Select("SELECT * FROM OWF_DELEGATION")
 	@Results(value = { @Result(property = "opTime", column = "OP_TIME") })
-	List<SqlDelegationEntity> selectAll();
+	List<SqlDelegationEntity> list();
 }

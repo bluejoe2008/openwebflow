@@ -8,7 +8,7 @@ public class InMemoryRuntimeActivityDefinitionStore implements RuntimeActivityDe
 	private static List<RuntimeActivityDefinition> _list = new ArrayList<RuntimeActivityDefinition>();
 
 	@Override
-	public List<RuntimeActivityDefinition> loadAll()
+	public List<RuntimeActivityDefinition> list()
 	{
 		return _list;
 	}

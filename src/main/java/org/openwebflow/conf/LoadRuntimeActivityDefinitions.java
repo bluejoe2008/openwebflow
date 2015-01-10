@@ -25,7 +25,7 @@ public class LoadRuntimeActivityDefinitions implements StartEngineEventListener
 	@Override
 	public void afterStartEngine(ProcessEngineConfigurationImpl conf, ProcessEngine processEngine) throws Exception
 	{
-		for (RuntimeActivityDefinition entity : _activityDefinitionStore.loadAll())
+		for (RuntimeActivityDefinition entity : _activityDefinitionStore.list())
 		{
 			ProcessDefinitionEntity processDefinition = ProcessDefinitionUtils.getProcessDefinition(processEngine,
 				entity.getProcessDefinitionId());

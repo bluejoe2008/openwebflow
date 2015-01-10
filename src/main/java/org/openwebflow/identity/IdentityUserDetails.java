@@ -4,6 +4,8 @@ public interface IdentityUserDetails
 {
 	String getUserId();
 
+	String[] getPropertyNames();
+
 	public <T> void setProperty(String name, T value);
 
 	public <T> T getProperty(String name);

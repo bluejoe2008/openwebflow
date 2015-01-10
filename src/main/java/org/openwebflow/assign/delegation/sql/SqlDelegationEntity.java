@@ -2,7 +2,9 @@ package org.openwebflow.assign.delegation.sql;
 
 import java.sql.Date;
 
-public class SqlDelegationEntity extends DelegationDetails
+import org.openwebflow.assign.delegation.DelegationDetailsImpl;
+
+public class SqlDelegationEntity extends DelegationDetailsImpl
 {
 	long _id;
 

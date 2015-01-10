@@ -5,15 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.openwebflow.assign.delegation.sql.DelegationDetails;
 
 public class InMemoryDelegationDetailsStore extends AbstractDelegationStore implements DelegationDetailsManager
 {
 	List<DelegationDetails> _list = new ArrayList<DelegationDetails>();
 
-	public void addDelegation(String delegated, String delegate)
+	public void saveDelegation(String delegated, String delegate)
 	{
-		_list.add(new DelegationDetails(delegated, delegate));
+		_list.add(new DelegationDetailsImpl(delegated, delegate));
 	}
 
 	@Override
@@ -37,7 +36,7 @@ public class InMemoryDelegationDetailsStore extends AbstractDelegationStore impl
 
 	public void remove(String delegated, String delegate)
 	{
-		_list.remove(new DelegationDetails(delegated, delegate));
+		_list.remove(new DelegationDetailsImpl(delegated, delegate));
 	}
 
 	@Override

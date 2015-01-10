@@ -78,4 +78,10 @@ public class MyUserDetails implements IdentityUserDetails
 	{
 		return _map.toString();
 	}
+
+	@Override
+	public String[] getPropertyNames()
+	{
+		return _map.keySet().toArray(new String[0]);
+	}
 }

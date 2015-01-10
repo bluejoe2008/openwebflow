@@ -60,9 +60,8 @@ public abstract class AbstractProcessEngineTest
 	public void setUp() throws Exception
 	{
 		rebuildApplicationContext();
-
+		
 		_aclStore.removeAll();
-
 		((AbstractNotificationDetailsStore) _ctx.getBean("myNotificationDetailsStore")).removeAll();
 
 		//用户关系管理
@@ -217,6 +216,8 @@ public abstract class AbstractProcessEngineTest
 		//应该执行到了第一个节点
 		//完成该节点
 		taskService.complete(taskService.createTaskQuery().singleResult().getId());
+		//应该到了下一个节点
+		Assert.assertEquals("bluejoe", taskService.createTaskQuery().singleResult().getAssignee());
 
 		//此时模拟服务器重启
 		ProcessEngine oldProcessEngine = _processEngine;
@@ -581,7 +582,7 @@ public abstract class AbstractProcessEngineTest
 
 		//代理关系
 		//alex将代理kermit
-		_delegationStore.addDelegation("kermit", "alex");
+		_delegationStore.saveDelegation("kermit", "alex");
 
 		//启动一个流程
 		instance = _processEngine.getRuntimeService().startProcessInstanceByKey("test1");

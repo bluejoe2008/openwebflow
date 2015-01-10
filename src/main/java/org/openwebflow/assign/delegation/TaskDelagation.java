@@ -10,7 +10,6 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.task.IdentityLink;
 import org.openwebflow.assign.TaskAssignmentHandler;
 import org.openwebflow.assign.TaskAssignmentHandlerChain;
-import org.openwebflow.assign.delegation.sql.DelegationDetails;
 import org.openwebflow.identity.IdentityMembershipManager;
 
 public class TaskDelagation implements TaskAssignmentHandler

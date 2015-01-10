@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.openwebflow.assign.delegation.AbstractDelegationStore;
+import org.openwebflow.assign.delegation.DelegationDetails;
 import org.openwebflow.assign.delegation.DelegationDetailsManager;
 
 public class SqlDelegationStore extends AbstractDelegationStore implements DelegationDetailsManager
@@ -37,7 +38,7 @@ public class SqlDelegationStore extends AbstractDelegationStore implements Deleg
 	}
 
 	@Override
-	public void addDelegation(String delegated, String delegate)
+	public void saveDelegation(String delegated, String delegate)
 	{
 		SqlDelegationEntity sde = new SqlDelegationEntity();
 		sde.setDelegated(delegated);
@@ -56,7 +57,7 @@ public class SqlDelegationStore extends AbstractDelegationStore implements Deleg
 	public List<DelegationDetails> getDelegationDetailsList()
 	{
 		List<DelegationDetails> list = new ArrayList<DelegationDetails>();
-		Collections.addAll(list, _mapper.selectAll().toArray(new DelegationDetails[0]));
+		Collections.addAll(list, _mapper.list().toArray(new DelegationDetails[0]));
 		return list;
 	}
 
