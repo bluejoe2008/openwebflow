@@ -74,9 +74,57 @@ public class ActivityBehaviorFactoryDelegate
 		_source = source;
 	}
 
-	public NoneStartEventActivityBehavior createNoneStartEventActivityBehavior(StartEvent startEvent)
+	public BoundaryEventActivityBehavior createBoundaryEventActivityBehavior(BoundaryEvent boundaryEvent,
+			boolean interrupting, ActivityImpl activity)
 	{
-		return _source.createNoneStartEventActivityBehavior(startEvent);
+		return _source.createBoundaryEventActivityBehavior(boundaryEvent, interrupting, activity);
+	}
+
+	public BusinessRuleTaskActivityBehavior createBusinessRuleTaskActivityBehavior(BusinessRuleTask businessRuleTask)
+	{
+		return _source.createBusinessRuleTaskActivityBehavior(businessRuleTask);
+	}
+
+	public CallActivityBehavior createCallActivityBehavior(CallActivity callActivity)
+	{
+		return _source.createCallActivityBehavior(callActivity);
+	}
+
+	public ActivityBehavior createCamelActivityBehavior(SendTask sendTask, BpmnModel bpmnModel)
+	{
+		return _source.createCamelActivityBehavior(sendTask, bpmnModel);
+	}
+
+	public ActivityBehavior createCamelActivityBehavior(ServiceTask serviceTask, BpmnModel bpmnModel)
+	{
+		return _source.createCamelActivityBehavior(serviceTask, bpmnModel);
+	}
+
+	public CancelBoundaryEventActivityBehavior createCancelBoundaryEventActivityBehavior(
+			CancelEventDefinition cancelEventDefinition)
+	{
+		return _source.createCancelBoundaryEventActivityBehavior(cancelEventDefinition);
+	}
+
+	public CancelEndEventActivityBehavior createCancelEndEventActivityBehavior(EndEvent endEvent)
+	{
+		return _source.createCancelEndEventActivityBehavior(endEvent);
+	}
+
+	public ClassDelegate createClassDelegateServiceTask(ServiceTask serviceTask)
+	{
+		return _source.createClassDelegateServiceTask(serviceTask);
+	}
+
+	public ErrorEndEventActivityBehavior createErrorEndEventActivityBehavior(EndEvent endEvent,
+			ErrorEventDefinition errorEventDefinition)
+	{
+		return _source.createErrorEndEventActivityBehavior(endEvent, errorEventDefinition);
+	}
+
+	public EventBasedGatewayActivityBehavior createEventBasedGatewayActivityBehavior(EventGateway eventGateway)
+	{
+		return _source.createEventBasedGatewayActivityBehavior(eventGateway);
 	}
 
 	public EventSubProcessStartEventActivityBehavior createEventSubProcessStartEventActivityBehavior(
@@ -85,105 +133,9 @@ public class ActivityBehaviorFactoryDelegate
 		return _source.createEventSubProcessStartEventActivityBehavior(startEvent, activityId);
 	}
 
-	public TaskActivityBehavior createTaskActivityBehavior(Task task)
-	{
-		return _source.createTaskActivityBehavior(task);
-	}
-
-	public ManualTaskActivityBehavior createManualTaskActivityBehavior(ManualTask manualTask)
-	{
-		return _source.createManualTaskActivityBehavior(manualTask);
-	}
-
-	public ReceiveTaskActivityBehavior createReceiveTaskActivityBehavior(ReceiveTask receiveTask)
-	{
-		return _source.createReceiveTaskActivityBehavior(receiveTask);
-	}
-
-	public UserTaskActivityBehavior createUserTaskActivityBehavior(UserTask userTask, TaskDefinition taskDefinition)
-	{
-		return _source.createUserTaskActivityBehavior(userTask, taskDefinition);
-	}
-
-	public ClassDelegate createClassDelegateServiceTask(ServiceTask serviceTask)
-	{
-		return _source.createClassDelegateServiceTask(serviceTask);
-	}
-
-	public ServiceTaskDelegateExpressionActivityBehavior createServiceTaskDelegateExpressionActivityBehavior(
-			ServiceTask serviceTask)
-	{
-		return _source.createServiceTaskDelegateExpressionActivityBehavior(serviceTask);
-	}
-
-	public ServiceTaskExpressionActivityBehavior createServiceTaskExpressionActivityBehavior(ServiceTask serviceTask)
-	{
-		return _source.createServiceTaskExpressionActivityBehavior(serviceTask);
-	}
-
-	public WebServiceActivityBehavior createWebServiceActivityBehavior(ServiceTask serviceTask)
-	{
-		return _source.createWebServiceActivityBehavior(serviceTask);
-	}
-
-	public WebServiceActivityBehavior createWebServiceActivityBehavior(SendTask sendTask)
-	{
-		return _source.createWebServiceActivityBehavior(sendTask);
-	}
-
-	public MailActivityBehavior createMailActivityBehavior(ServiceTask serviceTask)
-	{
-		return _source.createMailActivityBehavior(serviceTask);
-	}
-
-	public MailActivityBehavior createMailActivityBehavior(SendTask sendTask)
-	{
-		return _source.createMailActivityBehavior(sendTask);
-	}
-
-	public ActivityBehavior createMuleActivityBehavior(ServiceTask serviceTask, BpmnModel bpmnModel)
-	{
-		return _source.createMuleActivityBehavior(serviceTask, bpmnModel);
-	}
-
-	public ActivityBehavior createMuleActivityBehavior(SendTask sendTask, BpmnModel bpmnModel)
-	{
-		return _source.createMuleActivityBehavior(sendTask, bpmnModel);
-	}
-
-	public ActivityBehavior createCamelActivityBehavior(ServiceTask serviceTask, BpmnModel bpmnModel)
-	{
-		return _source.createCamelActivityBehavior(serviceTask, bpmnModel);
-	}
-
-	public ActivityBehavior createCamelActivityBehavior(SendTask sendTask, BpmnModel bpmnModel)
-	{
-		return _source.createCamelActivityBehavior(sendTask, bpmnModel);
-	}
-
-	public ShellActivityBehavior createShellActivityBehavior(ServiceTask serviceTask)
-	{
-		return _source.createShellActivityBehavior(serviceTask);
-	}
-
-	public BusinessRuleTaskActivityBehavior createBusinessRuleTaskActivityBehavior(BusinessRuleTask businessRuleTask)
-	{
-		return _source.createBusinessRuleTaskActivityBehavior(businessRuleTask);
-	}
-
-	public ScriptTaskActivityBehavior createScriptTaskActivityBehavior(ScriptTask scriptTask)
-	{
-		return _source.createScriptTaskActivityBehavior(scriptTask);
-	}
-
 	public ExclusiveGatewayActivityBehavior createExclusiveGatewayActivityBehavior(ExclusiveGateway exclusiveGateway)
 	{
 		return _source.createExclusiveGatewayActivityBehavior(exclusiveGateway);
-	}
-
-	public ParallelGatewayActivityBehavior createParallelGatewayActivityBehavior(ParallelGateway parallelGateway)
-	{
-		return _source.createParallelGatewayActivityBehavior(parallelGateway);
 	}
 
 	public InclusiveGatewayActivityBehavior createInclusiveGatewayActivityBehavior(InclusiveGateway inclusiveGateway)
@@ -191,42 +143,16 @@ public class ActivityBehaviorFactoryDelegate
 		return _source.createInclusiveGatewayActivityBehavior(inclusiveGateway);
 	}
 
-	public EventBasedGatewayActivityBehavior createEventBasedGatewayActivityBehavior(EventGateway eventGateway)
-	{
-		return _source.createEventBasedGatewayActivityBehavior(eventGateway);
-	}
-
-	public SequentialMultiInstanceBehavior createSequentialMultiInstanceBehavior(ActivityImpl activity,
-			AbstractBpmnActivityBehavior innerActivityBehavior)
-	{
-		return _source.createSequentialMultiInstanceBehavior(activity, innerActivityBehavior);
-	}
-
-	public ParallelMultiInstanceBehavior createParallelMultiInstanceBehavior(ActivityImpl activity,
-			AbstractBpmnActivityBehavior innerActivityBehavior)
-	{
-		return _source.createParallelMultiInstanceBehavior(activity, innerActivityBehavior);
-	}
-
-	public SubProcessActivityBehavior createSubprocActivityBehavior(SubProcess subProcess)
-	{
-		return _source.createSubprocActivityBehavior(subProcess);
-	}
-
-	public CallActivityBehavior createCallActivityBehavior(CallActivity callActivity)
-	{
-		return _source.createCallActivityBehavior(callActivity);
-	}
-
-	public TransactionActivityBehavior createTransactionActivityBehavior(Transaction transaction)
-	{
-		return _source.createTransactionActivityBehavior(transaction);
-	}
-
 	public IntermediateCatchEventActivityBehavior createIntermediateCatchEventActivityBehavior(
 			IntermediateCatchEvent intermediateCatchEvent)
 	{
 		return _source.createIntermediateCatchEventActivityBehavior(intermediateCatchEvent);
+	}
+
+	public IntermediateThrowCompensationEventActivityBehavior createIntermediateThrowCompensationEventActivityBehavior(
+			ThrowEvent throwEvent, CompensateEventDefinition compensateEventDefinition)
+	{
+		return _source.createIntermediateThrowCompensationEventActivityBehavior(throwEvent, compensateEventDefinition);
 	}
 
 	public IntermediateThrowNoneEventActivityBehavior createIntermediateThrowNoneEventActivityBehavior(
@@ -242,10 +168,29 @@ public class ActivityBehaviorFactoryDelegate
 			eventSubscriptionDeclaration);
 	}
 
-	public IntermediateThrowCompensationEventActivityBehavior createIntermediateThrowCompensationEventActivityBehavior(
-			ThrowEvent throwEvent, CompensateEventDefinition compensateEventDefinition)
+	public MailActivityBehavior createMailActivityBehavior(SendTask sendTask)
 	{
-		return _source.createIntermediateThrowCompensationEventActivityBehavior(throwEvent, compensateEventDefinition);
+		return _source.createMailActivityBehavior(sendTask);
+	}
+
+	public MailActivityBehavior createMailActivityBehavior(ServiceTask serviceTask)
+	{
+		return _source.createMailActivityBehavior(serviceTask);
+	}
+
+	public ManualTaskActivityBehavior createManualTaskActivityBehavior(ManualTask manualTask)
+	{
+		return _source.createManualTaskActivityBehavior(manualTask);
+	}
+
+	public ActivityBehavior createMuleActivityBehavior(SendTask sendTask, BpmnModel bpmnModel)
+	{
+		return _source.createMuleActivityBehavior(sendTask, bpmnModel);
+	}
+
+	public ActivityBehavior createMuleActivityBehavior(ServiceTask serviceTask, BpmnModel bpmnModel)
+	{
+		return _source.createMuleActivityBehavior(serviceTask, bpmnModel);
 	}
 
 	public NoneEndEventActivityBehavior createNoneEndEventActivityBehavior(EndEvent endEvent)
@@ -253,15 +198,62 @@ public class ActivityBehaviorFactoryDelegate
 		return _source.createNoneEndEventActivityBehavior(endEvent);
 	}
 
-	public ErrorEndEventActivityBehavior createErrorEndEventActivityBehavior(EndEvent endEvent,
-			ErrorEventDefinition errorEventDefinition)
+	public NoneStartEventActivityBehavior createNoneStartEventActivityBehavior(StartEvent startEvent)
 	{
-		return _source.createErrorEndEventActivityBehavior(endEvent, errorEventDefinition);
+		return _source.createNoneStartEventActivityBehavior(startEvent);
 	}
 
-	public CancelEndEventActivityBehavior createCancelEndEventActivityBehavior(EndEvent endEvent)
+	public ParallelGatewayActivityBehavior createParallelGatewayActivityBehavior(ParallelGateway parallelGateway)
 	{
-		return _source.createCancelEndEventActivityBehavior(endEvent);
+		return _source.createParallelGatewayActivityBehavior(parallelGateway);
+	}
+
+	public ParallelMultiInstanceBehavior createParallelMultiInstanceBehavior(ActivityImpl activity,
+			AbstractBpmnActivityBehavior innerActivityBehavior)
+	{
+		return _source.createParallelMultiInstanceBehavior(activity, innerActivityBehavior);
+	}
+
+	public ReceiveTaskActivityBehavior createReceiveTaskActivityBehavior(ReceiveTask receiveTask)
+	{
+		return _source.createReceiveTaskActivityBehavior(receiveTask);
+	}
+
+	public ScriptTaskActivityBehavior createScriptTaskActivityBehavior(ScriptTask scriptTask)
+	{
+		return _source.createScriptTaskActivityBehavior(scriptTask);
+	}
+
+	public SequentialMultiInstanceBehavior createSequentialMultiInstanceBehavior(ActivityImpl activity,
+			AbstractBpmnActivityBehavior innerActivityBehavior)
+	{
+		return _source.createSequentialMultiInstanceBehavior(activity, innerActivityBehavior);
+	}
+
+	public ServiceTaskDelegateExpressionActivityBehavior createServiceTaskDelegateExpressionActivityBehavior(
+			ServiceTask serviceTask)
+	{
+		return _source.createServiceTaskDelegateExpressionActivityBehavior(serviceTask);
+	}
+
+	public ServiceTaskExpressionActivityBehavior createServiceTaskExpressionActivityBehavior(ServiceTask serviceTask)
+	{
+		return _source.createServiceTaskExpressionActivityBehavior(serviceTask);
+	}
+
+	public ShellActivityBehavior createShellActivityBehavior(ServiceTask serviceTask)
+	{
+		return _source.createShellActivityBehavior(serviceTask);
+	}
+
+	public SubProcessActivityBehavior createSubprocActivityBehavior(SubProcess subProcess)
+	{
+		return _source.createSubprocActivityBehavior(subProcess);
+	}
+
+	public TaskActivityBehavior createTaskActivityBehavior(Task task)
+	{
+		return _source.createTaskActivityBehavior(task);
 	}
 
 	public TerminateEndEventActivityBehavior createTerminateEndEventActivityBehavior(EndEvent endEvent)
@@ -269,16 +261,24 @@ public class ActivityBehaviorFactoryDelegate
 		return _source.createTerminateEndEventActivityBehavior(endEvent);
 	}
 
-	public BoundaryEventActivityBehavior createBoundaryEventActivityBehavior(BoundaryEvent boundaryEvent,
-			boolean interrupting, ActivityImpl activity)
+	public TransactionActivityBehavior createTransactionActivityBehavior(Transaction transaction)
 	{
-		return _source.createBoundaryEventActivityBehavior(boundaryEvent, interrupting, activity);
+		return _source.createTransactionActivityBehavior(transaction);
 	}
 
-	public CancelBoundaryEventActivityBehavior createCancelBoundaryEventActivityBehavior(
-			CancelEventDefinition cancelEventDefinition)
+	public UserTaskActivityBehavior createUserTaskActivityBehavior(UserTask userTask, TaskDefinition taskDefinition)
 	{
-		return _source.createCancelBoundaryEventActivityBehavior(cancelEventDefinition);
+		return _source.createUserTaskActivityBehavior(userTask, taskDefinition);
+	}
+
+	public WebServiceActivityBehavior createWebServiceActivityBehavior(SendTask sendTask)
+	{
+		return _source.createWebServiceActivityBehavior(sendTask);
+	}
+
+	public WebServiceActivityBehavior createWebServiceActivityBehavior(ServiceTask serviceTask)
+	{
+		return _source.createWebServiceActivityBehavior(serviceTask);
 	}
 
 }

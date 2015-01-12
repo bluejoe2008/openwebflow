@@ -8,24 +8,25 @@
 	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
 	http://www.springframework.org/schema/tx   http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
+	<context:property-placeholder location="settings.properties" />
 	<import resource="activiti.cfg.core.xml" />
 	
 	<!-- 自定义成员关系管理 -->
-	<bean id="myMembershipManager" class="org.openwebflow.identity.impl.InMemoryMembershipStore" />
-	<bean id="myUserDetailsManager" class="org.openwebflow.identity.impl.InMemoryUserDetailsStore" />
+	<bean id="myMembershipManager" class="org.openwebflow.parts.mem.InMemoryMembershipManager" />
+	<bean id="myUserDetailsManager" class="org.openwebflow.parts.mem.InMemoryUserDetailsManager" />
 	
 	<!-- 自定义的活动权限表管理 -->
-	<bean id="myTaskActivityAclManager" class="org.openwebflow.assign.acl.InMemoryActivityAclStore" />
+	<bean id="myActivityPermissionManager"
+		class="org.openwebflow.parts.mem.InMemoryActivityPermissionManager" />
 		
 	<!-- 代理关系管理 -->
-	<bean id="myDelegationDetailsManager"
-		class="org.openwebflow.assign.delegation.InMemoryDelegationDetailsStore" />
+	<bean id="myDelegationManager" class="org.openwebflow.parts.mem.InMemoryDelegationManager" />
 		
 	<!-- 自定义的动态自定义活动管理 -->
-	<bean id="myActivityDefinitionStore"
-		class="org.openwebflow.ctrl.persist.InMemoryRuntimeActivityDefinitionStore" />
+	<bean id="myActivityDefinitionManager"
+		class="org.openwebflow.parts.mem.InMemoryRuntimeActivityDefinitionManager" />
 
 	<bean id="myNotificationDetailsStore"
-		class="org.openwebflow.alarm.impl.InMemoryNotificationDetailsStore" />
+		class="org.openwebflow.parts.mem.InMemoryTaskNotificationManager" />
 
 </beans>

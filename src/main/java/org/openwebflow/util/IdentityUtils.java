@@ -11,7 +11,7 @@ import org.activiti.engine.impl.persistence.entity.GroupEntity;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
 import org.openwebflow.identity.IdentityMembershipManager;
-import org.openwebflow.identity.IdentityUserDetails;
+import org.openwebflow.identity.UserDetailsEntity;
 import org.openwebflow.identity.UserDetailsManager;
 
 public abstract class IdentityUtils
@@ -27,20 +27,8 @@ public abstract class IdentityUtils
 		return groups;
 	}
 
-	public static List<IdentityUserDetails> getUserDetailsFromIds(List<String> userIds,
-			UserDetailsManager userDetailsManager)
-	{
-		List<IdentityUserDetails> detailsList = new ArrayList<IdentityUserDetails>();
-		for (String userId : userIds)
-		{
-			detailsList.add(userDetailsManager.findUser(userId));
-		}
-
-		return detailsList;
-	}
-
 	public static List<String> getInvolvedUsers(TaskService taskService, Task task,
-			IdentityMembershipManager membershipManager)
+			IdentityMembershipManager membershipManager) throws Exception
 	{
 		Map<String, Object> userIds = new HashMap<String, Object>();
 		String assignee = task.getAssignee();
@@ -71,5 +59,17 @@ public abstract class IdentityUtils
 		}
 
 		return new ArrayList<String>(userIds.keySet());
+	}
+
+	public static List<UserDetailsEntity> getUserDetailsFromIds(List<String> userIds,
+			UserDetailsManager userDetailsManager) throws Exception
+	{
+		List<UserDetailsEntity> detailsList = new ArrayList<UserDetailsEntity>();
+		for (String userId : userIds)
+		{
+			detailsList.add(userDetailsManager.findUserDetails(userId));
+		}
+
+		return detailsList;
 	}
 }

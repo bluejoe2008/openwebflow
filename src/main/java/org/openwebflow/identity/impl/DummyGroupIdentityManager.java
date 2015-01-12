@@ -76,7 +76,14 @@ public class DummyGroupIdentityManager implements GroupIdentityManager, Session
 		Logger.getLogger(this.getClass()).debug(
 			String.format("%s#findGroupsByUser(\"%s\")", _customMembershipManager, userId));
 
-		return IdentityUtils.getGroupsFromIds(_customMembershipManager.findGroupIdsByUser(userId));
+		try
+		{
+			return IdentityUtils.getGroupsFromIds(_customMembershipManager.findGroupIdsByUser(userId));
+		}
+		catch (Exception e)
+		{
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override

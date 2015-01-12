@@ -19,16 +19,6 @@ public class ReplaceMembershipManager implements StartEngineEventListener
 {
 	IdentityMembershipManager _customMembershipManager;
 
-	public IdentityMembershipManager getCustomMembershipManager()
-	{
-		return _customMembershipManager;
-	}
-
-	public void setCustomMembershipManager(IdentityMembershipManager customMembershipManager)
-	{
-		_customMembershipManager = customMembershipManager;
-	}
-
 	@Override
 	public void afterStartEngine(ProcessEngineConfigurationImpl conf, ProcessEngine processEngine)
 	{
@@ -46,6 +36,16 @@ public class ReplaceMembershipManager implements StartEngineEventListener
 				new DummyMembershipIdentityManager()));
 
 		conf.setCustomSessionFactories(sessionFactories);
+	}
+
+	public IdentityMembershipManager getCustomMembershipManager()
+	{
+		return _customMembershipManager;
+	}
+
+	public void setCustomMembershipManager(IdentityMembershipManager customMembershipManager)
+	{
+		_customMembershipManager = customMembershipManager;
 	}
 
 }

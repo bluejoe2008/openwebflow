@@ -6,29 +6,9 @@ import org.openwebflow.alarm.TaskAlarmService;
 
 public class StartTaskAlarmService implements StartEngineEventListener
 {
-	TaskAlarmService _taskAlarmService;
-
 	boolean _runOnStartup = true;
 
-	public boolean isRunOnStartup()
-	{
-		return _runOnStartup;
-	}
-
-	public void setRunOnStartup(boolean runOnStartup)
-	{
-		_runOnStartup = runOnStartup;
-	}
-
-	public TaskAlarmService getTaskAlarmService()
-	{
-		return _taskAlarmService;
-	}
-
-	public void setTaskAlarmService(TaskAlarmService taskAlarmService)
-	{
-		_taskAlarmService = taskAlarmService;
-	}
+	TaskAlarmService _taskAlarmService;
 
 	@Override
 	public void afterStartEngine(ProcessEngineConfigurationImpl conf, ProcessEngine processEngine) throws Exception
@@ -42,5 +22,25 @@ public class StartTaskAlarmService implements StartEngineEventListener
 	@Override
 	public void beforeStartEngine(ProcessEngineConfigurationImpl conf) throws Exception
 	{
+	}
+
+	public TaskAlarmService getTaskAlarmService()
+	{
+		return _taskAlarmService;
+	}
+
+	public boolean isRunOnStartup()
+	{
+		return _runOnStartup;
+	}
+
+	public void setRunOnStartup(boolean runOnStartup)
+	{
+		_runOnStartup = runOnStartup;
+	}
+
+	public void setTaskAlarmService(TaskAlarmService taskAlarmService)
+	{
+		_taskAlarmService = taskAlarmService;
 	}
 }

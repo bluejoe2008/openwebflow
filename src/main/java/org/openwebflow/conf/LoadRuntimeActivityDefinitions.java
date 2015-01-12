@@ -3,29 +3,19 @@ package org.openwebflow.conf;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.openwebflow.ctrl.create.RuntimeActivityCreator;
-import org.openwebflow.ctrl.persist.RuntimeActivityDefinition;
-import org.openwebflow.ctrl.persist.RuntimeActivityDefinitionStore;
+import org.openwebflow.ctrl.RuntimeActivityDefinitionEntity;
+import org.openwebflow.ctrl.RuntimeActivityDefinitionManager;
+import org.openwebflow.ctrl.creator.RuntimeActivityCreator;
 import org.openwebflow.util.ProcessDefinitionUtils;
 
 public class LoadRuntimeActivityDefinitions implements StartEngineEventListener
 {
-	RuntimeActivityDefinitionStore _activityDefinitionStore;
-
-	public RuntimeActivityDefinitionStore getActivityDefinitionStore()
-	{
-		return _activityDefinitionStore;
-	}
-
-	public void setActivityDefinitionStore(RuntimeActivityDefinitionStore activityDefinitionStore)
-	{
-		_activityDefinitionStore = activityDefinitionStore;
-	}
+	RuntimeActivityDefinitionManager _activityDefinitionManager;
 
 	@Override
 	public void afterStartEngine(ProcessEngineConfigurationImpl conf, ProcessEngine processEngine) throws Exception
 	{
-		for (RuntimeActivityDefinition entity : _activityDefinitionStore.list())
+		for (RuntimeActivityDefinitionEntity entity : _activityDefinitionManager.list())
 		{
 			ProcessDefinitionEntity processDefinition = ProcessDefinitionUtils.getProcessDefinition(processEngine,
 				entity.getProcessDefinitionId());
@@ -44,5 +34,15 @@ public class LoadRuntimeActivityDefinitions implements StartEngineEventListener
 	@Override
 	public void beforeStartEngine(ProcessEngineConfigurationImpl conf) throws Exception
 	{
+	}
+
+	public RuntimeActivityDefinitionManager getActivityDefinitionManager()
+	{
+		return _activityDefinitionManager;
+	}
+
+	public void setActivityDefinitionManager(RuntimeActivityDefinitionManager activityDefinitionManager)
+	{
+		_activityDefinitionManager = activityDefinitionManager;
 	}
 }

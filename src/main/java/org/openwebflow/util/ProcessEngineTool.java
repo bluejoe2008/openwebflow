@@ -18,9 +18,14 @@ public class ProcessEngineTool
 	@Autowired
 	private ProcessEngine _processEngine;
 
-	public ProcessEngine getProcessEngine()
+	public Model createNewModel(String name, String description) throws IOException
 	{
-		return _processEngine;
+		return ModelUtils.createNewModel(_processEngine.getRepositoryService(), name, description);
+	}
+
+	public Deployment deployModel(String modelId) throws IOException
+	{
+		return ModelUtils.deployModel(_processEngine.getRepositoryService(), modelId);
 	}
 
 	public ActivityImpl getActivity(String processDefId, String activityId)
@@ -28,9 +33,27 @@ public class ProcessEngineTool
 		return ProcessDefinitionUtils.getActivity(_processEngine, processDefId, activityId);
 	}
 
+	public Map<String, Object> getHistoricProcessVariables(String processId)
+	{
+		List<HistoricVariableInstance> list = _processEngine.getHistoryService().createHistoricVariableInstanceQuery()
+				.processInstanceId(processId).list();
+		Map<String, Object> vars = new HashMap<String, Object>();
+		for (HistoricVariableInstance var : list)
+		{
+			vars.put(var.getVariableName(), var.getValue());
+		}
+
+		return vars;
+	}
+
 	public ProcessDefinitionEntity getProcessDefinition(ProcessEngine processEngine, String processDefId)
 	{
 		return ProcessDefinitionUtils.getProcessDefinition(_processEngine, processDefId);
+	}
+
+	public ProcessEngine getProcessEngine()
+	{
+		return _processEngine;
 	}
 
 	public void grantPermission(ActivityImpl activity, String assigneeExpression, String candidateGroupIdExpressions,
@@ -46,29 +69,6 @@ public class ProcessEngineTool
 		ProcessDefinitionUtils.grantPermission(
 			ProcessDefinitionUtils.getActivity(_processEngine, processDefId, activityId), assigneeExpression,
 			candidateGroupIdExpressions, candidateUserIdExpressions);
-	}
-
-	public Model createNewModel(String name, String description) throws IOException
-	{
-		return ModelUtils.createNewModel(_processEngine.getRepositoryService(), name, description);
-	}
-
-	public Deployment deployModel(String modelId) throws IOException
-	{
-		return ModelUtils.deployModel(_processEngine.getRepositoryService(), modelId);
-	}
-
-	public Map<String, Object> getHistoricProcessVariables(String processId)
-	{
-		List<HistoricVariableInstance> list = _processEngine.getHistoryService().createHistoricVariableInstanceQuery()
-				.processInstanceId(processId).list();
-		Map<String, Object> vars = new HashMap<String, Object>();
-		for (HistoricVariableInstance var : list)
-		{
-			vars.put(var.getVariableName(), var.getValue());
-		}
-
-		return vars;
 	}
 
 	public void setProcessEngine(ProcessEngine processEngine)

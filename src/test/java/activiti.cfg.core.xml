@@ -8,7 +8,6 @@
 	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
 	http://www.springframework.org/schema/tx   http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
 
-	<context:property-placeholder location="settings.properties" />
 	<context:annotation-config />
 	
 	<!-- 工作流核心数据库配置 -->
@@ -48,7 +47,7 @@
 			<!-- 采用邮件发送 -->
 			<bean class="org.openwebflow.alarm.impl.MailMessageNotifier">
 				<property name="subjectTemplate" value="请尽快处理#{'$'}{task.name}任务" />
-				<property name="messageTemplateResource" value="${workflow.alarmTemplate}" />
+				<property name="messageTemplateResource" value="${alarm.mail.template}" />
 				<property name="mailSender">
 					<bean class="org.openwebflow.alarm.impl.MailSender">
 						<property name="serverHost" value="${mail.host}" />
@@ -94,12 +93,14 @@
 					<property name="handlers">
 						<list>
 							<!-- 自定义授权项列表 -->
-							<bean class="org.openwebflow.assign.acl.TaskActivityAcl">
-								<property name="assignmentEntryManager" ref="myTaskActivityAclManager" />
+							<bean
+								class="org.openwebflow.assign.permission.ActivityPermissionAssignmentHandler">
+								<property name="activityPermissionManager" ref="myActivityPermissionManager" />
 							</bean>
 							<!-- 允许授权代理 -->
-							<bean class="org.openwebflow.assign.delegation.TaskDelagation">
-								<property name="delegationDetailsManager" ref="myDelegationDetailsManager" />
+							<bean
+								class="org.openwebflow.assign.delegation.TaskDelagationAssignmentHandler">
+								<property name="delegationManager" ref="myDelegationManager" />
 								<property name="membershipManager" ref="myMembershipManager" />
 								<property name="hideDelegated" value="false" />
 							</bean>
@@ -108,7 +109,7 @@
 				</bean>
 				<!-- 自动导入流程模型 -->
 				<bean class="org.openwebflow.conf.ImportDefinedProcessModels">
-					<property name="modelDir" value="${workflow.modelDir}" />
+					<property name="modelDir" value="${model.dir}" />
 				</bean>
 				<!-- 启动催办管理器 -->
 				<bean class="org.openwebflow.conf.StartTaskAlarmService">
@@ -117,7 +118,7 @@
 				</bean>
 				<!-- 加载自定义activity -->
 				<bean class="org.openwebflow.conf.LoadRuntimeActivityDefinitions">
-					<property name="activityDefinitionStore" ref="myActivityDefinitionStore" />
+					<property name="activityDefinitionManager" ref="myActivityDefinitionManager" />
 				</bean>
 			</list>
 		</property>
@@ -129,7 +130,7 @@
 	</bean>
 
 	<!-- 工作流流转服务对象工厂 -->
-	<bean class="org.openwebflow.ctrl.TaskFlowControlServiceFactory" />
+	<bean class="org.openwebflow.ctrl.impl.DefaultTaskFlowControlServiceFactory" />
 	
 	<!-- processEngineTool -->
 	<bean id="processEngineTool" class="org.openwebflow.util.ProcessEngineTool" />

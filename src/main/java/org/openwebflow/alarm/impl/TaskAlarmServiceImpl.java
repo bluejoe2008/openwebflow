@@ -11,10 +11,10 @@ import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.openwebflow.alarm.MessageNotifier;
-import org.openwebflow.alarm.NotificationDetailsStore;
 import org.openwebflow.alarm.TaskAlarmService;
+import org.openwebflow.alarm.TaskNotificationManager;
 import org.openwebflow.identity.IdentityMembershipManager;
-import org.openwebflow.identity.IdentityUserDetails;
+import org.openwebflow.identity.UserDetailsEntity;
 import org.openwebflow.identity.UserDetailsManager;
 import org.openwebflow.util.IdentityUtils;
 import org.springframework.beans.factory.DisposableBean;
@@ -41,11 +41,11 @@ public class TaskAlarmServiceImpl implements TaskAlarmService, DisposableBean
 				if (!_notificationDetailsStore.isNotified(task.getId()))
 				{
 					//没有通知则现在通知
-					List<IdentityUserDetails> involvedUsers = IdentityUtils.getUserDetailsFromIds(
+					List<UserDetailsEntity> involvedUsers = IdentityUtils.getUserDetailsFromIds(
 						IdentityUtils.getInvolvedUsers(_processEngine.getTaskService(), task, _membershipManager),
 						_userDetailsManager);
 
-					_messageNotifier.notify(involvedUsers.toArray(new IdentityUserDetails[0]), task);
+					_messageNotifier.notify(involvedUsers.toArray(new UserDetailsEntity[0]), task);
 					//设置标志
 					_notificationDetailsStore.setNotified(task.getId());
 					Logger.getLogger(getClass()).debug(String.format("notified %s", involvedUsers));
@@ -73,15 +73,15 @@ public class TaskAlarmServiceImpl implements TaskAlarmService, DisposableBean
 
 	MessageNotifier _messageNotifier;
 
-	NotificationDetailsStore _notificationDetailsStore;
+	private Timer _monitorTimer = new Timer(true);
+
+	TaskNotificationManager _notificationDetailsStore;
 
 	String _periodInAdvance;
 
 	ProcessEngine _processEngine;
 
 	UserDetailsManager _userDetailsManager;
-
-	private Timer _monitorTimer = new Timer(true);
 
 	@Override
 	public void destroy() throws Exception
@@ -104,7 +104,7 @@ public class TaskAlarmServiceImpl implements TaskAlarmService, DisposableBean
 		return _messageNotifier;
 	}
 
-	public NotificationDetailsStore getNotificationDetailsStore()
+	public TaskNotificationManager getNotificationDetailsStore()
 	{
 		return _notificationDetailsStore;
 	}
@@ -134,7 +134,7 @@ public class TaskAlarmServiceImpl implements TaskAlarmService, DisposableBean
 		_messageNotifier = messageNotifier;
 	}
 
-	public void setNotificationDetailsStore(NotificationDetailsStore notificationDetailsStore)
+	public void setNotificationDetailsStore(TaskNotificationManager notificationDetailsStore)
 	{
 		_notificationDetailsStore = notificationDetailsStore;
 	}

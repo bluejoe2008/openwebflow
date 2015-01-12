@@ -2,7 +2,5 @@ package org.openwebflow.identity;
 
 public interface UserDetailsManager
 {
-
-	IdentityUserDetails findUser(String userId);
-
+	UserDetailsEntity findUserDetails(String userId) throws Exception;
 }

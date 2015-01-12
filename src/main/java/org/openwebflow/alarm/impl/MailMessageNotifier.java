@@ -8,7 +8,7 @@ import org.activiti.engine.impl.scripting.JuelScriptEngineFactory;
 import org.activiti.engine.task.Task;
 import org.h2.util.IOUtils;
 import org.openwebflow.alarm.MessageNotifier;
-import org.openwebflow.identity.IdentityUserDetails;
+import org.openwebflow.identity.UserDetailsEntity;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.Resource;
 
@@ -52,9 +52,9 @@ public class MailMessageNotifier implements MessageNotifier, InitializingBean
 	}
 
 	@Override
-	public void notify(IdentityUserDetails[] users, Task task) throws Exception
+	public void notify(UserDetailsEntity[] users, Task task) throws Exception
 	{
-		for (IdentityUserDetails user : users)
+		for (UserDetailsEntity user : users)
 		{
 			if (user == null)
 				continue;
@@ -62,7 +62,7 @@ public class MailMessageNotifier implements MessageNotifier, InitializingBean
 			ScriptEngine scriptEngine = new JuelScriptEngineFactory().getScriptEngine();
 			scriptEngine.put("user", user);
 			scriptEngine.put("task", task);
-			String email = user.getProperty(IdentityUserDetails.STRING_PROPERTY_EMAIL);
+			String email = user.getProperty(UserDetailsEntity.STRING_PROPERTY_EMAIL);
 			if (email != null)
 			{
 				_mailSender.sendMail(email, (String) scriptEngine.eval(_subjectTemplate),

@@ -21,19 +21,20 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.openwebflow.alarm.impl.AbstractNotificationDetailsStore;
 import org.openwebflow.alarm.impl.TaskAlarmServiceImpl;
-import org.openwebflow.assign.acl.AbstractActivityAclStore;
-import org.openwebflow.assign.delegation.AbstractDelegationStore;
-import org.openwebflow.assign.delegation.TaskDelagation;
+import org.openwebflow.assign.delegation.TaskDelagationAssignmentHandler;
 import org.openwebflow.conf.ProcessEngineConfigurationEx;
 import org.openwebflow.conf.ReplaceTaskAssignmentHandler;
+import org.openwebflow.ctrl.RuntimeActivityDefinitionManager;
 import org.openwebflow.ctrl.TaskFlowControlService;
 import org.openwebflow.ctrl.TaskFlowControlServiceFactory;
-import org.openwebflow.ctrl.persist.RuntimeActivityDefinitionStore;
-import org.openwebflow.identity.AbstractUserDetailsStore;
-import org.openwebflow.identity.impl.AbstractMembershipStore;
-import org.openwebflow.identity.impl.MyUserDetails;
+import org.openwebflow.ctrl.impl.DefaultTaskFlowControlServiceFactory;
+import org.openwebflow.parts.common.SimpleUserDetailsEntity;
+import org.openwebflow.parts.ext.ActivityPermissionManagerEx;
+import org.openwebflow.parts.ext.DelegationManagerEx;
+import org.openwebflow.parts.ext.IdentityMembershipManagerEx;
+import org.openwebflow.parts.ext.TaskNotificationManagerEx;
+import org.openwebflow.parts.ext.UserDetailsManagerEx;
 import org.openwebflow.util.ModelUtils;
 import org.openwebflow.util.ProcessDefinitionUtils;
 import org.openwebflow.util.ProcessEngineTool;
@@ -50,9 +51,9 @@ public abstract class AbstractProcessEngineTest
 
 	ApplicationContext _ctx;
 
-	AbstractActivityAclStore _aclStore;
+	ActivityPermissionManagerEx _aclStore;
 
-	AbstractDelegationStore _delegationStore;
+	DelegationManagerEx _delegationStore;
 
 	TaskFlowControlServiceFactory _taskFlowControlServiceFactory;
 
@@ -60,27 +61,28 @@ public abstract class AbstractProcessEngineTest
 	public void setUp() throws Exception
 	{
 		rebuildApplicationContext();
-		
+
 		_aclStore.removeAll();
-		((AbstractNotificationDetailsStore) _ctx.getBean("myNotificationDetailsStore")).removeAll();
+		((TaskNotificationManagerEx) _ctx.getBean("myNotificationDetailsStore")).removeAll();
 
 		//用户关系管理
-		AbstractMembershipStore myMembershipManager = (AbstractMembershipStore) _ctx.getBean("myMembershipManager");
+		IdentityMembershipManagerEx myMembershipManager = (IdentityMembershipManagerEx) _ctx
+				.getBean("myMembershipManager");
 		myMembershipManager.removeAll();
 		myMembershipManager.saveMembership("bluejoe", "engineering");
 		myMembershipManager.saveMembership("gonzo", "sales");
 		myMembershipManager.saveMembership("kermit", "management");
 
 		//设置用户email等信息
-		AbstractUserDetailsStore userDetailsStore = (AbstractUserDetailsStore) _ctx.getBean("myUserDetailsManager");
+		UserDetailsManagerEx userDetailsStore = (UserDetailsManagerEx) _ctx.getBean("myUserDetailsManager");
 		userDetailsStore.removeAll();
-		userDetailsStore.saveUser(new MyUserDetails("bluejoe", "白乔", "bluejoe2008@gmail.com", "13800138000"));
-		userDetailsStore.saveUser(new MyUserDetails("kermit", "老黄", "heiker@trojo.com", "13800138000"));
+		userDetailsStore.saveUserDetails(new SimpleUserDetailsEntity("bluejoe", "白乔", "bluejoe2008@gmail.com", "13800138000"));
+		userDetailsStore.saveUserDetails(new SimpleUserDetailsEntity("kermit", "老黄", "heiker@trojo.com", "13800138000"));
 
 		_delegationStore.removeAll();
 
 		//清除自定义活动
-		_ctx.getBean(RuntimeActivityDefinitionStore.class).removeAll();
+		_ctx.getBean(RuntimeActivityDefinitionManager.class).removeAll();
 
 		// 取model，该model会自动注册
 		RepositoryService repositoryService = _processEngine.getRepositoryService();
@@ -106,10 +108,10 @@ public abstract class AbstractProcessEngineTest
 		Assert.assertNotNull(_tool);
 		_processEngine = _tool.getProcessEngine();
 
-		_aclStore = (AbstractActivityAclStore) _ctx.getBean("myTaskActivityAclManager");
+		_aclStore = _ctx.getBean(ActivityPermissionManagerEx.class);
 		//代理关系
-		_delegationStore = (AbstractDelegationStore) _ctx.getBean("myDelegationDetailsManager");
-		_taskFlowControlServiceFactory = _ctx.getBean(TaskFlowControlServiceFactory.class);
+		_delegationStore = _ctx.getBean(DelegationManagerEx.class);
+		_taskFlowControlServiceFactory = _ctx.getBean(DefaultTaskFlowControlServiceFactory.class);
 	}
 
 	protected abstract String getConfigFilePath();
@@ -509,7 +511,7 @@ public abstract class AbstractProcessEngineTest
 	}
 
 	@Test
-	public void testAcl() throws Exception
+	public void testActivityPermission() throws Exception
 	{
 		//测试流程动态授权
 		String processDefId = _processEngine.getRepositoryService().createProcessDefinitionQuery()
@@ -576,7 +578,7 @@ public abstract class AbstractProcessEngineTest
 		ProcessInstance instance;
 		TaskService taskService = _processEngine.getTaskService();
 
-		((TaskDelagation) (((ReplaceTaskAssignmentHandler) (((ProcessEngineConfigurationEx) _processEngine
+		((TaskDelagationAssignmentHandler) (((ReplaceTaskAssignmentHandler) (((ProcessEngineConfigurationEx) _processEngine
 				.getProcessEngineConfiguration()).getStartEngineEventListeners().get(2))).getHandlers().get(1)))
 				.setHideDelegated(false);
 
@@ -592,7 +594,7 @@ public abstract class AbstractProcessEngineTest
 		_processEngine.getRuntimeService().deleteProcessInstance(instance.getId(), "test");
 
 		//设置屏蔽被代理人
-		((TaskDelagation) (((ReplaceTaskAssignmentHandler) (((ProcessEngineConfigurationEx) _processEngine
+		((TaskDelagationAssignmentHandler) (((ReplaceTaskAssignmentHandler) (((ProcessEngineConfigurationEx) _processEngine
 				.getProcessEngineConfiguration()).getStartEngineEventListeners().get(2))).getHandlers().get(1)))
 				.setHideDelegated(true);
 

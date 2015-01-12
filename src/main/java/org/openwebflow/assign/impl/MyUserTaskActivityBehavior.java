@@ -36,14 +36,14 @@ public class MyUserTaskActivityBehavior extends UserTaskActivityBehavior
 		return handlerChain;
 	}
 
-	protected void superHandleAssignments(TaskEntity task, ActivityExecution execution)
-	{
-		super.handleAssignments(task, execution);
-	}
-
 	@Override
 	protected void handleAssignments(TaskEntity task, ActivityExecution execution)
 	{
 		createHandlerChain().resume(task, execution);
+	}
+
+	protected void superHandleAssignments(TaskEntity task, ActivityExecution execution)
+	{
+		super.handleAssignments(task, execution);
 	}
 }

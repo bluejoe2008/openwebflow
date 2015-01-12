@@ -20,17 +20,17 @@ public class TaskAssignmentHandlerChainImpl implements TaskAssignmentHandlerChai
 
 	Stack<TaskAssignmentHandler> _handlers = new Stack<TaskAssignmentHandler>();
 
+	public void addHandler(TaskAssignmentHandler handler)
+	{
+		_handlers.push(handler);
+	}
+
 	public void addHandlers(List<TaskAssignmentHandler> handlers)
 	{
 		for (TaskAssignmentHandler handler : handlers)
 		{
 			_handlers.push(handler);
 		}
-	}
-
-	public void addHandler(TaskAssignmentHandler handler)
-	{
-		_handlers.push(handler);
 	}
 
 	public TaskAssignmentHandler next()

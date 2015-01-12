@@ -13,16 +13,6 @@ public class ReplaceTaskAssignmentHandler implements StartEngineEventListener
 {
 	List<TaskAssignmentHandler> _handlers;
 
-	public List<TaskAssignmentHandler> getHandlers()
-	{
-		return _handlers;
-	}
-
-	public void setHandlers(List<TaskAssignmentHandler> handlers)
-	{
-		_handlers = handlers;
-	}
-
 	@Override
 	public void afterStartEngine(ProcessEngineConfigurationImpl conf, ProcessEngine processEngine) throws Exception
 	{
@@ -39,5 +29,15 @@ public class ReplaceTaskAssignmentHandler implements StartEngineEventListener
 
 		processEngineConfiguration.setActivityBehaviorFactory(new MyActivityBehaviorFactory(activityBehaviorFactory,
 				_handlers));
+	}
+
+	public List<TaskAssignmentHandler> getHandlers()
+	{
+		return _handlers;
+	}
+
+	public void setHandlers(List<TaskAssignmentHandler> handlers)
+	{
+		_handlers = handlers;
 	}
 }

@@ -1,9 +1,9 @@
 package org.openwebflow.alarm;
 
 import org.activiti.engine.task.Task;
-import org.openwebflow.identity.IdentityUserDetails;
+import org.openwebflow.identity.UserDetailsEntity;
 
 public interface MessageNotifier
 {
-	void notify(IdentityUserDetails[] users, Task task) throws Exception;
+	void notify(UserDetailsEntity[] users, Task task) throws Exception;
 }

@@ -42,23 +42,6 @@ public abstract class ModelUtils
 		}
 	}
 
-	public static Deployment deployModel(RepositoryService repositoryService, String modelId) throws IOException
-	{
-		Model modelData = repositoryService.getModel(modelId);
-		//EditorSource就是XML格式的
-		byte[] bpmnBytes = repositoryService.getModelEditorSource(modelId);
-
-		String processName = modelData.getName() + ".bpmn20.xml";
-		Deployment deployment = repositoryService.createDeployment().name(modelData.getName())
-				.addString(processName, new String(bpmnBytes, "utf-8")).deploy();
-
-		//设置部署ID
-		modelData.setDeploymentId(deployment.getId());
-		repositoryService.saveModel(modelData);
-
-		return deployment;
-	}
-
 	public static Model createNewModel(RepositoryService repositoryService, String name, String description)
 			throws IOException
 	{
@@ -76,6 +59,23 @@ public abstract class ModelUtils
 		repositoryService.saveModel(modelData);
 		repositoryService.addModelEditorSource(modelData.getId(), EMPTY_MODEL_XML.getBytes("utf-8"));
 		return modelData;
+	}
+
+	public static Deployment deployModel(RepositoryService repositoryService, String modelId) throws IOException
+	{
+		Model modelData = repositoryService.getModel(modelId);
+		//EditorSource就是XML格式的
+		byte[] bpmnBytes = repositoryService.getModelEditorSource(modelId);
+
+		String processName = modelData.getName() + ".bpmn20.xml";
+		Deployment deployment = repositoryService.createDeployment().name(modelData.getName())
+				.addString(processName, new String(bpmnBytes, "utf-8")).deploy();
+
+		//设置部署ID
+		modelData.setDeploymentId(deployment.getId());
+		repositoryService.saveModel(modelData);
+
+		return deployment;
 	}
 
 	public static void importModel(RepositoryService repositoryService, File modelFile) throws IOException,
