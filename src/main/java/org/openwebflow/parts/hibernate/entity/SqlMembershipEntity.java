@@ -11,7 +11,7 @@ import javax.persistence.Table;
 @Table(name = "OWF_MEMBERSHIP")
 public class SqlMembershipEntity
 {
-	@Column(name = "GROUPID")
+	@Column(name = "GROUP_ID")
 	String _groupId;
 
 	@Id
@@ -19,7 +19,7 @@ public class SqlMembershipEntity
 	@Column(name = "ID")
 	int _id;
 
-	@Column(name = "USERID")
+	@Column(name = "USER_ID")
 	String _userId;
 
 	public String getGroupId()

@@ -18,10 +18,10 @@ public class SqlNotificationEntity
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	int _id;
 
-	@Column(name = "OPTIME")
+	@Column(name = "OP_TIME")
 	Date _opTime;
 
-	@Column(name = "TASKID")
+	@Column(name = "TASK_ID")
 	String _taskId;
 
 	public int getId()

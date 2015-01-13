@@ -17,7 +17,7 @@ public class SqlActivityPermissionEntityDao extends SqlDaoBase<SqlActivityPermis
 			throws Exception
 	{
 		SqlActivityPermissionEntity entity = super.queryForObject(
-			"from SqlActivityPermissionEntity where PROCESS_DEF_ID=? and ACTIVITY_KEY=?", processDefinitionId,
+			"from SqlActivityPermissionEntity where PROCESS_DEFINITION_ID=? and ACTIVITY_KEY=?", processDefinitionId,
 			taskDefinitionKey);
 
 		if (entity != null)

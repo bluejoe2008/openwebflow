@@ -15,12 +15,12 @@ public class SqlMembershipDao extends SqlDaoBase<SqlMembershipEntity>
 
 	public List<SqlMembershipEntity> findByGroup(String groupId) throws Exception
 	{
-		return super.queryForObjects("from SqlMembershipEntity where groupId=?", groupId);
+		return super.queryForObjects("from SqlMembershipEntity where GROUP_ID=?", groupId);
 	}
 
 	public List<SqlMembershipEntity> findByUser(String userId) throws Exception
 	{
-		return super.queryForObjects("from SqlMembershipEntity where userId=?", userId);
+		return super.queryForObjects("from SqlMembershipEntity where USER_ID=?", userId);
 	}
 
 	public void saveMembership(String userId, String groupId) throws Exception

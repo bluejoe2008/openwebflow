@@ -51,9 +51,9 @@ public abstract class AbstractProcessEngineTest
 
 	ApplicationContext _ctx;
 
-	ActivityPermissionManagerEx _aclStore;
+	ActivityPermissionManagerEx _permissions;
 
-	DelegationManagerEx _delegationStore;
+	DelegationManagerEx _delegations;
 
 	TaskFlowControlServiceFactory _taskFlowControlServiceFactory;
 
@@ -62,8 +62,9 @@ public abstract class AbstractProcessEngineTest
 	{
 		rebuildApplicationContext();
 
-		_aclStore.removeAll();
+		_permissions.removeAll();
 		_ctx.getBean(TaskNotificationManagerEx.class).removeAll();
+		_ctx.getBean(RuntimeActivityDefinitionManager.class).removeAll();
 
 		//用户关系管理
 		IdentityMembershipManagerEx myMembershipManager = _ctx.getBean(IdentityMembershipManagerEx.class);
@@ -80,7 +81,7 @@ public abstract class AbstractProcessEngineTest
 		userDetailsStore
 				.saveUserDetails(new SimpleUserDetailsEntity("kermit", "老黄", "heiker@trojo.com", "13800138000"));
 
-		_delegationStore.removeAll();
+		_delegations.removeAll();
 
 		//清除自定义活动
 		_ctx.getBean(RuntimeActivityDefinitionManager.class).removeAll();
@@ -109,9 +110,9 @@ public abstract class AbstractProcessEngineTest
 		Assert.assertNotNull(_tool);
 		_processEngine = _tool.getProcessEngine();
 
-		_aclStore = _ctx.getBean(ActivityPermissionManagerEx.class);
+		_permissions = _ctx.getBean(ActivityPermissionManagerEx.class);
 		//代理关系
-		_delegationStore = _ctx.getBean(DelegationManagerEx.class);
+		_delegations = _ctx.getBean(DelegationManagerEx.class);
 		_taskFlowControlServiceFactory = _ctx.getBean(DefaultTaskFlowControlServiceFactory.class);
 	}
 
@@ -120,6 +121,9 @@ public abstract class AbstractProcessEngineTest
 	@After
 	public void tearDown() throws Exception
 	{
+		_permissions.removeAll();
+		_ctx.getBean(TaskNotificationManagerEx.class).removeAll();
+		_ctx.getBean(RuntimeActivityDefinitionManager.class).removeAll();
 		_processEngine.close();
 		_processEngine = null;
 		((AbstractApplicationContext) _ctx).getBeanFactory().destroySingletons();
@@ -533,7 +537,7 @@ public abstract class AbstractProcessEngineTest
 		Assert.assertEquals(0, taskService.createTaskQuery().taskCandidateUser("bluejoe").count());
 
 		//现在允许step2可以让engineering操作
-		_aclStore.save(processDefId, "step2", null, new String[] { "engineering" }, new String[0]);
+		_permissions.save(processDefId, "step2", null, new String[] { "engineering" }, new String[0]);
 
 		//对现已执行的task没有影响
 		Assert.assertEquals(0, taskService.createTaskQuery().taskCandidateGroup("engineering").count());
@@ -550,10 +554,10 @@ public abstract class AbstractProcessEngineTest
 
 		//删掉流程实例
 		_processEngine.getRuntimeService().deleteProcessInstance(instance.getId(), "test");
-		_aclStore.removeAll();
+		_permissions.removeAll();
 
 		//允许step2可以让engineering和management操作，允许neo操作
-		_aclStore.save(processDefId, "step2", null, new String[] { "engineering", "management" },
+		_permissions.save(processDefId, "step2", null, new String[] { "engineering", "management" },
 			new String[] { "neo" });
 
 		//再启动一个流程
@@ -585,7 +589,7 @@ public abstract class AbstractProcessEngineTest
 
 		//代理关系
 		//alex将代理kermit
-		_delegationStore.saveDelegation("kermit", "alex");
+		_delegations.saveDelegation("kermit", "alex");
 
 		//启动一个流程
 		instance = _processEngine.getRuntimeService().startProcessInstanceByKey("test1");

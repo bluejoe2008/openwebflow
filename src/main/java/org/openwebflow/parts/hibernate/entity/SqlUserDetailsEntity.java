@@ -14,13 +14,13 @@ public class SqlUserDetailsEntity implements UserDetailsEntity
 	@Column(name = "EMAIL")
 	String _email;
 
-	@Column(name = "NICKNAME")
+	@Column(name = "NICK_NAME")
 	String _nickName;
 
-	@Column(name = "MOBILEPHONENUMBER")
+	@Column(name = "MOBILE_PHONE_NUMBER")
 	String _phoneNumber;
 
-	@Column(name = "USERID")
+	@Column(name = "USER_ID")
 	@Id
 	String _userId;
 

@@ -14,7 +14,7 @@ import org.openwebflow.assign.permission.ActivityPermissionEntity;
 import org.springframework.util.StringUtils;
 
 @Entity
-@Table(name = "OWF_ACTIVITY_ACL")
+@Table(name = "OWF_ACTIVITY_PERMISSION")
 public class SqlActivityPermissionEntity implements ActivityPermissionEntity
 {
 	@Column(name = "ACTIVITY_KEY")
@@ -35,16 +35,6 @@ public class SqlActivityPermissionEntity implements ActivityPermissionEntity
 	@Column(name = "GRANTED_USERS")
 	private String _grantedUserString;
 
-	public void setGrantedGroupIds(String[] grantedGroupIds)
-	{
-		_grantedGroupIds = grantedGroupIds;
-	}
-
-	public void setGrantedUserIds(String[] grantedUserIds)
-	{
-		_grantedUserIds = grantedUserIds;
-	}
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "ID")
@@ -53,8 +43,14 @@ public class SqlActivityPermissionEntity implements ActivityPermissionEntity
 	@Column(name = "OP_TIME")
 	private Date _opTime;
 
-	@Column(name = "PROCESS_DEF_ID")
+	@Column(name = "PROCESS_DEFINITION_ID")
 	private String _processDefinitionId;
+
+	public void deserializeProperties()
+	{
+		_grantedGroupIds = StringUtils.delimitedListToStringArray(_grantedGroupString, ";");
+		_grantedUserIds = StringUtils.delimitedListToStringArray(_grantedUserString, ";");
+	}
 
 	public String getActivityKey()
 	{
@@ -101,6 +97,12 @@ public class SqlActivityPermissionEntity implements ActivityPermissionEntity
 		return _processDefinitionId;
 	}
 
+	public void serializeProperties()
+	{
+		_grantedUserString = StringUtils.arrayToDelimitedString(_grantedUserIds, ";");
+		_grantedGroupString = StringUtils.arrayToDelimitedString(_grantedGroupIds, ";");
+	}
+
 	public void setActivityKey(String activityKey)
 	{
 		_activityKey = activityKey;
@@ -111,21 +113,19 @@ public class SqlActivityPermissionEntity implements ActivityPermissionEntity
 		_assignee = assignee;
 	}
 
-	public void deserializeProperties()
+	public void setGrantedGroupIds(String[] grantedGroupIds)
 	{
-		_grantedGroupIds = StringUtils.delimitedListToStringArray(_grantedGroupString, ";");
-		_grantedUserIds = StringUtils.delimitedListToStringArray(_grantedUserString, ";");
-	}
-
-	public void serializeProperties()
-	{
-		_grantedUserString = StringUtils.arrayToDelimitedString(_grantedUserIds, ";");
-		_grantedGroupString = StringUtils.arrayToDelimitedString(_grantedGroupIds, ";");
+		_grantedGroupIds = grantedGroupIds;
 	}
 
 	public void setGrantedGroupString(String grantedGroupString)
 	{
 		_grantedGroupString = grantedGroupString;
+	}
+
+	public void setGrantedUserIds(String[] grantedUserIds)
+	{
+		_grantedUserIds = grantedUserIds;
 	}
 
 	public void setGrantedUserString(String grantedUserString)

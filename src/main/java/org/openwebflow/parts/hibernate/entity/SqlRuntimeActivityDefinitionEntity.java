@@ -11,7 +11,7 @@ import javax.persistence.Table;
 @Table(name = "OWF_ACTIVITY_CREATION")
 public class SqlRuntimeActivityDefinitionEntity
 {
-	@Column(name = "FACTORYNAME")
+	@Column(name = "FACTORY_NAME")
 	String _factoryName;
 
 	@Column(name = "ID")
@@ -19,13 +19,13 @@ public class SqlRuntimeActivityDefinitionEntity
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	int _id;
 
-	@Column(name = "PROCESSDEFINITIONID")
+	@Column(name = "PROCESS_DEFINITION_ID")
 	String _processDefinitionId;
 
-	@Column(name = "PROCESSINSTANCEID")
+	@Column(name = "PROCESS_INSTANCE_ID")
 	String _processInstanceId;
 
-	@Column(name = "PROPERTIESTEXT")
+	@Column(name = "PROPERTIES_TEXT")
 	String _propertiesText;
 
 	public Class<?> getFactoryClass() throws ClassNotFoundException

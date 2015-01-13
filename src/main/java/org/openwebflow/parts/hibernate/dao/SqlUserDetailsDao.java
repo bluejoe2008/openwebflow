@@ -16,7 +16,7 @@ public class SqlUserDetailsDao extends SqlDaoBase<SqlUserDetailsEntity>
 
 	public SqlUserDetailsEntity findUser(String userId) throws Exception
 	{
-		return super.queryForObject("from SqlUserDetailsEntity where USERID=?", userId);
+		return super.queryForObject("from SqlUserDetailsEntity where USER_ID=?", userId);
 	}
 
 	public List<UserDetailsEntity> list() throws Exception

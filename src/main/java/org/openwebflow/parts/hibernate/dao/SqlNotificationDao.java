@@ -15,7 +15,7 @@ public class SqlNotificationDao extends SqlDaoBase<SqlNotificationEntity>
 
 	public SqlNotificationEntity findByTaskId(String taskId) throws Exception
 	{
-		return super.queryForObject("from SqlNotificationEntity where TASKID=?", taskId);
+		return super.queryForObject("from SqlNotificationEntity where TASK_ID=?", taskId);
 	}
 
 	public void save(String taskId) throws Exception
