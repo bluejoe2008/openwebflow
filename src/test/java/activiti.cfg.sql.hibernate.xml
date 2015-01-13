@@ -83,7 +83,7 @@
 	<!-- 自定义的动态自定义活动管理 -->
 	<bean id="myActivityDefinitionManager"
 		class="org.openwebflow.parts.hibernate.service.SqlRuntimeActivityDefinitionManager" />
-	<bean id="myNotificationDetailsStore"
+	<bean id="myTaskNotificationManager"
 		class="org.openwebflow.parts.hibernate.service.SqlTaskNotificationManager" />
 
 </beans>

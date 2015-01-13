@@ -53,7 +53,7 @@
 	<!-- 自定义的动态自定义活动管理 -->
 	<bean id="myActivityDefinitionManager"
 		class="org.openwebflow.parts.mybatis.service.SqlRuntimeActivityDefinitionManager" />
-	<bean id="myNotificationDetailsStore"
+	<bean id="myTaskNotificationManager"
 		class="org.openwebflow.parts.mybatis.service.SqlTaskNotificationManager" />
 
 </beans>

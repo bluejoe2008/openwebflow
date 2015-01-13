@@ -26,7 +26,7 @@
 	<bean id="myActivityDefinitionManager"
 		class="org.openwebflow.parts.mem.InMemoryRuntimeActivityDefinitionManager" />
 
-	<bean id="myNotificationDetailsStore"
+	<bean id="myTaskNotificationManager"
 		class="org.openwebflow.parts.mem.InMemoryTaskNotificationManager" />
 
 </beans>

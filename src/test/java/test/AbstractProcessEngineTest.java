@@ -63,21 +63,22 @@ public abstract class AbstractProcessEngineTest
 		rebuildApplicationContext();
 
 		_aclStore.removeAll();
-		((TaskNotificationManagerEx) _ctx.getBean("myNotificationDetailsStore")).removeAll();
+		_ctx.getBean(TaskNotificationManagerEx.class).removeAll();
 
 		//用户关系管理
-		IdentityMembershipManagerEx myMembershipManager = (IdentityMembershipManagerEx) _ctx
-				.getBean("myMembershipManager");
+		IdentityMembershipManagerEx myMembershipManager = _ctx.getBean(IdentityMembershipManagerEx.class);
 		myMembershipManager.removeAll();
 		myMembershipManager.saveMembership("bluejoe", "engineering");
 		myMembershipManager.saveMembership("gonzo", "sales");
 		myMembershipManager.saveMembership("kermit", "management");
 
 		//设置用户email等信息
-		UserDetailsManagerEx userDetailsStore = (UserDetailsManagerEx) _ctx.getBean("myUserDetailsManager");
+		UserDetailsManagerEx userDetailsStore = _ctx.getBean(UserDetailsManagerEx.class);
 		userDetailsStore.removeAll();
-		userDetailsStore.saveUserDetails(new SimpleUserDetailsEntity("bluejoe", "白乔", "bluejoe2008@gmail.com", "13800138000"));
-		userDetailsStore.saveUserDetails(new SimpleUserDetailsEntity("kermit", "老黄", "heiker@trojo.com", "13800138000"));
+		userDetailsStore.saveUserDetails(new SimpleUserDetailsEntity("bluejoe", "白乔", "bluejoe2008@gmail.com",
+				"13800138000"));
+		userDetailsStore
+				.saveUserDetails(new SimpleUserDetailsEntity("kermit", "老黄", "heiker@trojo.com", "13800138000"));
 
 		_delegationStore.removeAll();
 

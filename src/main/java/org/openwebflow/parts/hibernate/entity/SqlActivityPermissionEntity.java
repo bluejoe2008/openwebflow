@@ -35,6 +35,16 @@ public class SqlActivityPermissionEntity implements ActivityPermissionEntity
 	@Column(name = "GRANTED_USERS")
 	private String _grantedUserString;
 
+	public void setGrantedGroupIds(String[] grantedGroupIds)
+	{
+		_grantedGroupIds = grantedGroupIds;
+	}
+
+	public void setGrantedUserIds(String[] grantedUserIds)
+	{
+		_grantedUserIds = grantedUserIds;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "ID")
@@ -101,26 +111,26 @@ public class SqlActivityPermissionEntity implements ActivityPermissionEntity
 		_assignee = assignee;
 	}
 
-	public void setGrantedGroupIds(String[] grantedGroupIds)
+	public void deserializeProperties()
 	{
-		_grantedGroupString = StringUtils.arrayToDelimitedString(grantedGroupIds, ";");
+		_grantedGroupIds = StringUtils.delimitedListToStringArray(_grantedGroupString, ";");
+		_grantedUserIds = StringUtils.delimitedListToStringArray(_grantedUserString, ";");
+	}
+
+	public void serializeProperties()
+	{
+		_grantedUserString = StringUtils.arrayToDelimitedString(_grantedUserIds, ";");
+		_grantedGroupString = StringUtils.arrayToDelimitedString(_grantedGroupIds, ";");
 	}
 
 	public void setGrantedGroupString(String grantedGroupString)
 	{
 		_grantedGroupString = grantedGroupString;
-		_grantedGroupIds = StringUtils.delimitedListToStringArray(grantedGroupString, ";");
-	}
-
-	public void setGrantedUserIds(String[] grantedUserIds)
-	{
-		_grantedUserString = StringUtils.arrayToDelimitedString(grantedUserIds, ";");
 	}
 
 	public void setGrantedUserString(String grantedUserString)
 	{
 		_grantedUserString = grantedUserString;
-		_grantedUserIds = StringUtils.delimitedListToStringArray(grantedUserString, ";");
 	}
 
 	public void setId(long id)

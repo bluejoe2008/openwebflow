@@ -16,8 +16,16 @@ public class SqlActivityPermissionEntityDao extends SqlDaoBase<SqlActivityPermis
 	public SqlActivityPermissionEntity load(String processDefinitionId, String taskDefinitionKey, boolean addOrRemove)
 			throws Exception
 	{
-		return super.queryForObject("from SqlActivityPermissionEntity where PROCESS_DEF_ID=? and ACTIVITY_KEY=?",
-			processDefinitionId, taskDefinitionKey);
+		SqlActivityPermissionEntity entity = super.queryForObject(
+			"from SqlActivityPermissionEntity where PROCESS_DEF_ID=? and ACTIVITY_KEY=?", processDefinitionId,
+			taskDefinitionKey);
+
+		if (entity != null)
+		{
+			entity.deserializeProperties();
+		}
+
+		return entity;
 	}
 
 	public void save(String processDefId, String taskDefinitionKey, String assignee, String candidateGroupIds,

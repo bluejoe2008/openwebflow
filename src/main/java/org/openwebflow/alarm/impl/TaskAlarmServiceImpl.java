@@ -38,7 +38,7 @@ public class TaskAlarmServiceImpl implements TaskAlarmService, DisposableBean
 			for (Task task : _processEngine.getTaskService().createTaskQuery().active().dueAfter(dueDate).list())
 			{
 				//是否已经通知？
-				if (!_notificationDetailsStore.isNotified(task.getId()))
+				if (!_taskNotificationManager.isNotified(task.getId()))
 				{
 					//没有通知则现在通知
 					List<UserDetailsEntity> involvedUsers = IdentityUtils.getUserDetailsFromIds(
@@ -47,7 +47,7 @@ public class TaskAlarmServiceImpl implements TaskAlarmService, DisposableBean
 
 					_messageNotifier.notify(involvedUsers.toArray(new UserDetailsEntity[0]), task);
 					//设置标志
-					_notificationDetailsStore.setNotified(task.getId());
+					_taskNotificationManager.setNotified(task.getId());
 					Logger.getLogger(getClass()).debug(String.format("notified %s", involvedUsers));
 				}
 			}
@@ -75,7 +75,17 @@ public class TaskAlarmServiceImpl implements TaskAlarmService, DisposableBean
 
 	private Timer _monitorTimer = new Timer(true);
 
-	TaskNotificationManager _notificationDetailsStore;
+	TaskNotificationManager _taskNotificationManager;
+
+	public TaskNotificationManager getTaskNotificationManager()
+	{
+		return _taskNotificationManager;
+	}
+
+	public void setTaskNotificationManager(TaskNotificationManager taskNotificationManager)
+	{
+		_taskNotificationManager = taskNotificationManager;
+	}
 
 	String _periodInAdvance;
 
@@ -104,11 +114,6 @@ public class TaskAlarmServiceImpl implements TaskAlarmService, DisposableBean
 		return _messageNotifier;
 	}
 
-	public TaskNotificationManager getNotificationDetailsStore()
-	{
-		return _notificationDetailsStore;
-	}
-
 	public String getPeriodInAdvance()
 	{
 		return _periodInAdvance;
@@ -132,11 +137,6 @@ public class TaskAlarmServiceImpl implements TaskAlarmService, DisposableBean
 	public void setMessageNotifier(MessageNotifier messageNotifier)
 	{
 		_messageNotifier = messageNotifier;
-	}
-
-	public void setNotificationDetailsStore(TaskNotificationManager notificationDetailsStore)
-	{
-		_notificationDetailsStore = notificationDetailsStore;
 	}
 
 	public void setPeriodInAdvance(String periodInAdvance)

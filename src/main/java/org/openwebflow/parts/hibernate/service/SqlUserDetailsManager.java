@@ -17,7 +17,7 @@ public class SqlUserDetailsManager implements UserDetailsManager, UserDetailsMan
 	@Autowired
 	SqlUserDetailsDao _dao;
 
-	private void copyProperties(UserDetailsEntity src, SqlUserDetailsEntity target)
+	private void copyProperties(UserDetailsEntity src, UserDetailsEntity target)
 	{
 		for (String name : src.getPropertyNames())
 		{

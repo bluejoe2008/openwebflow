@@ -61,7 +61,7 @@
 		</property>
 		<property name="membershipManager" ref="myMembershipManager" />
 		<property name="userDetailsManager" ref="myUserDetailsManager" />
-		<property name="notificationDetailsStore" ref="myNotificationDetailsStore" />
+		<property name="taskNotificationManager" ref="myTaskNotificationManager" />
 	</bean>
 
 	<bean id="transactionManager"
