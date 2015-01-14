@@ -13,30 +13,15 @@
 	<!-- 工作流核心数据库配置 -->
 	<bean id="activitiDataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
-		<property name="driverClassName" value="org.h2.Driver" />
-		<property name="url" value="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000" />
-		<property name="username" value="sa" />
-		<property name="password" value="" />
+		<property name="driverClassName" value="${activitidb.driver}" />
+		<property name="url" value="${activitidb.url}" />
+		<property name="username" value="${activitidb.username}" />
+		<property name="password" value="${activitidb.password}" />
 		<property name="initialSize" value="20" />
 		<property name="maxActive" value="50" />
 		<property name="maxIdle" value="20" />
 		<property name="minIdle" value="10" />
 	</bean>
-
-	<!-- 
-	<bean id="activitiDataSource" class="org.apache.commons.dbcp.BasicDataSource"
-		destroy-method="close">
-		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url"
-			value="jdbc:mysql://localhost:3306/activitidb?useUnicode=true&amp;characterEncoding=UTF-8" />
-		<property name="username" value="root" />
-		<property name="password" value="1" />
-		<property name="initialSize" value="20" />
-		<property name="maxActive" value="50" />
-		<property name="maxIdle" value="20" />
-		<property name="minIdle" value="10" />
-	</bean>
-	-->
 	
 	<!-- 任务催办配置 -->
 	<bean id="myTaskAlarmService" class="org.openwebflow.alarm.impl.TaskAlarmServiceImpl">

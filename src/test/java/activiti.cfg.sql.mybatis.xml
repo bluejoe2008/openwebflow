@@ -14,11 +14,10 @@
 	<!-- 数据库脚本见openwebflow.sql -->
 	<bean id="owfDataSource" class="org.apache.commons.dbcp.BasicDataSource"
 		destroy-method="close">
-		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url"
-			value="jdbc:mysql://localhost:3306/openwebflow?useUnicode=true&amp;characterEncoding=UTF-8" />
-		<property name="username" value="root" />
-		<property name="password" value="1" />
+		<property name="driverClassName" value="${owfdb.driver}" />
+		<property name="url" value="${owfdb.url}" />
+		<property name="username" value="${owfdb.username}" />
+		<property name="password" value="${owfdb.password}" />
 		<property name="initialSize" value="20" />
 		<property name="maxActive" value="50" />
 		<property name="maxIdle" value="20" />

@@ -11,11 +11,9 @@ import org.openwebflow.parts.hibernate.dao.SqlMembershipDao;
 import org.openwebflow.parts.hibernate.entity.SqlMembershipEntity;
 import org.openwebflow.util.OwfException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
 @Transactional(readOnly = true)
 public class SqlMembershipManager implements IdentityMembershipManager, IdentityMembershipManagerEx
 {

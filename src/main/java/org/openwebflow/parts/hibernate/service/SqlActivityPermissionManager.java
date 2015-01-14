@@ -5,12 +5,10 @@ import org.openwebflow.assign.permission.ActivityPermissionManager;
 import org.openwebflow.parts.ext.ActivityPermissionManagerEx;
 import org.openwebflow.parts.hibernate.dao.SqlActivityPermissionEntityDao;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-@Service
 @Transactional(readOnly = true)
 public class SqlActivityPermissionManager implements ActivityPermissionManager, ActivityPermissionManagerEx
 {
