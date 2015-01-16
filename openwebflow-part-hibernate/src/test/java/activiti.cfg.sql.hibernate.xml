@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
+	http://www.springframework.org/schema/tx   http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+	<context:property-placeholder location="settings.properties" />
+	<import resource="activiti.cfg.core.xml" />
+
+	<context:component-scan base-package="org.openwebflow.parts.hibernate.dao" />
+
+	<!-- 数据库脚本见openwebflow.sql -->
+	<bean id="owfDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${owfdb.driver}" />
+		<property name="url" value="${owfdb.url}" />
+		<property name="username" value="${owfdb.username}" />
+		<property name="password" value="${owfdb.password}" />
+		<property name="initialSize" value="20" />
+		<property name="maxActive" value="50" />
+		<property name="maxIdle" value="20" />
+		<property name="minIdle" value="10" />
+	</bean>
+	
+	<!-- 配置SessionFactory -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="owfDataSource" />
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<!-- <prop key="hibernate.dialect">org.hibernate.dialect.SQLServer2008Dialect</prop> -->
+				<!-- 服务启动通过实体创建数据库表信息 -->
+				<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.jdbc.batch_size">20</prop>
+				<prop key="hibernate.connection.release_mode">auto</prop>
+				<prop key="hibernate.autoReconnect">false</prop>
+				<prop key="hibernate.connection.autocommit">true</prop>
+				<prop key="hibernate.temp.use_jdbc_metadata_defaults">false</prop>
+				<prop key="hibernate.jdbc.use_streams_for_binary">true</prop>
+				<prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate4.SpringSessionContext
+				</prop>
+				<!--解决weblogic无法使用hql的问题 -->
+				<prop key="hibernate.cglib.use_reflection_optimizer">true</prop>
+			</props>
+		</property>
+
+		<!-- 自动扫描备注解的实体 -->
+		<property name="packagesToScan">
+			<list>
+				<value>org.openwebflow.parts.hibernate.entity</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 配置一个事务管理器 -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+	<tx:annotation-driven transaction-manager="transactionManager" />
+  
+ 	<!-- 代理记录管理 -->
+	<bean id="myDelegationManager"
+		class="org.openwebflow.parts.hibernate.service.SqlDelegationManager" />
+	<!-- 自定义成员关系管理 -->
+	<bean id="myMembershipManager"
+		class="org.openwebflow.parts.hibernate.service.SqlMembershipManager" />
+	<!-- 自定义用户表 -->
+	<bean id="myUserDetailsManager"
+		class="org.openwebflow.parts.hibernate.service.SqlUserDetailsManager" />
+	<!-- 自定义的活动权限表管理 -->
+	<bean id="myActivityPermissionManager"
+		class="org.openwebflow.parts.hibernate.service.SqlActivityPermissionManager" />
+	<!-- 自定义的动态自定义活动管理 -->
+	<bean id="myActivityDefinitionManager"
+		class="org.openwebflow.parts.hibernate.service.SqlRuntimeActivityDefinitionManager" />
+	<bean id="myTaskNotificationManager"
+		class="org.openwebflow.parts.hibernate.service.SqlTaskNotificationManager" />
+
+</beans>
