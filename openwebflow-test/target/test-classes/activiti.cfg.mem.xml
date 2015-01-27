@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
+	http://www.springframework.org/schema/tx   http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+	<context:property-placeholder location="settings.properties" />
+	<import resource="activiti.cfg.core.xml" />
+	
+	<!-- 自定义成员关系管理 -->
+	<bean id="myMembershipManager" class="org.openwebflow.mgr.mem.InMemoryMembershipManager" />
+	<bean id="myUserDetailsManager" class="org.openwebflow.mgr.mem.InMemoryUserDetailsManager" />
+	
+	<!-- 自定义的活动权限表管理 -->
+	<bean id="myActivityPermissionManager"
+		class="org.openwebflow.mgr.mem.InMemoryActivityPermissionManager" />
+		
+	<!-- 代理关系管理 -->
+	<bean id="myDelegationManager" class="org.openwebflow.mgr.mem.InMemoryDelegationManager" />
+		
+	<!-- 自定义的动态自定义活动管理 -->
+	<bean id="myActivityDefinitionManager"
+		class="org.openwebflow.mgr.mem.InMemoryRuntimeActivityDefinitionManager" />
+
+	<bean id="myTaskNotificationManager" class="org.openwebflow.mgr.mem.InMemoryTaskNotificationManager" />
+
+</beans>
