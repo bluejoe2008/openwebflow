@@ -45,7 +45,10 @@ public class TaskAlarmServiceImpl implements TaskAlarmService, DisposableBean
 						IdentityUtils.getInvolvedUsers(_processEngine.getTaskService(), task, _membershipManager),
 						_userDetailsManager);
 
-					_messageNotifier.notify(involvedUsers.toArray(new UserDetailsEntity[0]), task);
+					if (!involvedUsers.isEmpty())
+					{
+						_messageNotifier.notify(involvedUsers.toArray(new UserDetailsEntity[0]), task);
+					}
 					//设置标志
 					_taskNotificationManager.setNotified(task.getId());
 					Logger.getLogger(getClass()).debug(String.format("notified %s", involvedUsers));

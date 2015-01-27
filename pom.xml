@@ -12,17 +12,27 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.0</version>
 				<configuration>
-					<skip>true</skip>
+					<source>1.5</source>
+					<target>1.5</target>
+					<encoding>UTF-8</encoding>
+					<charset>UTF-8</charset>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.5</version>
 			</plugin>
 		</plugins>
 	</build>
 	<modules>
 		<module>openwebflow-core</module>
-		<module>openwebflow-part-hibernate</module>
-		<module>openwebflow-part-mybatis</module>
+		<module>openwebflow-mgr-hibernate</module>
+		<module>openwebflow-mgr-mybatis</module>
+		<module>openwebflow-test</module>
 	</modules>
 	<properties>
 		<org.springframework-version>3.2.4.RELEASE</org.springframework-version>

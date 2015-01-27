@@ -18,21 +18,33 @@ public class ProcessEngineTool
 	@Autowired
 	private ProcessEngine _processEngine;
 
+	/**
+	 * 创建一个空白的Model对象
+	 */
 	public Model createNewModel(String name, String description) throws IOException
 	{
 		return ModelUtils.createNewModel(_processEngine.getRepositoryService(), name, description);
 	}
 
+	/**
+	 * 部署一个已注册的model
+	 */
 	public Deployment deployModel(String modelId) throws IOException
 	{
 		return ModelUtils.deployModel(_processEngine.getRepositoryService(), modelId);
 	}
 
+	/**
+	 * 获取指定名字的活动
+	 */
 	public ActivityImpl getActivity(String processDefId, String activityId)
 	{
 		return ProcessDefinitionUtils.getActivity(_processEngine, processDefId, activityId);
 	}
 
+	/**
+	 * 获取指定历史流程的变量列表
+	 */
 	public Map<String, Object> getHistoricProcessVariables(String processId)
 	{
 		List<HistoricVariableInstance> list = _processEngine.getHistoryService().createHistoricVariableInstanceQuery()
@@ -46,7 +58,10 @@ public class ProcessEngineTool
 		return vars;
 	}
 
-	public ProcessDefinitionEntity getProcessDefinition(ProcessEngine processEngine, String processDefId)
+	/**
+	 * 获取指定ID的流程定义
+	 */
+	public ProcessDefinitionEntity getProcessDefinition(String processDefId)
 	{
 		return ProcessDefinitionUtils.getProcessDefinition(_processEngine, processDefId);
 	}
@@ -56,6 +71,9 @@ public class ProcessEngineTool
 		return _processEngine;
 	}
 
+	/**
+	 * 设置指定活动的用户权限，包括钦定用户、候选用户、候选组
+	 */
 	public void grantPermission(ActivityImpl activity, String assigneeExpression, String candidateGroupIdExpressions,
 			String candidateUserIdExpressions) throws Exception
 	{
@@ -63,6 +81,9 @@ public class ProcessEngineTool
 			candidateUserIdExpressions);
 	}
 
+	/**
+	 * 设置指定活动的用户权限，包括钦定用户、候选用户、候选组
+	 */
 	public void grantPermission(String processDefId, String activityId, String assigneeExpression,
 			String candidateGroupIdExpressions, String candidateUserIdExpressions) throws Exception
 	{

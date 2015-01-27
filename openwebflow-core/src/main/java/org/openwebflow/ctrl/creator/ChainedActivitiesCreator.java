@@ -12,19 +12,20 @@ import org.springframework.util.CollectionUtils;
 
 public class ChainedActivitiesCreator extends RuntimeActivityCreatorSupport implements RuntimeActivityCreator
 {
-	@Override
 	public ActivityImpl[] createActivities(ProcessEngine processEngine, ProcessDefinitionEntity processDefinition,
 			RuntimeActivityDefinitionEntity info)
 	{
 		info.setFactoryName(ChainedActivitiesCreator.class.getName());
-
-		if (info.getCloneActivityIds() == null)
+		RuntimeActivityDefinitionEntityIntepreter radei = new RuntimeActivityDefinitionEntityIntepreter(info);
+	
+		if (radei.getCloneActivityIds() == null)
 		{
-			info.setCloneActivityIds(CollectionUtils.arrayToList(new String[info.getAssignees().size()]));
+			radei.setCloneActivityIds(CollectionUtils.arrayToList(new String[radei.getAssignees().size()]));
 		}
 
 		return createActivities(processEngine, processDefinition, info.getProcessInstanceId(),
-			info.getPrototypeActivityId(), info.getNextActivityId(), info.getAssignees(), info.getCloneActivityIds());
+			radei.getPrototypeActivityId(), radei.getNextActivityId(), radei.getAssignees(),
+			radei.getCloneActivityIds());
 	}
 
 	private ActivityImpl[] createActivities(ProcessEngine processEngine, ProcessDefinitionEntity processDefinition,

@@ -1,0 +1,17 @@
+org.openwebflow.alarm
+org.openwebflow.alarm.impl
+org.openwebflow.assign
+org.openwebflow.assign.delegation
+org.openwebflow.assign.impl
+org.openwebflow.assign.permission
+org.openwebflow.cfg
+org.openwebflow.ctrl
+org.openwebflow.ctrl.command
+org.openwebflow.ctrl.creator
+org.openwebflow.ctrl.impl
+org.openwebflow.identity
+org.openwebflow.identity.impl
+org.openwebflow.mgr.common
+org.openwebflow.mgr.ext
+org.openwebflow.mgr.mem
+org.openwebflow.util

@@ -1,59 +1,65 @@
 package org.openwebflow.ctrl;
 
 import java.io.IOException;
-import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 public interface RuntimeActivityDefinitionEntity
 {
-
+	/**
+	 * 反序列化PropertiesText到Map
+	 */
 	void deserializeProperties() throws IOException;
 
-	List<String> getAssignees();
-
-	String getCloneActivityId();
-
-	List<String> getCloneActivityIds();
-
-	Class<?> getFactoryClass() throws ClassNotFoundException;
-
+	/**
+	 * 获取工厂名
+	 */
 	String getFactoryName();
 
-	String getNextActivityId();
-
+	/**
+	 * 获取流程定义的ID
+	 */
 	String getProcessDefinitionId();
 
+	/**
+	 * 获取流程实例的ID
+	 */
 	String getProcessInstanceId();
 
+	/**
+	 * 获取PropertiesText，它是一个JSON字符串
+	 */
 	String getPropertiesText();
 
+	/**
+	 * 获取指定的属性值
+	 */
 	<T> T getProperty(String name);
 
-	String getPrototypeActivityId();
-
-	boolean getSequential();
-
+	/**
+	 * 序列化Map至PropertiesText
+	 */
 	void serializeProperties() throws JsonProcessingException;
 
-	void setAssignees(List<String> assignees);
-
-	void setCloneActivityId(String cloneActivityId);
-
-	void setCloneActivityIds(List<String> cloneActivityIds);
-
+	/**
+	 * 设置工厂名
+	 */
 	void setFactoryName(String factoryName);
 
-	void setNextActivityId(String nextActivityId);
-
+	/**
+	 * 设置流程定义ID
+	 */
 	void setProcessDefinitionId(String processDefinitionId);
 
+	/**
+	 * 设置流程实例ID
+	 */
 	void setProcessInstanceId(String processInstanceId);
 
+	/**
+	 * 设置PropertiesText
+	 */
 	void setPropertiesText(String propertiesText);
 
-	void setPrototypeActivityId(String prototypeActivityId);
-
-	void setSequential(boolean sequential);
-
+	<T> void setProperty(String name, T value);
 }

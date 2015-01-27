@@ -16,21 +16,21 @@ import org.openwebflow.util.ProcessDefinitionUtils;
 
 public class MultiInstanceActivityCreator extends RuntimeActivityCreatorSupport implements RuntimeActivityCreator
 {
-	@Override
 	public ActivityImpl[] createActivities(ProcessEngine processEngine, ProcessDefinitionEntity processDefinition,
 			RuntimeActivityDefinitionEntity info)
 	{
 		info.setFactoryName(MultiInstanceActivityCreator.class.getName());
+		RuntimeActivityDefinitionEntityIntepreter radei = new RuntimeActivityDefinitionEntityIntepreter(info);
 
-		if (info.getCloneActivityId() == null)
+		if (radei.getCloneActivityId() == null)
 		{
-			String cloneActivityId = createUniqueActivityId(info.getProcessInstanceId(), info.getPrototypeActivityId());
-			info.setCloneActivityId(cloneActivityId);
+			String cloneActivityId = createUniqueActivityId(info.getProcessInstanceId(), radei.getPrototypeActivityId());
+			radei.setCloneActivityId(cloneActivityId);
 		}
 
 		return new ActivityImpl[] { createMultiInstanceActivity(processEngine, processDefinition,
-			info.getProcessInstanceId(), info.getPrototypeActivityId(), info.getCloneActivityId(),
-			info.getSequential(), info.getAssignees()) };
+			info.getProcessInstanceId(), radei.getPrototypeActivityId(), radei.getCloneActivityId(),
+			radei.getSequential(), radei.getAssignees()) };
 	}
 
 	private ActivityImpl createMultiInstanceActivity(ProcessEngine processEngine,

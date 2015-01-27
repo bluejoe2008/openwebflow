@@ -18,25 +18,38 @@ public interface TaskFlowControlService
 	 */
 	ActivityImpl[] insertTasksBefore(String targetTaskDefinitionKey, String... assignees) throws Exception;
 
+	/**
+	 * 后退一步
+	 */
 	void moveBack() throws Exception;
 
+	/**
+	 * 后退至指定活动
+	 */
 	void moveBack(TaskEntity currentTaskEntity) throws Exception;
 
+	/**
+	 * 前进一步
+	 */
 	void moveForward() throws Exception;
 
+	/**
+	 * 前进至指定活动
+	 */
 	void moveForward(TaskEntity currentTaskEntity) throws Exception;
 
 	/**
 	 * 跳转（包括回退和向前）至指定活动节点
-	 * 
-	 * @param targetTaskDefinitionKey
-	 * @throws Exception
 	 */
 	void moveTo(String targetTaskDefinitionKey) throws Exception;
 
+	/**
+	 * 跳转（包括回退和向前）至指定活动节点
+	 */
 	void moveTo(String currentTaskId, String targetTaskDefinitionKey) throws Exception;
 
 	/**
+	 * 跳转（包括回退和向前）至指定活动节点
 	 * 
 	 * @param currentTaskEntity
 	 *            当前任务节点
@@ -57,6 +70,9 @@ public interface TaskFlowControlService
 	 */
 	ActivityImpl split(String targetTaskDefinitionKey, boolean isSequential, String... assignees) throws Exception;
 
+	/**
+	 * 分裂某节点为多实例节点
+	 */
 	ActivityImpl split(String targetTaskDefinitionKey, String... assignee) throws Exception;
 
 }

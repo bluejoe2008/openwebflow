@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
+	http://www.springframework.org/schema/tx   http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+	<context:annotation-config />
+	
+	<!-- 工作流核心数据库配置 -->
+	<bean id="activitiDataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${activitidb.driver}" />
+		<property name="url" value="${activitidb.url}" />
+		<property name="username" value="${activitidb.username}" />
+		<property name="password" value="${activitidb.password}" />
+		<property name="initialSize" value="20" />
+		<property name="maxActive" value="50" />
+		<property name="maxIdle" value="20" />
+		<property name="minIdle" value="10" />
+	</bean>
+	
+	<!-- 任务催办配置 -->
+	<bean id="myTaskAlarmService" class="org.openwebflow.alarm.impl.TaskAlarmServiceImpl">
+		<!-- 截止日期提前量 -->
+		<property name="periodInAdvance" value="P2D" />
+		<!-- 设置消息通知机制 -->
+		<property name="messageNotifier">
+			<!-- 采用邮件发送 -->
+			<bean class="org.openwebflow.alarm.impl.MailMessageNotifier">
+				<property name="subjectTemplate" value="请尽快处理#{'$'}{task.name}任务" />
+				<property name="messageTemplateResource" value="${alarm.mail.template}" />
+				<property name="mailSender">
+					<bean class="org.openwebflow.alarm.impl.MailSender">
+						<property name="serverHost" value="${mail.host}" />
+						<property name="serverPort" value="${mail.port}" />
+						<property name="authUserName" value="${mail.username}" />
+						<property name="authPassword" value="${mail.password}" />
+						<property name="mailFrom" value="${mail.from}" />
+					</bean>
+				</property>
+			</bean>
+		</property>
+		<property name="membershipManager" ref="myMembershipManager" />
+		<property name="userDetailsManager" ref="myUserDetailsManager" />
+		<property name="taskNotificationManager" ref="myTaskNotificationManager" />
+	</bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="activitiDataSource" />
+	</bean>
+
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<!-- 配置对象 -->
+	<bean id="processEngineConfiguration" class="org.openwebflow.cfg.ProcessEngineConfigurationEx">
+		<property name="dataSource" ref="activitiDataSource" />
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="databaseSchemaUpdate" value="true" />
+		<property name="jobExecutorActivate" value="false" />
+		<property name="startEngineEventListeners">
+			<list>
+				<!-- 加载自定义表单元素类型 -->
+				<bean class="org.openwebflow.cfg.LoadDummyFormTypes">
+					<property name="typeNames" value="user" />
+				</bean>
+				<!-- 自定义成员关系管理 -->
+				<bean class="org.openwebflow.cfg.ReplaceMembershipManager">
+					<property name="customMembershipManager" ref="myMembershipManager" />
+				</bean>
+				<!-- 自定义活动权限管理 -->
+				<bean class="org.openwebflow.cfg.ReplaceTaskAssignmentHandler">
+					<!-- 授权处理器列表，会组成一个链，越靠后优先级越高（越靠外） -->
+					<property name="handlers">
+						<list>
+							<!-- 自定义授权项列表 -->
+							<bean
+								class="org.openwebflow.assign.permission.ActivityPermissionAssignmentHandler">
+								<property name="activityPermissionManager" ref="myActivityPermissionManager" />
+							</bean>
+							<!-- 允许授权代理 -->
+							<bean
+								class="org.openwebflow.assign.delegation.TaskDelagationAssignmentHandler">
+								<property name="delegationManager" ref="myDelegationManager" />
+								<property name="membershipManager" ref="myMembershipManager" />
+								<property name="hideDelegated" value="false" />
+							</bean>
+						</list>
+					</property>
+				</bean>
+				<!-- 自动导入流程模型 -->
+				<bean class="org.openwebflow.cfg.ImportDefinedProcessModels">
+					<property name="modelDir" value="${model.dir}" />
+				</bean>
+				<!-- 启动催办管理器 -->
+				<bean class="org.openwebflow.cfg.StartTaskAlarmService">
+					<property name="taskAlarmService" ref="myTaskAlarmService" />
+					<property name="runOnStartup" value="false" />
+				</bean>
+				<!-- 加载自定义activity -->
+				<bean class="org.openwebflow.cfg.LoadRuntimeActivityDefinitions">
+					<property name="activityDefinitionManager" ref="myActivityDefinitionManager" />
+				</bean>
+			</list>
+		</property>
+	</bean>
+
+	<!-- processEngine -->
+	<bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">
+		<property name="processEngineConfiguration" ref="processEngineConfiguration" />
+	</bean>
+
+	<!-- 工作流流转服务对象工厂 -->
+	<bean class="org.openwebflow.ctrl.impl.DefaultTaskFlowControlServiceFactory" />
+	
+	<!-- processEngineTool -->
+	<bean id="processEngineTool" class="org.openwebflow.util.ProcessEngineTool" />
+
+</beans>

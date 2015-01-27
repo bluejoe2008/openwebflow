@@ -18,7 +18,8 @@ import org.openwebflow.ctrl.command.DeleteRunningTaskCmd;
 import org.openwebflow.ctrl.command.StartActivityCmd;
 import org.openwebflow.ctrl.creator.ChainedActivitiesCreator;
 import org.openwebflow.ctrl.creator.MultiInstanceActivityCreator;
-import org.openwebflow.parts.common.SimpleRuntimeActivityDefinitionEntity;
+import org.openwebflow.ctrl.creator.RuntimeActivityDefinitionEntityIntepreter;
+import org.openwebflow.mgr.common.SimpleRuntimeActivityDefinitionEntity;
 import org.openwebflow.util.ProcessDefinitionUtils;
 import org.springframework.util.CollectionUtils;
 
@@ -51,9 +52,11 @@ public class DefaultTaskFlowControlService implements TaskFlowControlService
 		SimpleRuntimeActivityDefinitionEntity info = new SimpleRuntimeActivityDefinitionEntity();
 		info.setProcessDefinitionId(_processDefinition.getId());
 		info.setProcessInstanceId(_processInstanceId);
-		info.setPrototypeActivityId(prototypeActivityId);
-		info.setAssignees(CollectionUtils.arrayToList(assignees));
-		info.setNextActivityId(nextActivityId);
+
+		RuntimeActivityDefinitionEntityIntepreter radei = new RuntimeActivityDefinitionEntityIntepreter(info);
+		radei.setPrototypeActivityId(prototypeActivityId);
+		radei.setAssignees(CollectionUtils.arrayToList(assignees));
+		radei.setNextActivityId(nextActivityId);
 
 		ActivityImpl[] activities = new ChainedActivitiesCreator().createActivities(_processEngine, _processDefinition,
 			info);
@@ -202,9 +205,12 @@ public class DefaultTaskFlowControlService implements TaskFlowControlService
 		SimpleRuntimeActivityDefinitionEntity info = new SimpleRuntimeActivityDefinitionEntity();
 		info.setProcessDefinitionId(_processDefinition.getId());
 		info.setProcessInstanceId(_processInstanceId);
-		info.setPrototypeActivityId(targetTaskDefinitionKey);
-		info.setAssignees(CollectionUtils.arrayToList(assignees));
-		info.setSequential(isSequential);
+
+		RuntimeActivityDefinitionEntityIntepreter radei = new RuntimeActivityDefinitionEntityIntepreter(info);
+
+		radei.setPrototypeActivityId(targetTaskDefinitionKey);
+		radei.setAssignees(CollectionUtils.arrayToList(assignees));
+		radei.setSequential(isSequential);
 
 		ActivityImpl clone = new MultiInstanceActivityCreator().createActivities(_processEngine, _processDefinition,
 			info)[0];
@@ -222,5 +228,4 @@ public class DefaultTaskFlowControlService implements TaskFlowControlService
 	{
 		return split(targetTaskDefinitionKey, true, assignee);
 	}
-
 }
