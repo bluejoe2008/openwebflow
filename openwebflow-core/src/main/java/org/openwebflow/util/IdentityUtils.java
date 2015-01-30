@@ -14,6 +14,12 @@ import org.openwebflow.identity.IdentityMembershipManager;
 import org.openwebflow.identity.UserDetailsEntity;
 import org.openwebflow.identity.UserDetailsManager;
 
+/**
+ * 实现用户、成员关系等相关操作
+ * 
+ * @author bluejoe2008@gmail.com
+ *
+ */
 public abstract class IdentityUtils
 {
 	public static List<Group> getGroupsFromIds(List<String> groupIds)

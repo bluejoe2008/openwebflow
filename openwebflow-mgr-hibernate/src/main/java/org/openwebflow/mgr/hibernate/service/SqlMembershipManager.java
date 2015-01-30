@@ -5,11 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openwebflow.OwfException;
 import org.openwebflow.identity.IdentityMembershipManager;
 import org.openwebflow.mgr.ext.IdentityMembershipManagerEx;
 import org.openwebflow.mgr.hibernate.dao.SqlMembershipDao;
 import org.openwebflow.mgr.hibernate.entity.SqlMembershipEntity;
-import org.openwebflow.util.OwfException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;

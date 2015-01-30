@@ -1,3 +1,4 @@
+org.openwebflow
 org.openwebflow.alarm
 org.openwebflow.alarm.impl
 org.openwebflow.assign
@@ -13,5 +14,11 @@ org.openwebflow.identity
 org.openwebflow.identity.impl
 org.openwebflow.mgr.common
 org.openwebflow.mgr.ext
+org.openwebflow.mgr.hibernate.dao
+org.openwebflow.mgr.hibernate.entity
+org.openwebflow.mgr.hibernate.service
 org.openwebflow.mgr.mem
+org.openwebflow.mgr.mybatis.entity
+org.openwebflow.mgr.mybatis.mapper
+org.openwebflow.mgr.mybatis.service
 org.openwebflow.util

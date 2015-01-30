@@ -21,6 +21,12 @@ import org.springframework.core.io.Resource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+/**
+ * 包装了对BPMN模型的部署、注册等功能
+ * 
+ * @author bluejoe2008@gmail.com
+ *
+ */
 public abstract class ModelUtils
 {
 	private static String EMPTY_MODEL_XML = "";

@@ -1,0 +1,25 @@
+<uml>
+   <greenVersion="30500"/>
+   <type>
+      <name="=openwebflow-core/src\/main\/java<org.openwebflow.alarm.impl{TaskAlarmServiceImpl.java[TaskAlarmServiceImpl"/>
+      <height="-1"/>
+      <width="-1"/>
+      <x="79"/>
+      <y="8"/>
+   </type>
+   <type>
+      <name="=openwebflow-core/src\/main\/java<org.openwebflow.alarm.impl{TaskAlarmServiceImpl.java[TaskAlarmServiceImpl[MonitorTask"/>
+      <height="-1"/>
+      <width="-1"/>
+      <x="132"/>
+      <y="553"/>
+   </type>
+   <relationship>
+      <class="edu.buffalo.cse.green.relationship.dependency.DependencyIPart"/>
+      <sourceType="=openwebflow-core/src\/main\/java<org.openwebflow.alarm.impl{TaskAlarmServiceImpl.java[TaskAlarmServiceImpl"/>
+      <targetType="=openwebflow-core/src\/main\/java<org.openwebflow.alarm.impl{TaskAlarmServiceImpl.java[TaskAlarmServiceImpl[MonitorTask"/>
+      <bendpoints>
+      </bendpoints>
+   </relationship>
+</uml>
+

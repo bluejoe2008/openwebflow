@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.openwebflow.OwfException;
 import org.openwebflow.assign.delegation.DelegationEntity;
 import org.openwebflow.assign.delegation.DelegationManager;
 import org.openwebflow.mgr.ext.DelegationManagerEx;
 import org.openwebflow.mgr.hibernate.dao.SqlDelegationDao;
 import org.openwebflow.mgr.hibernate.entity.SqlDelegationEntity;
-import org.openwebflow.util.OwfException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;

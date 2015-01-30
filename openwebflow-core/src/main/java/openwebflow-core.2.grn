@@ -1,0 +1,39 @@
+<uml>
+   <greenVersion="30500"/>
+   <type>
+      <name="=openwebflow-core/src\/main\/java<org.openwebflow.cfg{ProcessEngineConfigurationEx.java[ProcessEngineConfigurationEx"/>
+      <height="-1"/>
+      <width="-1"/>
+      <x="54"/>
+      <y="543"/>
+   </type>
+   <type>
+      <name="=openwebflow-test/D:\/repository\/org\/activiti\/activiti-spring\/5.16.1\/activiti-spring-5.16.1.jar<org.activiti.spring(SpringProcessEngineConfiguration.class[SpringProcessEngineConfiguration"/>
+      <height="537"/>
+      <width="582"/>
+      <x="643"/>
+      <y="60"/>
+   </type>
+   <relationship>
+      <class="edu.buffalo.cse.green.relationship.generalization.GeneralizationPart"/>
+      <sourceType="=openwebflow-core/src\/main\/java<org.openwebflow.cfg{ProcessEngineConfigurationEx.java[ProcessEngineConfigurationEx"/>
+      <targetType="=openwebflow-test/D:\/repository\/org\/activiti\/activiti-spring\/5.16.1\/activiti-spring-5.16.1.jar<org.activiti.spring(SpringProcessEngineConfiguration.class[SpringProcessEngineConfiguration"/>
+      <bendpoints>
+      </bendpoints>
+   </relationship>
+   <type>
+      <name="=openwebflow-core/D:\/repository\/org\/activiti\/activiti-engine\/5.16.1\/activiti-engine-5.16.1.jar<org.activiti.engine.impl.cfg(ProcessEngineConfigurationImpl.class[ProcessEngineConfigurationImpl"/>
+      <height="388"/>
+      <width="438"/>
+      <x="92"/>
+      <y="56"/>
+   </type>
+   <relationship>
+      <class="edu.buffalo.cse.green.relationship.generalization.GeneralizationPart"/>
+      <sourceType="=openwebflow-test/D:\/repository\/org\/activiti\/activiti-spring\/5.16.1\/activiti-spring-5.16.1.jar<org.activiti.spring(SpringProcessEngineConfiguration.class[SpringProcessEngineConfiguration"/>
+      <targetType="=openwebflow-core/D:\/repository\/org\/activiti\/activiti-engine\/5.16.1\/activiti-engine-5.16.1.jar<org.activiti.engine.impl.cfg(ProcessEngineConfigurationImpl.class[ProcessEngineConfigurationImpl"/>
+      <bendpoints>
+      </bendpoints>
+   </relationship>
+</uml>
+

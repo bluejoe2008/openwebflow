@@ -10,6 +10,12 @@ import org.activiti.engine.impl.task.TaskDefinition;
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.apache.log4j.Logger;
 
+/**
+ * 流程定义相关操作的封装
+ * 
+ * @author bluejoe2008@gmail.com
+ *
+ */
 public abstract class ProcessDefinitionUtils
 {
 	public static ActivityImpl getActivity(ProcessEngine processEngine, String processDefId, String activityId)

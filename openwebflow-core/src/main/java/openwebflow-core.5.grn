@@ -1,0 +1,39 @@
+<uml>
+   <greenVersion="30500"/>
+   <type>
+      <name="=openwebflow-core/src\/main\/java<org.openwebflow.assign.permission{ActivityPermissionAssignmentHandler.java[ActivityPermissionAssignmentHandler"/>
+      <height="141"/>
+      <width="497"/>
+      <x="40"/>
+      <y="304"/>
+   </type>
+   <type>
+      <name="=openwebflow-core/src\/main\/java<org.openwebflow.assign{TaskAssignmentHandler.java[TaskAssignmentHandler"/>
+      <height="-1"/>
+      <width="-1"/>
+      <x="107"/>
+      <y="63"/>
+   </type>
+   <relationship>
+      <class="edu.buffalo.cse.green.relationship.realization.RealizationPart"/>
+      <sourceType="=openwebflow-core/src\/main\/java<org.openwebflow.assign.permission{ActivityPermissionAssignmentHandler.java[ActivityPermissionAssignmentHandler"/>
+      <targetType="=openwebflow-core/src\/main\/java<org.openwebflow.assign{TaskAssignmentHandler.java[TaskAssignmentHandler"/>
+      <bendpoints>
+      </bendpoints>
+   </relationship>
+   <type>
+      <name="=openwebflow-core/src\/main\/java<org.openwebflow.assign.delegation{TaskDelagationAssignmentHandler.java[TaskDelagationAssignmentHandler"/>
+      <height="357"/>
+      <width="516"/>
+      <x="658"/>
+      <y="175"/>
+   </type>
+   <relationship>
+      <class="edu.buffalo.cse.green.relationship.realization.RealizationPart"/>
+      <sourceType="=openwebflow-core/src\/main\/java<org.openwebflow.assign.delegation{TaskDelagationAssignmentHandler.java[TaskDelagationAssignmentHandler"/>
+      <targetType="=openwebflow-core/src\/main\/java<org.openwebflow.assign{TaskAssignmentHandler.java[TaskAssignmentHandler"/>
+      <bendpoints>
+      </bendpoints>
+   </relationship>
+</uml>
+

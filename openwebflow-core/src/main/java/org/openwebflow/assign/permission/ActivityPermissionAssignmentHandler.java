@@ -7,9 +7,9 @@ import java.util.List;
 
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.openwebflow.OwfException;
 import org.openwebflow.assign.TaskAssignmentHandler;
 import org.openwebflow.assign.TaskAssignmentHandlerChain;
-import org.openwebflow.util.OwfException;
 
 public class ActivityPermissionAssignmentHandler implements TaskAssignmentHandler
 {

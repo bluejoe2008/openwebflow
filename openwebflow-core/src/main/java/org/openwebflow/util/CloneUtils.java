@@ -6,6 +6,12 @@ import org.apache.commons.lang.reflect.FieldUtils;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 
+/**
+ * 实现对象的克隆功能
+ * 
+ * @author bluejoe2008@gmail.com
+ *
+ */
 public abstract class CloneUtils
 {
 	public static void copyFields(Object source, Object target, String... fieldNames)

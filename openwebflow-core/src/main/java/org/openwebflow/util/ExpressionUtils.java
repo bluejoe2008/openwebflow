@@ -7,6 +7,12 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.el.FixedValue;
 
+/**
+ * 实现常见类型的expression的包装和转换
+ * 
+ * @author bluejoe2008@gmail.com
+ *
+ */
 public abstract class ExpressionUtils
 {
 	public static Expression stringToExpression(ProcessEngineConfigurationImpl conf, String expr)
