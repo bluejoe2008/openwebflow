@@ -11,6 +11,3 @@ OpenWebFlow是基于Activiti（官方网站<http://activiti.org/>，代码托管
 使用手册与设计说明书（PDF）：https://github.com/bluejoe2008/openwebflow/blob/master/doc/OpenWebFlow%E5%B7%A5%E4%BD%9C%E6%B5%81%E5%BC%95%E6%93%8E%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8C%E4%B8%8E%E8%AE%BE%E8%AE%A1%E8%AF%B4%E6%98%8E.pdf?raw=true
 
 感谢咖啡兔<http://www.kafeitu.me/>，里面有很多的关于Activiti应用方案的讨论。
-
-#####OpenWebFlow也许是你见过的最好的Activiti增强引擎，也许不是，但它保证100%开源，原因很简单，因为它powered by Activiti。#####
-#####你可以将OpenWebFlow应用于任何场合（包括商用的），而且你的产品不用提及OpenWebFlow的名字。但如果你能够在任何技术场合客观的评价并推广OpenWebFlow，作者将感激不尽！同为开发者，我相信你也有这种情怀^_^#####
