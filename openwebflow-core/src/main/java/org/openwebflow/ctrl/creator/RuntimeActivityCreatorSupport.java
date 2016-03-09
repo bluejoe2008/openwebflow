@@ -49,9 +49,7 @@ public abstract class RuntimeActivityCreatorSupport
 			taskDefinition.setAssigneeExpression(new FixedValue(assignee));
 		}
 
-		UserTaskActivityBehavior cloneActivityBehavior = ((ProcessEngineConfigurationImpl) processEngine
-				.getProcessEngineConfiguration()).getActivityBehaviorFactory().createUserTaskActivityBehavior(null,
-			taskDefinition);
+		UserTaskActivityBehavior cloneActivityBehavior = new UserTaskActivityBehavior(null, taskDefinition);
 		clone.setActivityBehavior(cloneActivityBehavior);
 
 		return clone;
