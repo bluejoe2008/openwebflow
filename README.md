@@ -1,5 +1,6 @@
 What's OpenWebFlow
 ===========
+<img src="https://github.com/bluejoe2008/openwebflow/blob/master/doc/arch.png?raw=true">
 
 OpenWebFlow是基于Activiti（官方网站<http://activiti.org/>，代码托管在<https://github.com/Activiti/Activiti>）扩展的工作流引擎，它扩展的功能包括：
 
