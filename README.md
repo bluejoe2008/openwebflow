@@ -9,6 +9,7 @@ OpenWebFlow是基于Activiti（官方网站<http://activiti.org/>，代码托管
 * 允许运行时定义activity！__彻底满足“中国特色”，并提供了安全的（同时也是优雅的）催办、代办、加签（包括前加签/后加签）、自由跳转（包括前进/后）、分裂节点等功能__；
 
 如何贡献？
+===========
 
 欢迎各位同仁共同贡献新的特性，以及提交bugfix。具体操作方式是：
 * fork本项目；
@@ -17,6 +18,7 @@ OpenWebFlow是基于Activiti（官方网站<http://activiti.org/>，代码托管
 * pr得以审核并合并；
 
 支持与致谢
+===========
 
 * 开发者使用帮助：https://github.com/bluejoe2008/openwebflow/wiki
 
