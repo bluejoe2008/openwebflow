@@ -21,6 +21,7 @@ public class MyActivityBehaviorFactory extends ActivityBehaviorFactoryDelegate i
 	@Override
 	public UserTaskActivityBehavior createUserTaskActivityBehavior(UserTask userTask, TaskDefinition taskDefinition)
 	{
-		return new MyUserTaskActivityBehavior(_handlers, taskDefinition);
+		String userTaskId = userTask.getId();
+		return new MyUserTaskActivityBehavior(_handlers, userTaskId, taskDefinition);
 	}
 }

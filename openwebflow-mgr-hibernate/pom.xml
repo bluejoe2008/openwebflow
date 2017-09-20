@@ -12,7 +12,6 @@
 	</parent>
 	<properties>
 		<org.springframework-version>3.2.4.RELEASE</org.springframework-version>
-		<activiti-version>5.16.1</activiti-version>
 		<hibernate-version>4.2.0.Final</hibernate-version>
 		<poi-version>3.10.1</poi-version>
 	</properties>

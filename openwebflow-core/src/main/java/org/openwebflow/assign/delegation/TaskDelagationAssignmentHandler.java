@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.task.IdentityLink;
@@ -39,10 +40,13 @@ public class TaskDelagationAssignmentHandler implements TaskAssignmentHandler
 	}
 
 	@Override
-	public void handleAssignment(TaskAssignmentHandlerChain chain, TaskEntity task, ActivityExecution execution)
+	public void handleAssignment(TaskAssignmentHandlerChain chain, Expression assigneeExpression,
+			Expression ownerExpression, Set<Expression> candidateUserExpressions,
+			Set<Expression> candidateGroupExpressions, TaskEntity task, ActivityExecution execution)
 	{
 		//先执行其它规则
-		chain.resume(task, execution);
+		chain.resume(assigneeExpression, ownerExpression, candidateUserExpressions,
+			      candidateGroupExpressions, task, execution);
 
 		overwriteAssignee(task);
 

@@ -1,8 +1,10 @@
 package org.openwebflow.assign.impl;
 
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.openwebflow.assign.TaskAssignmentHandler;
@@ -13,7 +15,8 @@ public class TaskAssignmentHandlerChainImpl implements TaskAssignmentHandlerChai
 	static TaskAssignmentHandler NULL_HANDLER = new TaskAssignmentHandler()
 	{
 		@Override
-		public void handleAssignment(TaskAssignmentHandlerChain chain, TaskEntity task, ActivityExecution execution)
+		public void handleAssignment(TaskAssignmentHandlerChain chain, Expression assigneeExpression, Expression ownerExpression, Set<Expression> candidateUserExpressions,
+			      Set<Expression> candidateGroupExpressions, TaskEntity task, ActivityExecution execution)
 		{
 		}
 	};
@@ -44,8 +47,10 @@ public class TaskAssignmentHandlerChainImpl implements TaskAssignmentHandlerChai
 	}
 
 	@Override
-	public void resume(TaskEntity task, ActivityExecution execution)
+	public void resume(Expression assigneeExpression, Expression ownerExpression, Set<Expression> candidateUserExpressions,
+		      Set<Expression> candidateGroupExpressions, TaskEntity task, ActivityExecution execution)
 	{
-		next().handleAssignment(this, task, execution);
+		next().handleAssignment(this, assigneeExpression, ownerExpression, candidateUserExpressions, 
+		        candidateGroupExpressions, task, execution);
 	}
 }
