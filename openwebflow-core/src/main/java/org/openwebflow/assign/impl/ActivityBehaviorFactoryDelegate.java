@@ -82,7 +82,7 @@ public class ActivityBehaviorFactoryDelegate
 
 	public BusinessRuleTaskActivityBehavior createBusinessRuleTaskActivityBehavior(BusinessRuleTask businessRuleTask)
 	{
-		return _source.createBusinessRuleTaskActivityBehavior(businessRuleTask);
+		return (BusinessRuleTaskActivityBehavior)_source.createBusinessRuleTaskActivityBehavior(businessRuleTask);
 	}
 
 	public CallActivityBehavior createCallActivityBehavior(CallActivity callActivity)

@@ -45,8 +45,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.0</version>
 				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
+					<source>1.8</source>
+					<target>1.8</target>
 					<encoding>UTF-8</encoding>
 					<charset>UTF-8</charset>
 				</configuration>
@@ -84,8 +84,8 @@
 		<module>openwebflow-test</module>
 	</modules>
 	<properties>
-		<org.springframework-version>3.2.4.RELEASE</org.springframework-version>
-		<activiti-version>5.16.1</activiti-version>
+		<org.springframework-version>4.1.5.RELEASE</org.springframework-version>
+		<activiti-version>5.22.0</activiti-version>
 		<hibernate-version>4.2.0.Final</hibernate-version>
 		<poi-version>3.10.1</poi-version>
 	</properties>

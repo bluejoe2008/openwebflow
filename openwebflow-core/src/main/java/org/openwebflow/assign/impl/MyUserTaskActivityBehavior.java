@@ -1,7 +1,9 @@
 package org.openwebflow.assign.impl;
 
 import java.util.List;
+import java.util.Set;
 
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
@@ -13,9 +15,9 @@ public class MyUserTaskActivityBehavior extends UserTaskActivityBehavior
 {
 	List<TaskAssignmentHandler> _handlers;
 
-	public MyUserTaskActivityBehavior(List<TaskAssignmentHandler> handlers, TaskDefinition taskDefinition)
+	public MyUserTaskActivityBehavior(List<TaskAssignmentHandler> handlers, String userTaskId, TaskDefinition taskDefinition)
 	{
-		super(taskDefinition);
+		super(userTaskId, taskDefinition);
 		_handlers = handlers;
 	}
 
@@ -26,9 +28,11 @@ public class MyUserTaskActivityBehavior extends UserTaskActivityBehavior
 		handlerChain.addHandler(new TaskAssignmentHandler()
 		{
 			@Override
-			public void handleAssignment(TaskAssignmentHandlerChain chain, TaskEntity task, ActivityExecution execution)
+			public void handleAssignment(TaskAssignmentHandlerChain chain, Expression assigneeExpression, Expression ownerExpression, Set<Expression> candidateUserExpressions,
+				      Set<Expression> candidateGroupExpressions, TaskEntity task, ActivityExecution execution)
 			{
-				myUserTaskActivityBehavior.superHandleAssignments(task, execution);
+				myUserTaskActivityBehavior.superHandleAssignments(assigneeExpression, ownerExpression, candidateUserExpressions, 
+				        candidateGroupExpressions, task, execution);
 			}
 		});
 
@@ -37,13 +41,17 @@ public class MyUserTaskActivityBehavior extends UserTaskActivityBehavior
 	}
 
 	@Override
-	protected void handleAssignments(TaskEntity task, ActivityExecution execution)
+	protected void handleAssignments(Expression assigneeExpression, Expression ownerExpression, Set<Expression> candidateUserExpressions,
+		      Set<Expression> candidateGroupExpressions, TaskEntity task, ActivityExecution execution)
 	{
-		createHandlerChain().resume(task, execution);
+		createHandlerChain().resume(assigneeExpression, ownerExpression, candidateUserExpressions, 
+		        candidateGroupExpressions, task, execution);
 	}
 
-	protected void superHandleAssignments(TaskEntity task, ActivityExecution execution)
+	protected void superHandleAssignments(Expression assigneeExpression, Expression ownerExpression, Set<Expression> candidateUserExpressions,
+		      Set<Expression> candidateGroupExpressions, TaskEntity task, ActivityExecution execution)
 	{
-		super.handleAssignments(task, execution);
+		super.handleAssignments(assigneeExpression, ownerExpression, candidateUserExpressions, 
+		        candidateGroupExpressions, task, execution);
 	}
 }
