@@ -22,6 +22,4 @@ OpenWebFlow是基于Activiti（官方网站<http://activiti.org/>，代码托管
 
 * 开发者使用帮助：https://github.com/bluejoe2008/openwebflow/wiki
 
-* [使用手册与设计说明书（PDF格式）](https://github.com/bluejoe2008/openwebflow/blob/master/doc/OpenWebFlow%E5%B7%A5%E4%BD%9C%E6%B5%81%E5%BC%95%E6%93%8E%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8C%E4%B8%8E%E8%AE%BE%E8%AE%A1%E8%AF%B4%E6%98%8E.pdf?raw=true)
-
 感谢咖啡兔<http://www.kafeitu.me/>，里面有很多的关于Activiti应用方案的讨论。
