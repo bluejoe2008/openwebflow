@@ -1,3 +1,8 @@
+[![GitHub issues](https://img.shields.io/github/issues/bluejoe2008/openwebflow.svg)](https://github.com/bluejoe2008/openwebflow/issues)
+[![GitHub forks](https://img.shields.io/github/forks/bluejoe2008/openwebflow.svg)](https://github.com/bluejoe2008/openwebflow/network)
+[![GitHub stars](https://img.shields.io/github/stars/bluejoe2008/openwebflow.svg)](https://github.com/bluejoe2008/openwebflow/stargazers)
+[![GitHub license](https://img.shields.io/github/license/bluejoe2008/openwebflow.svg)](https://github.com/bluejoe2008/openwebflow/blob/master/LICENSE)
+
 What's OpenWebFlow
 ===========
 <img src="https://github.com/bluejoe2008/openwebflow/blob/master/doc/arch.png?raw=true" width=500>
